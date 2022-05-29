@@ -1,0 +1,13 @@
+src/
+tests/
+coverage/
+jest.config.js
+CONTRIBUTING.md
+.prettierrc
+.eslintrc.json
+.git
+.gitignore
+.npmignore
+.husky
+commitlint.config.js
+.travis.yml

@@ -1,0 +1,19 @@
+language: node_js
+env:
+  - PARCEL_WORKERS=0
+notifications:
+  email: false
+node_js:
+  - 17
+before_install:
+  - npm i -g npm@^8.5.1
+install:
+  - npm install
+before_script:
+  - npm prune
+script:
+  - npm run lint
+  - npm run test
+  - npm run build
+after_success:
+  - npm run semantic-release
