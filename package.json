@@ -2,21 +2,27 @@
   "name": "xstate-insights",
   "version": "0.0.0-development",
   "description": "Devtool for XState state machines",
-  "source": "src/index.js",
-  "module": "dist/index.js",
+  "main": "dist/xstate-insights.umd.js",
+  "module": "dist/xstate-insights.es.js",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "import": "./dist/xstate-insights.es.js",
+      "require": "./dist/xstate-insights.umd.js"
+    }
+  },
   "scripts": {
     "test": "jest --passWithNoTests",
-    "lint": "eslint src/",
+    "lint": "eslint lib/ main.js",
     "format": "prettier --write README.md src/**/*.js",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",
-    "build": "parcel build",
-    "watch": "parcel watch",
+    "dev": "vite",
+    "preview": "vite preview",
+    "build": "vite build",
     "semantic-release": "semantic-release"
   },
-  "keywords": [
-    "xstate"
-  ],
+  "keywords": ["xstate"],
   "author": "Richard Laffers",
   "license": "MIT",
   "devDependencies": {
@@ -32,10 +38,12 @@
     "husky": "^7.0.0",
     "jest": "^27.5.1",
     "prettier": "^2.5.1",
-    "semantic-release": "^19.0.2"
+    "semantic-release": "^19.0.2",
+    "vite": "^2.9.9",
+    "xstate": "^4.32.1"
   },
   "peerDependencies": {
-    "xstate": "^4.30.1"
+    "xstate": "^4.32.1"
   },
   "config": {
     "commitizen": {
