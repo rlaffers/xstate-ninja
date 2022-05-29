@@ -1,0 +1,9 @@
+body {
+  background-color: #222222;
+  color: #C2C2C2;
+}
+#machine-state-value {
+  font-family: Courier, monospace;
+  font-weight: bold;
+  font-size: 120%;
+}

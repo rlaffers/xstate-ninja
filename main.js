@@ -1,4 +1,8 @@
 import { createMachine, interpret } from 'xstate'
+import { launch } from './lib/index.js'
+
+// api for xstate insights (after it has been opened)
+let insights
 
 const machine = createMachine({
   id: 'root',
@@ -37,11 +41,14 @@ const machine = createMachine({
 
 let service = interpret(machine)
 
-// display machine state
+// display machine state on the page
 const stateValue = document.querySelector('#machine-state-value')
 let subscription
 function subscribe(actor) {
   subscription = service.subscribe((state) => {
+    console.groupCollapsed(state.event.type)
+    console.log(state.event)
+    console.groupEnd(state.event.type)
     stateValue.innerHTML = JSON.stringify(state.value)
   })
 }
@@ -63,7 +70,16 @@ function restartMachine() {
   service = interpret(machine)
   service.start()
   subscribe(service)
+  // the launched window needs to resubscribe to this new actor
+  if (insights) {
+    insights.subscribe(service)
+  }
 }
 document.querySelector('#btn-reset').addEventListener('click', restartMachine)
+
+// open the tool
+document.querySelector('#btn-open').addEventListener('click', () => {
+  insights = launch(service)
+})
 
 service.start()
