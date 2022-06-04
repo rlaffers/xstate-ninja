@@ -1,5 +1,7 @@
-import { createMachine, interpret } from 'xstate'
+import { createMachine, interpret, actions } from 'xstate'
 import { launch } from './lib/index.js'
+
+const { assign } = actions
 
 // api for xstate insights (after it has been opened)
 let insights
@@ -7,7 +9,9 @@ let insights
 const machine = createMachine({
   id: 'root',
   preserveActionOrder: true,
-  context: {},
+  context: {
+    speed: 1,
+  },
   initial: 'Ready',
   states: {
     Ready: {
@@ -25,6 +29,16 @@ const machine = createMachine({
       on: {
         PAUSE: 'Paused',
         STOP: 'Stopped',
+        SPEED_INC: {
+          actions: assign({
+            speed: ({ speed }) => speed + 1,
+          }),
+        },
+        SPEED_DEC: {
+          actions: assign({
+            speed: ({ speed }) => speed - 1,
+          }),
+        },
       },
     },
     Paused: {
@@ -48,6 +62,7 @@ function subscribe(actor) {
   subscription = service.subscribe((state) => {
     console.groupCollapsed(state.event.type)
     console.log(state.event)
+    console.log(`changed: ${state.changed}`, state.context)
     console.groupEnd(state.event.type)
     stateValue.innerHTML = JSON.stringify(state.value)
   })
@@ -76,6 +91,13 @@ function restartMachine() {
   }
 }
 document.querySelector('#btn-reset').addEventListener('click', restartMachine)
+
+document
+  .querySelector('#btn-speed-inc')
+  .addEventListener('click', () => service.send('SPEED_INC'))
+document
+  .querySelector('#btn-speed-dec')
+  .addEventListener('click', () => service.send('SPEED_DEC'))
 
 // open the tool
 document.querySelector('#btn-open').addEventListener('click', () => {

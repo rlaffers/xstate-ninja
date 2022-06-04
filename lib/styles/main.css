@@ -1,9 +1,102 @@
+html,
 body {
-  background-color: #222222;
-  color: #C2C2C2;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
-#machine-state-value {
-  font-family: Courier, monospace;
-  font-weight: bold;
-  font-size: 120%;
+
+:root {
+  --bg-color: #121212;
+  --color: #ededed;
+  --event-bg-color: #068b3e;
+  --state-border-color: #ededed;
+  --state-color: #ededed;
+}
+body {
+  background-color: var(--bg-color);
+  color: var(--color);
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  font-family: system-ui, Helvetica, monospace;
+  font-size: 18px;
+}
+
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}
+
+.main-container > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.frames {
+  flex: 2;
+  height: 100%;
+  overflow-y: auto;
+}
+.frames {
+  scrollbar-width: 5px;
+  scrollbar-color: var(--color) var(--bg-color);
+}
+.frames::-webkit-scrollbar {
+  width: 6px;
+}
+
+.frames::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  border: 1px solid var(--color);
+}
+
+.frames::-webkit-scrollbar-thumb {
+  background-color: var(--color);
+  border-radius: 20px;
+  border: 1px solid var(--color);
+}
+
+.frames > div {
+  cursor: pointer;
+  text-align: center;
+}
+
+.details {
+  flex: 1;
+}
+
+.frame-event {
+  border: 1px solid var(--event-bg-color);
+  color: var(--event-bg-color);
+  border-radius: 10px;
+  padding: 0.5em 1em;
+  margin-bottom: 0.5em;
+  height: 1em;
+  line-height: 1em;
+}
+
+.frame-event.changed-state {
+  border-color: var(--color);
+  background-color: var(--event-bg-color);
+  color: var(--color);
+}
+
+.frame-state-node {
+  border: 1px solid var(--state-border-color);
+  padding: 0.5em 1em;
+  margin-bottom: 0.5em;
+  background-color: var(--bg-color);
+  color: var(--state-color);
+  min-width: 10em;
+  height: 2em;
+  line-height: 2em;
+}
+
+.frame-state-node.latest {
+  position: sticky;
+  top: 0px;
 }
