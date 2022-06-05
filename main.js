@@ -58,8 +58,8 @@ const machine = createMachine(
       },
     },
     on: {
-      FOO: {
-        actions: () => console.log('FOO received'),
+      SET_SPEED: {
+        actions: assign({ speed: (_, { value }) => value }),
       },
     },
   },
@@ -115,6 +115,11 @@ document
 document
   .querySelector('#btn-speed-dec')
   .addEventListener('click', () => service.send('SPEED_DEC'))
+document
+  .querySelector('#btn-reset-speed')
+  .addEventListener('click', () =>
+    service.send({ type: 'SET_SPEED', value: 1 })
+  )
 
 // open the tool
 document.querySelector('#btn-open').addEventListener('click', () => {
