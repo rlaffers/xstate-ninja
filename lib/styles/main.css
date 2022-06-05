@@ -8,7 +8,11 @@ body {
 :root {
   --bg-color: #121212;
   --color: #ededed;
-  --event-bg-color: #068b3e;
+  --event-unknown-color: #6E757C;
+  --event-unknown-bg-color: var(--bg-color);
+  --event-changed-state-bg-color: #068b3e;
+  --event-skipped-bg-color: #D36B1B;
+  --event-forbidden-bg-color: #E5123B;
   --state-border-color: #ededed;
   --state-color: #ededed;
 }
@@ -70,8 +74,9 @@ body {
 }
 
 .frame-event {
-  border: 1px solid var(--event-bg-color);
-  color: var(--event-bg-color);
+  border: 1px solid var(--event-unknown-color);
+  color: var(--event-unknown-color);
+  background-color: var(--event-unknown-bg-color);
   border-radius: 10px;
   padding: 0.5em 1em;
   margin-bottom: 0.5em;
@@ -81,7 +86,19 @@ body {
 
 .frame-event.changed-state {
   border-color: var(--color);
-  background-color: var(--event-bg-color);
+  background-color: var(--event-changed-state-bg-color);
+  color: var(--color);
+}
+
+.frame-event.guard-not-passed {
+  border-color: var(--color);
+  background-color: var(--event-skipped-bg-color);
+  color: var(--color);
+}
+
+.frame-event.forbidden {
+  border-color: var(--color);
+  background-color: var(--event-forbidden-bg-color);
   color: var(--color);
 }
 

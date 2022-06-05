@@ -6,52 +6,69 @@ const { assign } = actions
 // api for xstate insights (after it has been opened)
 let insights
 
-const machine = createMachine({
-  id: 'root',
-  preserveActionOrder: true,
-  context: {
-    speed: 1,
-  },
-  initial: 'Ready',
-  states: {
-    Ready: {
-      on: {
-        START: 'Playing',
-        STOP: 'Stopped',
-      },
+const machine = createMachine(
+  {
+    id: 'root',
+    preserveActionOrder: true,
+    context: {
+      speed: 1,
     },
-    Playing: {
-      initial: 'Cold',
-      states: {
-        Cold: {},
-        Hot: {},
-      },
-      on: {
-        PAUSE: 'Paused',
-        STOP: 'Stopped',
-        SPEED_INC: {
-          actions: assign({
-            speed: ({ speed }) => speed + 1,
-          }),
-        },
-        SPEED_DEC: {
-          actions: assign({
-            speed: ({ speed }) => speed - 1,
-          }),
+    initial: 'Ready',
+    states: {
+      Ready: {
+        on: {
+          START: 'Playing',
+          STOP: 'Stopped',
         },
       },
-    },
-    Paused: {
-      on: {
-        START: 'Playing',
-        STOP: 'Stopped',
+      Playing: {
+        initial: 'Cold',
+        states: {
+          Cold: {
+            on: {
+              FORBIDDEN: undefined,
+            },
+          },
+          Hot: {},
+        },
+        on: {
+          PAUSE: 'Paused',
+          STOP: 'Stopped',
+          SPEED_INC: {
+            cond: 'isSpeedBelowMax',
+            actions: assign({
+              speed: ({ speed }) => speed + 1,
+            }),
+          },
+          SPEED_DEC: {
+            actions: assign({
+              speed: ({ speed }) => speed - 1,
+            }),
+          },
+        },
+      },
+      Paused: {
+        on: {
+          START: 'Playing',
+          STOP: 'Stopped',
+        },
+      },
+      Stopped: {
+        type: 'final',
       },
     },
-    Stopped: {
-      type: 'final',
+    on: {
+      FOO: {
+        actions: () => console.log('FOO received'),
+      },
     },
   },
-})
+  {
+    guards: {
+      isSpeedBelowMax: ({ speed }) => speed < 5,
+    },
+  }
+)
 
 let service = interpret(machine)
 
