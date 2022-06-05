@@ -1,12 +1,10 @@
 language: node_js
-env:
-  - PARCEL_WORKERS=0
 notifications:
   email: false
 node_js:
   - 17
 before_install:
-  - npm i -g npm@^8.5.1
+  - npm i -g npm@^8.11.0
 install:
   - npm install
 before_script:
