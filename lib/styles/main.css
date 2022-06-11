@@ -7,14 +7,15 @@ body {
 
 :root {
   --bg-color: #121212;
-  --color: #ededed;
+  --color: #EDEDED;
   --event-unknown-color: #6E757C;
   --event-unknown-bg-color: var(--bg-color);
-  --event-changed-state-bg-color: #068b3e;
+  --event-changed-state-bg-color: #068B3E;
   --event-skipped-bg-color: #D36B1B;
   --event-forbidden-bg-color: #E5123B;
-  --state-border-color: #ededed;
-  --state-color: #ededed;
+  --state-border-color: #EDEDED;
+  --state-color: #EDEDED;
+  --context-bg-color: #33393E;
 }
 body {
   background-color: var(--bg-color);
@@ -33,7 +34,7 @@ body {
   margin: 10px;
 }
 
-.main-container > div {
+.main-container > section {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -71,6 +72,29 @@ body {
 
 .details {
   flex: 1;
+}
+
+.details > .context {
+  width: 100%;
+  border: 1px solid var(--color);
+}
+
+.details > .context > h1 {
+  width: 100%;
+  background-color: var(--context-bg-color);
+  border-bottom: 1px solid var(--color);
+  margin: 0;
+  padding: 0.5em 0;
+  font-size: 18px;
+  text-align: center;
+}
+
+.details > .context > .content {
+  font-family: monospace;
+  white-space: pre;
+  padding: 0.5em 1em;
+  max-height: 10em;
+  overflow-y: auto;
 }
 
 .frame-event {

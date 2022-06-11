@@ -12,6 +12,8 @@ const machine = createMachine(
     preserveActionOrder: true,
     context: {
       speed: 1,
+      info: "Don't panic",
+      results: [9, 8, 7],
     },
     initial: 'Ready',
     states: {
