@@ -1,10 +1,8 @@
+/* global __XSTATE_INSIGHTS__ */
 import { createMachine, interpret, actions } from 'xstate'
 import { launch } from './lib/index.js'
 
 const { assign } = actions
-
-// api for xstate insights (after it has been opened)
-let insights
 
 const machine = createMachine(
   {
@@ -105,8 +103,8 @@ function restartMachine() {
   service.start()
   subscribe(service)
   // the launched window needs to resubscribe to this new actor
-  if (insights) {
-    insights.subscribe(service)
+  if (__XSTATE_INSIGHTS__) {
+    __XSTATE_INSIGHTS__.subscribe(service)
   }
 }
 document.querySelector('#btn-reset').addEventListener('click', restartMachine)
@@ -124,8 +122,18 @@ document
   )
 
 // open the tool
-document.querySelector('#btn-open').addEventListener('click', () => {
-  insights = launch(service)
+// TODO provide this button from the lib: renderButtonXStateInsights(<target>)
+// TODO we should only register. Subscription is done upon opening the window (subscribe
+// to the first registered actor) + on selecting another machine from the dropdown
+// or maybe on all of them so when we switch, we get the full history
+document.querySelector('#btn-open').addEventListener('click', async () => {
+  await launch()
+  __XSTATE_INSIGHTS__.subscribe(service)
+})
+
+// TODO move it to the lib?
+window.addEventListener('xstate-insights-reconnected', ({ data }) => {
+  __XSTATE_INSIGHTS__.subscribe(service)
 })
 
 service.start()
