@@ -13,7 +13,7 @@
   },
   "scripts": {
     "test": "jest --passWithNoTests",
-    "lint": "eslint lib/ main.js",
+    "lint": "eslint lib/ example.js",
     "format": "prettier --write README.md src/**/*.js",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",
