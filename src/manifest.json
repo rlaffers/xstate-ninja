@@ -1,0 +1,17 @@
+{
+  "name": "XState Insights",
+  "description": "A powerful devtool for XState state machines",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
+  "devtools_page": "devtools/devtools.html",
+  "permissions": [],
+  "icons": {
+    "16": "assets/icon_16x16.png",
+    "32": "assets/icon_32x32.png",
+    "48": "assets/icon_48x48.png",
+    "128": "assets/icon_128x128.png"
+  }
+}

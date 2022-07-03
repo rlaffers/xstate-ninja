@@ -3,5 +3,8 @@
   "extends": ["standard", "prettier"],
   "env": {
     "jest": true
+  },
+  "globals": {
+    "chrome": "readonly"
   }
 }
