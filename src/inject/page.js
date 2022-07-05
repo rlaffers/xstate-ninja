@@ -27,8 +27,6 @@
 
       // TODO other ways to end subscriptions (on unmount?)
       const subscription = actor.subscribe((state) => {
-        console.log('transition', state) // TODO remove console.log
-
         window.dispatchEvent(
           new CustomEvent('xstate-insights.update', {
             detail: {

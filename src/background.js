@@ -23,10 +23,6 @@ function logDevtoolsMessage({ type, ...msg }, senderName) {
   )
 }
 
-chrome.runtime.onInstalled.addListener(() => {
-  log('XState Insights background script started')
-})
-
 const connections = {}
 
 chrome.runtime.onConnect.addListener(function (port) {
@@ -44,6 +40,7 @@ chrome.runtime.onConnect.addListener(function (port) {
   port.onMessage.addListener(extensionListener)
 
   port.onDisconnect.addListener(function (port) {
+    log('disconnecting port:', port.name)
     port.onMessage.removeListener(extensionListener)
     Object.keys(connections).some((tabId) => {
       if (connections[tabId] === port) {
