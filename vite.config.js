@@ -42,6 +42,10 @@ export default defineConfig({
         'devtools/devtools.html',
         'devtools/devtools.js',
         'panel/panel.html',
+        'panel/panel.js',
+        'inject/page.js',
+        'inject/page_wrapper.js',
+        'inject/content_script.js',
       ],
       webExtConfig: {
         startUrl: ['http://localhost:3000'],

@@ -1,12 +1,7 @@
+/* global __XSTATE_INSIGHTS__ */
 import { createMachine, interpret, actions } from 'xstate'
 // TODO create an npm library xstate-insights, @xstate-insights/react
 // import { register } from 'xstate-insights'
-
-function register(service) {
-  // TODO notify the devtool extension about this service
-  const api = window.__XSTATE_INSIGHTS__
-  api?.register(service)
-}
 
 const { assign } = actions
 
@@ -79,7 +74,7 @@ const machine = createMachine(
 let service = interpret(machine)
 
 // TODO crucial step! We could hide this into an exported "interpret", "useMachine", "useInterpret" function
-register(service)
+window.__XSTATE_INSIGHTS__?.subscribe(service)
 
 // display machine state on the page
 const stateValue = document.querySelector('#machine-state-value')
@@ -111,7 +106,7 @@ function restartMachine() {
   service = interpret(machine)
   service.start()
   subscribe(service)
-  register(service)
+  __XSTATE_INSIGHTS__?.subscribe(service)
 }
 document.querySelector('#btn-reset').addEventListener('click', restartMachine)
 
