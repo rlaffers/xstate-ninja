@@ -1,4 +1,4 @@
-/* global __XSTATE_INSIGHTS__ */
+/* global __XSTATE_INSIGHTS__, CustomEvent */
 import { createMachine, interpret, actions } from 'xstate'
 // TODO create an npm library xstate-insights, @xstate-insights/react
 // import { register } from 'xstate-insights'
@@ -13,6 +13,21 @@ const machine = createMachine(
       speed: 1,
       info: "Don't panic",
       results: [9, 8, 7],
+      // non-serializable
+      customEvent: (function () {
+        const event = new CustomEvent('dummy-event', { detail: { foo: 42 } })
+        event.myFunc = function () {}
+        event.myFunc.funcname = 'myFunc'
+        return event
+      })(),
+      // deep serializable object
+      deepObject: {
+        quick: {
+          brown: {
+            fox: 42,
+          },
+        },
+      },
     },
     initial: 'Ready',
     states: {
@@ -71,16 +86,16 @@ const machine = createMachine(
   }
 )
 
-let service = interpret(machine)
+let actor = interpret(machine)
 
 // TODO crucial step! We could hide this into an exported "interpret", "useMachine", "useInterpret" function
-window.__XSTATE_INSIGHTS__?.subscribe(service)
+window.__XSTATE_INSIGHTS__?.subscribe(actor)
 
 // display machine state on the page
 const stateValue = document.querySelector('#machine-state-value')
 let subscription
 function subscribe(actor) {
-  subscription = service.subscribe((state) => {
+  subscription = actor.subscribe((state) => {
     console.groupCollapsed(state.event.type)
     console.log(state.event)
     console.log(`changed: ${state.changed}`, state.context)
@@ -89,37 +104,36 @@ function subscribe(actor) {
   })
 }
 
-subscribe(service)
+subscribe(actor)
 
 // send events
 const eventName = document.querySelector('#input-event-name')
 function onEventSubmit(event) {
-  service.send(eventName.value)
+  actor.send(eventName.value)
   event.preventDefault()
 }
 document.querySelector('#event-form').addEventListener('submit', onEventSubmit)
 
 // reset
 function restartMachine() {
-  service.stop()
+  __XSTATE_INSIGHTS__?.unsubscribe(actor)
+  actor.stop()
   subscription.unsubscribe()
-  service = interpret(machine)
-  service.start()
-  subscribe(service)
-  __XSTATE_INSIGHTS__?.subscribe(service)
+  actor = interpret(machine)
+  actor.start()
+  subscribe(actor)
+  __XSTATE_INSIGHTS__?.subscribe(actor)
 }
 document.querySelector('#btn-reset').addEventListener('click', restartMachine)
 
 document
   .querySelector('#btn-speed-inc')
-  .addEventListener('click', () => service.send('SPEED_INC'))
+  .addEventListener('click', () => actor.send('SPEED_INC'))
 document
   .querySelector('#btn-speed-dec')
-  .addEventListener('click', () => service.send('SPEED_DEC'))
+  .addEventListener('click', () => actor.send('SPEED_DEC'))
 document
   .querySelector('#btn-reset-speed')
-  .addEventListener('click', () =>
-    service.send({ type: 'SET_SPEED', value: 1 })
-  )
+  .addEventListener('click', () => actor.send({ type: 'SET_SPEED', value: 1 }))
 
-service.start()
+actor.start()

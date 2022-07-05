@@ -1,4 +1,5 @@
 // Create a connection to the background page
+// TODO reconnect on refresh
 const backgroundPageConnection = chrome.runtime.connect({
   name: 'panel',
 })
@@ -19,6 +20,24 @@ function log(text, data) {
 
 backgroundPageConnection.onMessage.addListener((message) => {
   log('received', { message })
+  // TODO experimental: we are going to request extended actor state from the page. This is a safer
+  // way to read context. If it fails, we can always revert back to what we got in the message.data
+  if (message.type === 'xstate-insights.update') {
+    const sessionId = String(message.data.sessionId).replaceAll(
+      /[^a-z0-9:]/gi,
+      ''
+    )
+    chrome.devtools.inspectedWindow.eval(
+      `console.log('♥ devtools requests actor state', '${sessionId}') || window.__XSTATE_INSIGHTS__?.getSerializableActorState('${sessionId}')`,
+      (result, error) => {
+        if (error) {
+          log('💀 Eval error:', { error })
+        } else {
+          log('✅ Eval result:', { result })
+        }
+      }
+    )
+  }
   return false
 })
 
