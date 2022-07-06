@@ -89,7 +89,7 @@ const machine = createMachine(
 let actor = interpret(machine)
 
 // TODO crucial step! We could hide this into an exported "interpret", "useMachine", "useInterpret" function
-window.__XSTATE_INSIGHTS__?.subscribe(actor)
+window.__XSTATE_INSIGHTS__?.register(actor)
 
 // display machine state on the page
 const stateValue = document.querySelector('#machine-state-value')
@@ -116,13 +116,13 @@ document.querySelector('#event-form').addEventListener('submit', onEventSubmit)
 
 // reset
 function restartMachine() {
-  __XSTATE_INSIGHTS__?.unsubscribe(actor)
+  __XSTATE_INSIGHTS__?.unregister(actor)
   actor.stop()
   subscription.unsubscribe()
   actor = interpret(machine)
   actor.start()
   subscribe(actor)
-  __XSTATE_INSIGHTS__?.subscribe(actor)
+  __XSTATE_INSIGHTS__?.register(actor)
 }
 document.querySelector('#btn-reset').addEventListener('click', restartMachine)
 

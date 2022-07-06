@@ -25,23 +25,43 @@ function logDevtoolsMessage({ type, ...msg }, senderName) {
 
 const connections = {}
 
-chrome.runtime.onConnect.addListener(function (port) {
-  if (port.name !== 'devtools' && port.name !== 'panel') {
-    return
-  }
-  function extensionListener(message, sender) {
-    logDevtoolsMessage(message, sender.name)
+function messageListener(message, port) {
+  if (port.name === 'xstate-insights.panel') {
+    logDevtoolsMessage(message, port.name)
     if (message.type === 'init') {
       connections[message.tabId] = port
     }
+    return
   }
+  if (port.name === 'xstate-insights.page') {
+    log('→bkg', message)
+    if (port.sender?.tab) {
+      const tabId = port.sender.tab.id
+      if (tabId in connections) {
+        connections[tabId].postMessage(message)
+      } else {
+        log(`Tab not found in connection list: ${tabId}. Devtools not open?`)
+      }
+    } else {
+      error('sender.tab not defined.')
+    }
+  }
+}
 
-  // Listen to messages sent from the DevTools page
-  port.onMessage.addListener(extensionListener)
+chrome.runtime.onConnect.addListener((port) => {
+  if (
+    port.name !== 'xstate-insights.devtools' &&
+    port.name !== 'xstate-insights.panel' &&
+    port.name !== 'xstate-insights.page'
+  ) {
+    return
+  }
+  log('connecting port:', port.name)
+  port.onMessage.addListener(messageListener)
 
   port.onDisconnect.addListener(function (port) {
     log('disconnecting port:', port.name)
-    port.onMessage.removeListener(extensionListener)
+    port.onMessage.removeListener(messageListener)
     Object.keys(connections).some((tabId) => {
       if (connections[tabId] === port) {
         delete connections[tabId]
@@ -50,23 +70,27 @@ chrome.runtime.onConnect.addListener(function (port) {
       return false
     })
   })
+
+  // TODO only do this where needed, i.e. for pages with devtools open
+  if (port.name === 'xstate-insights.page') {
+    keepAlive(port)
+  }
 })
 
-// Receive message from content script and relay to the devTools page for the
-// current tab
-chrome.runtime.onMessage.addListener(function (request, sender) {
-  // Messages from content scripts should have sender.tab set
-  log('→bkg', request) // TODO
-  if (sender.tab) {
-    const tabId = sender.tab.id
-    if (tabId in connections) {
-      connections[tabId].postMessage(request)
-    } else {
-      // TODO remove
-      log(`Tab not found in connection list: ${tabId}`)
-    }
-  } else {
-    error('sender.tab not defined.')
+// periodically reconnect the page port to keep the background service worker alive
+function keepAlive(port) {
+  port._timer = setTimeout(forceReconnect, 250e3, port)
+  port.onDisconnect.addListener(deleteTimer)
+}
+
+function forceReconnect(port) {
+  log('reconnecting the page to keep service worker alive')
+  deleteTimer(port)
+  port.disconnect()
+}
+function deleteTimer(port) {
+  if (port._timer) {
+    clearTimeout(port._timer)
+    delete port._timer
   }
-  return false
-})
+}

@@ -8,14 +8,14 @@
       this.actors = {}
     }
 
-    subscribe(actor) {
+    register(actor) {
       // TODO create new port for each actor to ensure integrity/prevent actor id collisions
-      // TODO Cleanup: subscribing to everything immediately → memory leak? Can we subscribe only after the
+      // TODO Cleanup: subscribing to everything immediately → memory leak? Can we register only after the
       // devtools panel is open? If the machine is no longer used by the page, the devtools should
-      // unsubscribe.
+      // unregister.
 
       window.dispatchEvent(
-        new CustomEvent('xstate-insights.subscribe', {
+        new CustomEvent('xstate-insights.register', {
           detail: {
             id: actor.id,
             initialized: actor.initialized,
@@ -42,7 +42,7 @@
         )
 
         if (state.done) {
-          this.unsubscribe(actor)
+          this.unregister(actor)
         }
       })
 
@@ -50,7 +50,7 @@
       this.actors[actor.sessionId] = { subscription, actor }
     }
 
-    unsubscribe(actor) {
+    unregister(actor) {
       // const subscription = this.actors.get(actor)
       const { subscription } = this.actors[actor.sessionId] ?? {}
       if (!subscription) {
@@ -58,7 +58,7 @@
       }
       subscription.unsubscribe()
       window.dispatchEvent(
-        new CustomEvent('xstate-insights.unsubscribe', {
+        new CustomEvent('xstate-insights.unregister', {
           detail: {
             id: actor.id,
             sessionId: actor.sessionId,
