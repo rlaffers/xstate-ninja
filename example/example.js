@@ -7,8 +7,8 @@ import { createMachine, interpret, spawn, actions } from 'xstate'
 const { assign, send } = actions
 
 // TODO put this overriden spawn into the npm library
-const _spawn = (x) => {
-  const actor = spawn(x)
+const _spawn = (x, name) => {
+  const actor = spawn(x, name)
   window.__XSTATE_INSIGHTS__?.register(actor)
   // actor.subscribe((state) => {
   //   console.log('child is', state.value)
@@ -71,11 +71,6 @@ const machine = createMachine(
         on: {
           START: 'Playing',
           STOP: 'Stopped',
-          SPAWN: {
-            actions: assign({
-              spawnedRef: () => _spawn(childMachine),
-            }),
-          },
         },
       },
       Playing: {
@@ -117,6 +112,11 @@ const machine = createMachine(
     on: {
       SET_SPEED: {
         actions: assign({ speed: (_, { value }) => value }),
+      },
+      SPAWN: {
+        actions: assign({
+          spawnedRef: () => _spawn(childMachine, 'baby'),
+        }),
       },
     },
   },

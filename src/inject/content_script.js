@@ -1,3 +1,5 @@
+import { EventTypes } from '../EventTypes'
+
 let port
 function connect() {
   port = chrome.runtime.connect({ name: 'xstate-insights.page' })
@@ -9,7 +11,7 @@ function connect() {
 connect()
 
 function listen(eventName) {
-  window.addEventListener(`xstate-insights.${eventName}`, (event) => {
+  window.addEventListener(eventName, (event) => {
     if (event.srcElement !== window) {
       return
     }
@@ -19,6 +21,6 @@ function listen(eventName) {
     })
   })
 }
-listen('register')
-listen('unregister')
-listen('update')
+listen(EventTypes.register)
+listen(EventTypes.unregister)
+listen(EventTypes.update)

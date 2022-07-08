@@ -12,6 +12,7 @@
      */
     register(actor) {
       window.dispatchEvent(
+        // TODO use the EventTypes enum
         new CustomEvent('xstate-insights.register', {
           detail: {
             id: actor.id,
