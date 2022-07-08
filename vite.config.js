@@ -48,7 +48,7 @@ export default defineConfig({
         'inject/content_script.js',
       ],
       webExtConfig: {
-        startUrl: ['http://localhost:3000'],
+        startUrl: ['http://localhost:4000'],
         browserConsole: true,
         args: ['--auto-open-devtools-for-tabs'],
       },

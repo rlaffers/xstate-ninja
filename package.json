@@ -17,7 +17,7 @@
     "format": "prettier --write README.md src/**/*.js",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",
-    "dev": "concurrently \"cd example && npm run dev\"  \"wait-on -c .wait-on-config.json http-get://localhost:3000 && vite build --watch\"",
+    "dev": "concurrently \"cd example && npm run dev\"  \"wait-on -c .wait-on-config.json http-get://localhost:4000 && vite build --watch\"",
     "preview": "vite preview",
     "build": "vite build",
     "semantic-release": "semantic-release"

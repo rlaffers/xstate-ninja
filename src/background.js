@@ -23,27 +23,46 @@ function logDevtoolsMessage({ type, ...msg }, senderName) {
   )
 }
 
-const connections = {}
+const panelConnections = new Map()
+const tabConnections = new Map()
 
-function messageListener(message, port) {
+function handleMessageFromDevtoolPanel(message, port) {
   if (port.name === 'xstate-insights.panel') {
     logDevtoolsMessage(message, port.name)
     if (message.type === 'init') {
-      connections[message.tabId] = port
+      panelConnections.set(message.tabId, port)
     }
-    return
+  } else {
+    error(`Invalid port.name: ${port.name}`)
   }
+}
+
+function relayPageMessageToDevtoolPanel(message, port) {
   if (port.name === 'xstate-insights.page') {
-    log('→bkg', message)
+    log('→ bkg', message)
     if (port.sender?.tab) {
       const tabId = port.sender.tab.id
-      if (tabId in connections) {
-        connections[tabId].postMessage(message)
+      if (panelConnections.has(tabId)) {
+        panelConnections.get(tabId).postMessage(message)
       } else {
         log(`Tab not found in connection list: ${tabId}. Devtools not open?`)
       }
     } else {
       error('sender.tab not defined.')
+    }
+  } else {
+    error(`Invalid port.name: ${port.name}`)
+  }
+}
+
+let isKeptAlive = false
+
+const removeConnection = (connections) => (port) => {
+  log('disconnecting port:', port.name)
+  for (const [key, value] of connections.entries()) {
+    if (value === port) {
+      connections.delete(key)
+      break
     }
   }
 }
@@ -57,22 +76,21 @@ chrome.runtime.onConnect.addListener((port) => {
     return
   }
   log('connecting port:', port.name)
-  port.onMessage.addListener(messageListener)
 
-  port.onDisconnect.addListener(function (port) {
-    log('disconnecting port:', port.name)
-    port.onMessage.removeListener(messageListener)
-    Object.keys(connections).some((tabId) => {
-      if (connections[tabId] === port) {
-        delete connections[tabId]
-        return true
-      }
-      return false
-    })
-  })
+  if (port.name === 'xstate-insights.panel') {
+    port.onMessage.addListener(handleMessageFromDevtoolPanel)
+    port.onDisconnect.addListener(removeConnection(panelConnections))
+    port.onDisconnect.removeListener(handleMessageFromDevtoolPanel)
+  }
 
-  // TODO only do this where needed, i.e. for pages with devtools open
   if (port.name === 'xstate-insights.page') {
+    tabConnections.set(port.sender.tab.id, port)
+    port.onDisconnect.addListener(removeConnection(tabConnections))
+    port.onMessage.addListener(relayPageMessageToDevtoolPanel)
+    port.onDisconnect.removeListener(relayPageMessageToDevtoolPanel)
+  }
+
+  if (!isKeptAlive && port.name === 'xstate-insights.page') {
     keepAlive(port)
   }
 })
@@ -80,14 +98,23 @@ chrome.runtime.onConnect.addListener((port) => {
 // periodically reconnect the page port to keep the background service worker alive
 function keepAlive(port) {
   port._timer = setTimeout(forceReconnect, 250e3, port)
-  port.onDisconnect.addListener(deleteTimer)
+  // triggered when the tab is closed
+  port.onDisconnect.addListener((disconnectedPort) => {
+    deleteTimer(disconnectedPort)
+    if (tabConnections.size > 0) {
+      keepAlive(tabConnections.values().next().value)
+    }
+  })
+  isKeptAlive = true
 }
 
 function forceReconnect(port) {
   log('reconnecting the page to keep service worker alive')
   deleteTimer(port)
+  isKeptAlive = false
   port.disconnect()
 }
+
 function deleteTimer(port) {
   if (port._timer) {
     clearTimeout(port._timer)
