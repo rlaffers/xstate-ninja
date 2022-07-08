@@ -4,7 +4,6 @@
 
   class XStateInsights {
     constructor(...args) {
-      // this.actors = new WeakMap()
       this.actors = {}
     }
 

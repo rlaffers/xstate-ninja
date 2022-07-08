@@ -1,4 +1,9 @@
-import { log, error } from './utils'
+import { log, error } from '../utils'
+import { Tab } from './Tab'
+
+// TODO rebrand to XState Explorer
+// or XState Ninja
+// or XState Monkey
 
 function logDevtoolsMessage({ type, ...msg }, senderName) {
   let bkg = 'gray'
@@ -23,32 +28,22 @@ function logDevtoolsMessage({ type, ...msg }, senderName) {
   )
 }
 
-const panelConnections = new Map()
-const tabConnections = new Map()
+const devPorts = new Map()
+const tabs = new Map()
 
 function handleMessageFromDevtoolPanel(message, port) {
   if (port.name === 'xstate-insights.panel') {
     logDevtoolsMessage(message, port.name)
     if (message.type === 'init') {
-      panelConnections.set(message.tabId, port)
-    }
-  } else {
-    error(`Invalid port.name: ${port.name}`)
-  }
-}
-
-function relayPageMessageToDevtoolPanel(message, port) {
-  if (port.name === 'xstate-insights.page') {
-    log('→ bkg', message)
-    if (port.sender?.tab) {
-      const tabId = port.sender.tab.id
-      if (panelConnections.has(tabId)) {
-        panelConnections.get(tabId).postMessage(message)
+      devPorts.set(message.tabId, port)
+      const tab = tabs.get(message.tabId)
+      if (tab) {
+        tab.devPort = port
       } else {
-        log(`Tab not found in connection list: ${tabId}. Devtools not open?`)
+        error(
+          `No tab ${message.tabId} exists! The devtools panel will receive no messages.`
+        )
       }
-    } else {
-      error('sender.tab not defined.')
     }
   } else {
     error(`Invalid port.name: ${port.name}`)
@@ -57,11 +52,24 @@ function relayPageMessageToDevtoolPanel(message, port) {
 
 let isKeptAlive = false
 
-const removeConnection = (connections) => (port) => {
+const removeDevPort = (ports) => (port) => {
   log('disconnecting port:', port.name)
-  for (const [key, value] of connections.entries()) {
+  for (const [tabId, value] of ports.entries()) {
     if (value === port) {
-      connections.delete(key)
+      ports.delete(tabId)
+      if (tabs.has(tabId)) {
+        tabs.get(tabId).devPort = null
+      }
+      break
+    }
+  }
+}
+
+const removeTab = (tabs) => (port) => {
+  log('disconnecting tab port', port.name)
+  for (const [id, tab] of tabs.entries()) {
+    if (tab.port === port) {
+      tabs.delete(id)
       break
     }
   }
@@ -79,20 +87,25 @@ chrome.runtime.onConnect.addListener((port) => {
 
   if (port.name === 'xstate-insights.panel') {
     port.onMessage.addListener(handleMessageFromDevtoolPanel)
-    port.onDisconnect.addListener(removeConnection(panelConnections))
+    port.onDisconnect.addListener(removeDevPort(devPorts))
     port.onDisconnect.removeListener(handleMessageFromDevtoolPanel)
   }
 
   if (port.name === 'xstate-insights.page') {
-    tabConnections.set(port.sender.tab.id, port)
-    port.onDisconnect.addListener(removeConnection(tabConnections))
-    port.onMessage.addListener(relayPageMessageToDevtoolPanel)
-    port.onDisconnect.removeListener(relayPageMessageToDevtoolPanel)
+    const tab = new Tab(
+      port.sender.tab.id,
+      port,
+      devPorts.get(port.sender.tab.id)
+    )
+    // TODO put tabs and devPanels into a Controller instance
+    tabs.set(tab.id, tab)
+    port.onDisconnect.addListener(removeTab(tabs))
   }
 
   if (!isKeptAlive && port.name === 'xstate-insights.page') {
     keepAlive(port)
   }
+  log(`Connected tabs: ${tabs.size}\nDev panels: ${devPorts.size}`)
 })
 
 // periodically reconnect the page port to keep the background service worker alive
@@ -101,8 +114,8 @@ function keepAlive(port) {
   // triggered when the tab is closed
   port.onDisconnect.addListener((disconnectedPort) => {
     deleteTimer(disconnectedPort)
-    if (tabConnections.size > 0) {
-      keepAlive(tabConnections.values().next().value)
+    if (tabs.size > 0) {
+      keepAlive(tabs.values().next().value.port)
     }
   })
   isKeptAlive = true
