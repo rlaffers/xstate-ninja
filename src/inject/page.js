@@ -8,12 +8,10 @@
       this.actors = {}
     }
 
+    /**
+     * @param {Interpreter} actor
+     */
     register(actor) {
-      // TODO create new port for each actor to ensure integrity/prevent actor id collisions
-      // TODO Cleanup: subscribing to everything immediately → memory leak? Can we register only after the
-      // devtools panel is open? If the machine is no longer used by the page, the devtools should
-      // unregister.
-
       window.dispatchEvent(
         new CustomEvent('xstate-insights.register', {
           detail: {
@@ -25,7 +23,6 @@
         })
       )
 
-      // TODO other ways to end subscriptions (on unmount?)
       const subscription = actor.subscribe((state) => {
         window.dispatchEvent(
           new CustomEvent('xstate-insights.update', {
@@ -35,7 +32,7 @@
               status: actor.status,
               // context: state.context,
               stateValue: state.value,
-              // TODO try event with non-serializable data
+              // TODO try event with non-serializable data. If it breaks serialize it here in a try-catch block
               event: state.event,
             },
           })
@@ -46,10 +43,18 @@
         }
       })
 
+      // Actor is stopped when the surrounding component is unmounted
+      actor.onStop(() => {
+        this.unregister(actor)
+      })
+
       // this.actors.set(actor, subscription)
       this.actors[actor.sessionId] = { subscription, actor }
     }
 
+    /**
+     * @param {Interpreter} actor
+     */
     unregister(actor) {
       // const subscription = this.actors.get(actor)
       const { subscription } = this.actors[actor.sessionId] ?? {}
