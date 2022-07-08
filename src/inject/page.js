@@ -32,7 +32,7 @@
               status: actor.status,
               // context: state.context,
               stateValue: state.value,
-              // TODO try event with non-serializable data. If it breaks serialize it here in a try-catch block
+              // TODO try event with non-serializable data. If it breaks, serialize it here in a try-catch block
               event: state.event,
             },
           })

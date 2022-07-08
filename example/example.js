@@ -1,9 +1,44 @@
 /* global __XSTATE_INSIGHTS__, CustomEvent */
-import { createMachine, interpret, actions } from 'xstate'
-// TODO create an npm library xstate-insights, @xstate-insights/react
-// import { register } from 'xstate-insights'
+import { createMachine, interpret, spawn, actions } from 'xstate'
+// TODO create an npm library xstate-explorer, @xstate-explorer/react
+// import { register } from 'xstate-explorer'
+// import { useInterpret, useMachine, spawn } from '@xstate-explorer/react'
 
-const { assign } = actions
+const { assign, send } = actions
+
+// TODO put this overriden spawn into the npm library
+const _spawn = (x) => {
+  const actor = spawn(x)
+  window.__XSTATE_INSIGHTS__?.register(actor)
+  // actor.subscribe((state) => {
+  //   console.log('child is', state.value)
+  // })
+  actor.onStop(() => {
+    console.log('child stopped') // TODO remove console.log
+    window.__XSTATE_INSIGHTS__?.unregister(actor)
+  })
+  return actor
+}
+const childMachine = createMachine({
+  id: 'the_child',
+  initial: 'Born',
+  states: {
+    Born: {
+      entry: send('BIRTH'), // TODO will this event be caught on a spawned child?
+      after: {
+        3000: 'Adult',
+      },
+    },
+    Adult: {
+      after: {
+        3000: 'Old',
+      },
+    },
+    Old: {
+      type: 'final',
+    },
+  },
+})
 
 const machine = createMachine(
   {
@@ -20,6 +55,7 @@ const machine = createMachine(
         event.myFunc.funcname = 'myFunc'
         return event
       })(),
+      spawnedRef: null,
       // deep serializable object
       deepObject: {
         quick: {
@@ -35,6 +71,11 @@ const machine = createMachine(
         on: {
           START: 'Playing',
           STOP: 'Stopped',
+          SPAWN: {
+            actions: assign({
+              spawnedRef: () => _spawn(childMachine),
+            }),
+          },
         },
       },
       Playing: {
