@@ -1,14 +1,10 @@
-/* global __XSTATE_INSIGHTS__, CustomEvent */
-import { createMachine, interpret, spawn, actions } from 'xstate'
-// TODO create an npm library xstate-explorer, @xstate-explorer/react
-// import { register } from 'xstate-explorer'
-// import { useInterpret, useMachine, spawn } from '@xstate-explorer/react'
+import { createMachine, actions, spawn as spawnOriginal } from 'xstate'
 
 const { assign, send } = actions
 
 // TODO put this overriden spawn into the npm library
-const _spawn = (x, name) => {
-  const actor = spawn(x, name)
+const spawn = (x, name) => {
+  const actor = spawnOriginal(x, name)
   window.__XSTATE_INSIGHTS__?.register(actor)
   // actor.subscribe((state) => {
   //   console.log('child is', state.value)
@@ -19,6 +15,7 @@ const _spawn = (x, name) => {
   })
   return actor
 }
+
 const childMachine = createMachine({
   id: 'the_child',
   initial: 'Born',
@@ -40,7 +37,7 @@ const childMachine = createMachine({
   },
 })
 
-const machine = createMachine(
+export default createMachine(
   {
     id: 'root',
     preserveActionOrder: true,
@@ -50,6 +47,7 @@ const machine = createMachine(
       results: [9, 8, 7],
       // non-serializable
       customEvent: (function () {
+        /* global CustomEvent */
         const event = new CustomEvent('dummy-event', { detail: { foo: 42 } })
         event.myFunc = function () {}
         event.myFunc.funcname = 'myFunc'
@@ -115,7 +113,7 @@ const machine = createMachine(
       },
       SPAWN: {
         actions: assign({
-          spawnedRef: () => _spawn(childMachine, 'baby'),
+          spawnedRef: () => spawn(childMachine, 'baby'),
         }),
       },
     },
@@ -124,57 +122,5 @@ const machine = createMachine(
     guards: {
       isSpeedBelowMax: ({ speed }) => speed < 5,
     },
-  }
+  },
 )
-
-let actor = interpret(machine)
-
-// TODO crucial step! We could hide this into an exported "interpret", "useMachine", "useInterpret" function
-window.__XSTATE_INSIGHTS__?.register(actor)
-
-// display machine state on the page
-const stateValue = document.querySelector('#machine-state-value')
-let subscription
-function subscribe(actor) {
-  subscription = actor.subscribe((state) => {
-    console.groupCollapsed(state.event.type)
-    console.log(state.event)
-    console.log(`changed: ${state.changed}`, state.context)
-    console.groupEnd(state.event.type)
-    stateValue.innerHTML = JSON.stringify(state.value)
-  })
-}
-
-subscribe(actor)
-
-// send events
-const eventName = document.querySelector('#input-event-name')
-function onEventSubmit(event) {
-  actor.send(eventName.value)
-  event.preventDefault()
-}
-document.querySelector('#event-form').addEventListener('submit', onEventSubmit)
-
-// reset
-function restartMachine() {
-  __XSTATE_INSIGHTS__?.unregister(actor)
-  actor.stop()
-  subscription.unsubscribe()
-  actor = interpret(machine)
-  actor.start()
-  subscribe(actor)
-  __XSTATE_INSIGHTS__?.register(actor)
-}
-document.querySelector('#btn-reset').addEventListener('click', restartMachine)
-
-document
-  .querySelector('#btn-speed-inc')
-  .addEventListener('click', () => actor.send('SPEED_INC'))
-document
-  .querySelector('#btn-speed-dec')
-  .addEventListener('click', () => actor.send('SPEED_DEC'))
-document
-  .querySelector('#btn-reset-speed')
-  .addEventListener('click', () => actor.send({ type: 'SET_SPEED', value: 1 }))
-
-actor.start()

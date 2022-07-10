@@ -2,35 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/logo_32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/logo_16.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/example.css" type="text/css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Inconsolata" />
-    <title>XState Insights Test Page</title>
+    <title>XState Explorer Demo</title>
   </head>
   <body>
-    <h1>XState Insights Test Page</h1>
-    <section id="main-container">
-
-    <button type="button" id="btn-open">Click here - open XState Insights</button>
-
-    <div class="machine-container">
-      Machine state: <span id="machine-state-value"></span>
-    </div>
-
-    <div class="controls">
-      <form id="event-form">
-        <input type="text" id="input-event-name" value="" autofocus autocomplete="on" />
-        <button type="submit" id="btn-send">Send event</button>
-      </form>
-
-      <button type="button" id="btn-reset">Reset</button>
-      <button type="button" id="btn-speed-inc">+</button>
-      <button type="button" id="btn-speed-dec">&mdash;</button>
-      <button type="button" id="btn-reset-speed">Reset speed</button>
-    </div>
-    </section>
-    <script type="module" src="/example.js"></script>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
