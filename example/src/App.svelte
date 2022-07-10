@@ -24,17 +24,17 @@
   }
 
   let subscription = subscribe(service)
-  /* window.__XSTATE_EXPLORER__?.register(service) */
+  /* window.__XSTATE_NINJA__?.register(service) */
 
   onDestroy(() => subscription.unsubscribe())
 
   function resetMachine() {
-    /* __XSTATE_EXPLORER__?.unregister(service) */
+    /* __XSTATE_NINJA__?.unregister(service) */
     service.stop()
     subscription.unsubscribe()
     service = interpret(machine).start()
     subscription = subscribe(service)
-    /* __XSTATE_EXPLORER__?.register(service) */
+    /* __XSTATE_NINJA__?.register(service) */
   }
 
   let eventName = ''

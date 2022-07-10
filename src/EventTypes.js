@@ -1,4 +1,4 @@
-const namespace = 'xstate-explorer'
+const namespace = 'xstate-ninja'
 
 export const EventTypes = {
   update: `${namespace}.update`,

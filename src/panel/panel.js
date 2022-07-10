@@ -13,7 +13,7 @@ function print(state) {
 
 function connectBackgroundPage() {
   const bkgPort = chrome.runtime.connect({
-    name: 'xstate-explorer.panel',
+    name: 'xstate-ninja.panel',
   })
 
   bkgPort.postMessage({
@@ -46,7 +46,7 @@ function connectBackgroundPage() {
       // At worst (with circular dependencies within serialized objects) we will get an exception here, but since we have already
       // received the update message, we can at least render some minimal information.
       chrome.devtools.inspectedWindow.eval(
-        `console.log('♥ devtools requests actor state', '${sessionId}') || window.__XSTATE_EXPLORER__?.getSerializableActorState('${sessionId}')`,
+        `console.log('♥ devtools requests actor state', '${sessionId}') || window.__XSTATE_NINJA__?.getSerializableActorState('${sessionId}')`,
         (result, error) => {
           if (error) {
             // TODO on failure we can still use the limited info from the message

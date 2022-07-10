@@ -1,8 +1,8 @@
 /* global CustomEvent */
 ;(function () {
-  const namespace = '__XSTATE_EXPLORER__'
+  const namespace = '__XSTATE_NINJA__'
 
-  class XStateExplorer {
+  class XStateNinja {
     constructor(...args) {
       this.actors = {}
     }
@@ -13,7 +13,7 @@
     register(actor) {
       window.dispatchEvent(
         // TODO use the EventTypes enum
-        new CustomEvent('xstate-explorer.register', {
+        new CustomEvent('xstate-ninja.register', {
           detail: {
             id: actor.id,
             initialized: actor.initialized,
@@ -25,7 +25,7 @@
 
       const subscription = actor.subscribe((state) => {
         window.dispatchEvent(
-          new CustomEvent('xstate-explorer.update', {
+          new CustomEvent('xstate-ninja.update', {
             detail: {
               id: actor.id,
               sessionId: actor.sessionId,
@@ -63,7 +63,7 @@
       }
       subscription.unsubscribe()
       window.dispatchEvent(
-        new CustomEvent('xstate-explorer.unregister', {
+        new CustomEvent('xstate-ninja.unregister', {
           detail: {
             id: actor.id,
             sessionId: actor.sessionId,
@@ -107,5 +107,5 @@
     }
   }
 
-  window[namespace] = new XStateExplorer()
+  window[namespace] = new XStateNinja()
 })()

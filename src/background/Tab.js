@@ -3,7 +3,7 @@ import { EventTypes } from '../EventTypes'
 
 export class Tab {
   constructor(id, port, devPort = null) {
-    if (port.name !== 'xstate-explorer.page') {
+    if (port.name !== 'xstate-ninja.page') {
       throw new Error(`Invalid port.name: ${port.name}`)
     }
     this.id = id

@@ -18,21 +18,21 @@ export class Controller {
   start() {
     chrome.runtime.onConnect.addListener((port) => {
       if (
-        port.name !== 'xstate-explorer.devtools' &&
-        port.name !== 'xstate-explorer.panel' &&
-        port.name !== 'xstate-explorer.page'
+        port.name !== 'xstate-ninja.devtools' &&
+        port.name !== 'xstate-ninja.panel' &&
+        port.name !== 'xstate-ninja.page'
       ) {
         return
       }
       log('connecting port:', port.name)
 
-      if (port.name === 'xstate-explorer.panel') {
+      if (port.name === 'xstate-ninja.panel') {
         port.onMessage.addListener(this.handleMessageFromDevtoolPanel)
         port.onDisconnect.addListener(this.removeDevPort)
         port.onDisconnect.removeListener(this.handleMessageFromDevtoolPanel)
       }
 
-      if (port.name === 'xstate-explorer.page') {
+      if (port.name === 'xstate-ninja.page') {
         const tab = new Tab(
           port.sender.tab.id,
           port,
@@ -42,7 +42,7 @@ export class Controller {
         port.onDisconnect.addListener(this.removeTab)
       }
 
-      if (!this.isKeptAlive && port.name === 'xstate-explorer.page') {
+      if (!this.isKeptAlive && port.name === 'xstate-ninja.page') {
         this.keepAlive(port)
       }
       log(
@@ -52,7 +52,7 @@ export class Controller {
   }
 
   handleMessageFromDevtoolPanel(message, port) {
-    if (port.name === 'xstate-explorer.panel') {
+    if (port.name === 'xstate-ninja.panel') {
       this.logDevtoolsMessage(message, port.name)
       if (message.type === 'init') {
         this.devPorts.set(message.tabId, port)
