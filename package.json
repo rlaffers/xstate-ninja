@@ -1,14 +1,14 @@
 {
-  "name": "xstate-insights",
+  "name": "xstate-explorer",
   "version": "0.0.0-development",
   "description": "Devtool for XState state machines",
-  "main": "dist/xstate-insights.umd.js",
-  "module": "dist/xstate-insights.es.js",
+  "main": "dist/xstate-explorer.umd.js",
+  "module": "dist/xstate-explorer.es.js",
   "files": ["dist"],
   "exports": {
     ".": {
-      "import": "./dist/xstate-insights.es.js",
-      "require": "./dist/xstate-insights.umd.js"
+      "import": "./dist/xstate-explorer.es.js",
+      "require": "./dist/xstate-explorer.umd.js"
     }
   },
   "scripts": {
@@ -39,6 +39,7 @@
     "husky": "^7.0.0",
     "jest": "^27.5.1",
     "prettier": "^2.5.1",
+    "prettier-plugin-svelte": "^2.7.0",
     "semantic-release": "^19.0.2",
     "vite": "^2.9.9",
     "vite-plugin-web-extension": "^1.4.0",
@@ -50,10 +51,10 @@
     }
   },
   "sideEffects": false,
-  "homepage": "https://github.com/rlaffers/xstate-insights",
+  "homepage": "https://github.com/rlaffers/xstate-explorer",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rlaffers/xstate-async-guards"
+    "url": "https://github.com/rlaffers/xstate-explorer"
   },
   "volta": {
     "node": "16.15.0",

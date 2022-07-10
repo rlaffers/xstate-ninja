@@ -18,41 +18,41 @@ export class Controller {
   start() {
     chrome.runtime.onConnect.addListener((port) => {
       if (
-        port.name !== 'xstate-insights.devtools' &&
-        port.name !== 'xstate-insights.panel' &&
-        port.name !== 'xstate-insights.page'
+        port.name !== 'xstate-explorer.devtools' &&
+        port.name !== 'xstate-explorer.panel' &&
+        port.name !== 'xstate-explorer.page'
       ) {
         return
       }
       log('connecting port:', port.name)
 
-      if (port.name === 'xstate-insights.panel') {
+      if (port.name === 'xstate-explorer.panel') {
         port.onMessage.addListener(this.handleMessageFromDevtoolPanel)
         port.onDisconnect.addListener(this.removeDevPort)
         port.onDisconnect.removeListener(this.handleMessageFromDevtoolPanel)
       }
 
-      if (port.name === 'xstate-insights.page') {
+      if (port.name === 'xstate-explorer.page') {
         const tab = new Tab(
           port.sender.tab.id,
           port,
-          this.devPorts.get(port.sender.tab.id)
+          this.devPorts.get(port.sender.tab.id),
         )
         this.tabs.set(tab.id, tab)
         port.onDisconnect.addListener(this.removeTab)
       }
 
-      if (!this.isKeptAlive && port.name === 'xstate-insights.page') {
+      if (!this.isKeptAlive && port.name === 'xstate-explorer.page') {
         this.keepAlive(port)
       }
       log(
-        `Connected tabs: ${this.tabs.size}\nDev panels: ${this.devPorts.size}`
+        `Connected tabs: ${this.tabs.size}\nDev panels: ${this.devPorts.size}`,
       )
     })
   }
 
   handleMessageFromDevtoolPanel(message, port) {
-    if (port.name === 'xstate-insights.panel') {
+    if (port.name === 'xstate-explorer.panel') {
       this.logDevtoolsMessage(message, port.name)
       if (message.type === 'init') {
         this.devPorts.set(message.tabId, port)
@@ -61,7 +61,7 @@ export class Controller {
           tab.devPort = port
         } else {
           error(
-            `No tab ${message.tabId} exists! The devtools panel will receive no messages.`
+            `No tab ${message.tabId} exists! The devtools panel will receive no messages.`,
           )
         }
       }
@@ -139,7 +139,7 @@ export class Controller {
     console.log(
       `%c${senderName}:${type}`,
       `background-color: ${bkg}; color: black; padding: 1px 4px;`,
-      ...args
+      ...args,
     )
   }
 }

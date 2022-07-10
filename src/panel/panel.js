@@ -1,3 +1,5 @@
+import { EventTypes } from '../EventTypes'
+
 // TODO temporary. Instead, make an interface for applying updates to HTML
 // renderer.updateMachine
 // renderer.addMachine
@@ -11,7 +13,7 @@ function print(state) {
 
 function connectBackgroundPage() {
   const bkgPort = chrome.runtime.connect({
-    name: 'xstate-insights.panel',
+    name: 'xstate-explorer.panel',
   })
 
   bkgPort.postMessage({
@@ -32,10 +34,10 @@ function connectBackgroundPage() {
     // TODO handle the register event, render machine dropdown
     // TODO renderer.addMachine(message)
     log('received', { message, bkgPort })
-    if (message.type === 'xstate-insights.update') {
+    if (message.type === EventTypes.update) {
       const sessionId = String(message.data.sessionId).replaceAll(
         /[^a-z0-9:]/gi,
-        ''
+        '',
       )
       // Read extended actor state info from the page window. The serialization mechanism for inspectedWindow.eval() is
       // more robust than the mechanism for serializing CustomEvent.detail which is therefore kept purposefully bare and simple.
@@ -44,7 +46,7 @@ function connectBackgroundPage() {
       // At worst (with circular dependencies within serialized objects) we will get an exception here, but since we have already
       // received the update message, we can at least render some minimal information.
       chrome.devtools.inspectedWindow.eval(
-        `console.log('♥ devtools requests actor state', '${sessionId}') || window.__XSTATE_INSIGHTS__?.getSerializableActorState('${sessionId}')`,
+        `console.log('♥ devtools requests actor state', '${sessionId}') || window.__XSTATE_EXPLORER__?.getSerializableActorState('${sessionId}')`,
         (result, error) => {
           if (error) {
             // TODO on failure we can still use the limited info from the message
@@ -55,7 +57,7 @@ function connectBackgroundPage() {
             print(result)
             // renderer.updateMachine(result)
           }
-        }
+        },
       )
     }
     return false

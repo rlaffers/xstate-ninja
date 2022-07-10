@@ -12,8 +12,8 @@ export default defineConfig({
     emptyOutDir: true,
     // lib: {
     //   entry: path.resolve(__dirname, 'lib/index.js'),
-    //   name: 'XStateInsights',
-    //   fileName: (format) => `xstate-insights.${format}.js`
+    //   name: 'XStateExplorer',
+    //   fileName: (format) => `xstate-explorer.${format}.js`
     // },
     // rollupOptions: {
     //   input: {

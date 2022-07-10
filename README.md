@@ -1,8 +1,8 @@
-# xstate-insights
+# xstate-explorer
 
 A dedicated devtool for XState state machines.
 
-[![npm version](https://img.shields.io/npm/v/xstate-insights)](https://npmjs.com/package/xstate-insights)
+[![npm version](https://img.shields.io/npm/v/xstate-explorer)](https://npmjs.com/package/xstate-explorer)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 

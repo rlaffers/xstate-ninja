@@ -5,13 +5,13 @@ const { assign, send } = actions
 // TODO put this overriden spawn into the npm library
 const spawn = (x, name) => {
   const actor = spawnOriginal(x, name)
-  window.__XSTATE_INSIGHTS__?.register(actor)
+  // window.__XSTATE_EXPLORER__?.register(actor)
   // actor.subscribe((state) => {
   //   console.log('child is', state.value)
   // })
   actor.onStop(() => {
     console.log('child stopped') // TODO remove console.log
-    window.__XSTATE_INSIGHTS__?.unregister(actor)
+    // window.__XSTATE_EXPLORER__?.unregister(actor)
   })
   return actor
 }

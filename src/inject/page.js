@@ -1,8 +1,8 @@
 /* global CustomEvent */
 ;(function () {
-  const namespace = '__XSTATE_INSIGHTS__'
+  const namespace = '__XSTATE_EXPLORER__'
 
-  class XStateInsights {
+  class XStateExplorer {
     constructor(...args) {
       this.actors = {}
     }
@@ -13,19 +13,19 @@
     register(actor) {
       window.dispatchEvent(
         // TODO use the EventTypes enum
-        new CustomEvent('xstate-insights.register', {
+        new CustomEvent('xstate-explorer.register', {
           detail: {
             id: actor.id,
             initialized: actor.initialized,
             status: actor.status,
             sessionId: actor.sessionId,
           },
-        })
+        }),
       )
 
       const subscription = actor.subscribe((state) => {
         window.dispatchEvent(
-          new CustomEvent('xstate-insights.update', {
+          new CustomEvent('xstate-explorer.update', {
             detail: {
               id: actor.id,
               sessionId: actor.sessionId,
@@ -35,7 +35,7 @@
               // TODO try event with non-serializable data. If it breaks, serialize it here in a try-catch block
               event: state.event,
             },
-          })
+          }),
         )
 
         if (state.done) {
@@ -63,13 +63,13 @@
       }
       subscription.unsubscribe()
       window.dispatchEvent(
-        new CustomEvent('xstate-insights.unregister', {
+        new CustomEvent('xstate-explorer.unregister', {
           detail: {
             id: actor.id,
             sessionId: actor.sessionId,
             status: actor.status,
           },
-        })
+        }),
       )
       // this.actors.delete(actor)
       delete this.actors[actor.sessionId]
@@ -107,5 +107,5 @@
     }
   }
 
-  window[namespace] = new XStateInsights()
+  window[namespace] = new XStateExplorer()
 })()

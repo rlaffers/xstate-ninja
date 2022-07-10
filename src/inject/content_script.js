@@ -2,7 +2,7 @@ import { EventTypes } from '../EventTypes'
 
 let port
 function connect() {
-  port = chrome.runtime.connect({ name: 'xstate-insights.page' })
+  port = chrome.runtime.connect({ name: 'xstate-explorer.page' })
   port.onDisconnect.addListener(connect)
   // port.onMessage.addListener(msg => {
   //   console.log('received', msg, 'from bg');
