@@ -1,0 +1,33 @@
+{
+  "name": "xstate-ninja-extension",
+  "version": "0.0.0-development",
+  "description": "Devtools extension for XState state machines",
+  "scripts": {
+    "test": "jest --passWithNoTests",
+    "dev": "concurrently \"cd ../example && npm run dev\"  \"wait-on -c .wait-on-config.json http-get://localhost:4000 && vite build --watch\"",
+    "preview": "vite preview",
+    "build": "vite build",
+    "semantic-release": "semantic-release"
+  },
+  "keywords": ["xstate"],
+  "author": "Richard Laffers",
+  "license": "ICS",
+  "devDependencies": {
+    "concurrently": "^7.2.2",
+    "jest": "^27.5.1",
+    "semantic-release": "^19.0.2",
+    "vite": "^2.9.9",
+    "vite-plugin-web-extension": "^1.4.0",
+    "wait-on": "^6.0.1"
+  },
+  "sideEffects": false,
+  "homepage": "https://github.com/rlaffers/xstate-ninja",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rlaffers/xstate-ninja"
+  },
+  "volta": {
+    "node": "16.15.0",
+    "npm": "8.11.0"
+  }
+}

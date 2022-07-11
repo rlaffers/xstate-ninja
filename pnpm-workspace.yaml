@@ -1,0 +1,5 @@
+packages:
+  - 'extension'
+  - 'packages/*'
+  - 'example'
+  - '!**/src/test'

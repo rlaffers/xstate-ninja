@@ -40,6 +40,7 @@
   let eventName = ''
 </script>
 
+<!-- svelte-ignore a11y-autofocus -->
 <main>
   <img src={logo} alt="XState Ninja" />
   <h1>XState Ninja Demo</h1>

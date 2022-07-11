@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "xstate-ninja-example",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -9,8 +9,6 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.49",
-    "prettier": "^2.7.1",
-    "prettier-plugin-svelte": "^2.7.0",
     "svelte": "^3.49.0",
     "vite": "^2.9.9",
     "xstate": "^4.32.1"

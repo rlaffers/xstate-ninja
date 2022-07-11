@@ -2,9 +2,28 @@
   "root": true,
   "extends": ["standard", "prettier"],
   "env": {
-    "jest": true
+    "jest": true,
+    "es6": true,
+    "browser": true
   },
+  "plugins": ["svelte3"],
+  "overrides": [
+    {
+      "files": ["**/*.svelte"],
+      "processor": "svelte3/svelte3",
+      "rules": {
+        "import/first": "off",
+        "import/no-duplicates": "off",
+        "import/no-mutable-exports": "off",
+        "import/no-unresolved": "off",
+        "import/prefer-default-export": "off"
+      }
+    }
+  ],
   "globals": {
     "chrome": "readonly"
+  },
+  "rules": {
+    "a11y-autofocus": "off"
   }
 }

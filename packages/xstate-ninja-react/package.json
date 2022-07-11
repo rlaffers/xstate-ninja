@@ -1,0 +1,21 @@
+{
+  "name": "@xstate-ninja/react",
+  "version": "1.0.0",
+  "description": "XState Ninja integration for React",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["xstate", "fsm", "state machine"],
+  "author": "Richard Laffers",
+  "license": "ISC",
+  "homepage": "https://github.com/rlaffers/xstate-ninja",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rlaffers/xstate-ninja"
+  },
+  "volta": {
+    "node": "16.15.0",
+    "npm": "8.11.0"
+  }
+}

@@ -1,0 +1,7 @@
+packages/*/node_modules/
+example/*/node_modules/
+extension/*/node_modules/
+dist/
+LICENSE.md
+pnpm-lock.yaml
+pnpm-workspace.yaml
