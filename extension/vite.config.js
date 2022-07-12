@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import webExtension from 'vite-plugin-web-extension'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
 
 export default defineConfig({
   root: 'src',
@@ -9,7 +10,7 @@ export default defineConfig({
     emptyOutDir: true,
   },
   plugins: [
-    // TODO add svelte
+    svelte(),
     webExtension({
       manifest: resolve(__dirname, 'src/manifest.json'),
       assets: 'assets',
@@ -17,7 +18,7 @@ export default defineConfig({
         'devtools/devtools.html',
         'devtools/devtools.js',
         'panel/panel.html',
-        'panel/panel.js',
+        'panel/panel.ts',
         'inject/page.js',
         'inject/page_wrapper.js',
         'inject/content_script.js',
