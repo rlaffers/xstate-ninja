@@ -1,4 +1,13 @@
 import { EventTypes } from '../EventTypes'
+import Panel from './Panel.svelte'
+
+const mainPanel = new Panel({
+  target: document.getElementById('main'),
+})
+
+// TODO maybe open a side panel too
+
+export default mainPanel
 
 // TODO temporary. Instead, make an interface for applying updates to HTML
 // renderer.updateMachine

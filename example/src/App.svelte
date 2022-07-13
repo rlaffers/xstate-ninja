@@ -1,4 +1,5 @@
 <script>
+  /* global __XSTATE_NINJA__ */
   import { onDestroy } from 'svelte'
   import logo from './assets/logo_512.png'
   import { interpret } from 'xstate'
@@ -24,17 +25,17 @@
   }
 
   let subscription = subscribe(service)
-  /* window.__XSTATE_NINJA__?.register(service) */
+  window.__XSTATE_NINJA__?.register(service)
 
   onDestroy(() => subscription.unsubscribe())
 
   function resetMachine() {
-    /* __XSTATE_NINJA__?.unregister(service) */
+    __XSTATE_NINJA__?.unregister(service)
     service.stop()
     subscription.unsubscribe()
     service = interpret(machine).start()
     subscription = subscribe(service)
-    /* __XSTATE_NINJA__?.register(service) */
+    __XSTATE_NINJA__?.register(service)
   }
 
   let eventName = ''
