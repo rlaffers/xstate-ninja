@@ -15,10 +15,6 @@
 
   // TODO control this panel by a state machine
 
-  // chrome.devtools.network.onNavigated.addListener((request) => {
-  //   // TODO clear the panel on refresh
-  // })
-
   const bkgPort = connectBackgroundPage()
 
   function log(text, data) {
@@ -28,6 +24,7 @@
       data,
     })
   }
+
   // TODO temporary. Instead, make an interface for applying updates to HTML
   /* function print(state) { */
   /*   const el = document.createElement('div') */
@@ -126,6 +123,11 @@
 
   // -----------------------------
   let selectedActor
+
+  chrome.devtools.network.onNavigated.addListener((request) => {
+    actors = new Map()
+    selectedActor = null
+  })
 </script>
 
 {#if actors == null}
