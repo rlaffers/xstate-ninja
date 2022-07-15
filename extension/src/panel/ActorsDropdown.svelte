@@ -1,13 +1,15 @@
 <script>
-  // Map
   export let actors
-  export let selected = actors.values().next().value.sessionId
+  let selectedSessionId = actors.values().next().value.sessionId
+  export let selected
+  $: selected = actors.get(selectedSessionId)
 </script>
 
-<select name="activeActor" bind:value={selected}>
+<select name="activeActor" bind:value={selectedSessionId}>
   {#each [...actors.values()] as actor}
     <option value={actor.sessionId}
-      >{actor.dead ? '💀' : ''} {actor.id} ({actor.sessionId})
+      >{actor.dead ? '💀' : ''}
+      {actor.id} ({actor.sessionId})
     </option>
   {/each}
 </select>

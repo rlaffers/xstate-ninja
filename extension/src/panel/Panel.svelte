@@ -3,6 +3,7 @@
   import { EventTypes } from '../EventTypes'
   import { connectBackgroundPage } from './connectBackgroundPage'
   import ActorsDropdown from './ActorsDropdown.svelte'
+  import Tracker from './Tracker.svelte'
 
   function createActorFromMessageData(data) {
     return {
@@ -28,11 +29,11 @@
     })
   }
   // TODO temporary. Instead, make an interface for applying updates to HTML
-  function print(state) {
-    const el = document.createElement('div')
-    el.innerText = state.event.type
-    document.body.appendChild(el)
-  }
+  /* function print(state) { */
+  /*   const el = document.createElement('div') */
+  /*   el.innerText = state.event.type */
+  /*   document.body.appendChild(el) */
+  /* } */
 
   let actors = null
   function handleInitDoneOnce(message) {
@@ -99,23 +100,22 @@
       // At worst (with circular dependencies within serialized objects) we will get an exception here, but since we have already
       // received the update message, we can at least render some minimal information.
       // sanitize
-      const sessionId = String(message.data.sessionId).replaceAll(
-        /[^a-z0-9:]/gi,
-        '',
-      )
-      chrome.devtools.inspectedWindow.eval(
-        `console.log('♥ devtools requests actor state', '${sessionId}') || window.__XSTATE_NINJA__?.getSerializableActorState('${sessionId}')`,
-        (result, error) => {
-          if (error) {
-            // TODO on failure we can still use the limited info from the message
-            log('💀 Eval error:', { error })
-          } else {
-            log('✅ Eval result:', { result })
-            // TODO temporary
-            print(result)
-          }
-        },
-      )
+
+      // const sessionId = String(message.data.sessionId).replaceAll(
+      //   /[^a-z0-9:]/gi,
+      //   '',
+      // )
+      // chrome.devtools.inspectedWindow.eval(
+      //   `console.log('♥ devtools requests actor state', '${sessionId}') || window.__XSTATE_NINJA__?.getSerializableActorState('${sessionId}')`,
+      //   (result, error) => {
+      //     if (error) {
+      //       log('💀 Eval error:', { error })
+      //     } else {
+      //       log('✅ Eval result:', { result })
+      //       print(result)
+      //     }
+      //   },
+      // )
     }
     return false
   }
@@ -126,7 +126,6 @@
 
   // -----------------------------
   let selectedActor
-  $: log('selectedActor', selectedActor)
 </script>
 
 {#if actors == null}
@@ -136,5 +135,8 @@
 {:else}
   <div class="actors-view">
     <ActorsDropdown {actors} bind:selected={selectedActor} />
+    <section class="trackers">
+      <Tracker actor={selectedActor} />
+    </section>
   </div>
 {/if}
