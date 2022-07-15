@@ -5,7 +5,7 @@ const { assign, send } = actions
 // TODO put this overriden spawn into the npm library
 const spawn = (x, name) => {
   const actor = spawnOriginal(x, name)
-  // window.__XSTATE_NINJA__?.register(actor)
+  window.__XSTATE_NINJA__?.register(actor)
   // actor.subscribe((state) => {
   //   console.log('child is', state.value)
   // })
