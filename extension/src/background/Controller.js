@@ -1,5 +1,6 @@
 import { TabKeeper } from './TabKeeper'
 import { log, error } from '../utils'
+import { EventTypes } from '../EventTypes'
 
 export class Controller {
   constructor() {
@@ -53,14 +54,23 @@ export class Controller {
   handleMessageFromDevtoolPanel(message, port) {
     if (port.name === 'xstate-ninja.panel') {
       this.logDevtoolsMessage(message, port.name)
-      if (message.type === 'init') {
+      if (message.type === EventTypes.init) {
+        // TODO connect new tabs with devports which were opened first
         this.devPorts.set(message.tabId, port)
         const tab = this.tabs.get(message.tabId)
         if (tab) {
           tab.connectDevPort(port)
+          port.postMessage({
+            type: EventTypes.initDone,
+            data: {
+              actors: [...tab.actors.entries()],
+            },
+          })
         } else {
+          // TODO This becomes a problem when the devtool panel is opened on a blank page, then we
+          // navigate to a page with state machines. The tab will never be linked to the devPort
           error(
-            `No tab ${message.tabId} exists! The devtools panel will receive no messages.`,
+            `No tab ${message.tabId} exists yet! The devtools panel will receive no messages.`,
           )
         }
       }

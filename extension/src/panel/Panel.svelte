@@ -3,6 +3,8 @@
   import { EventTypes } from '../EventTypes'
   import { connectBackgroundPage } from './connectBackgroundPage'
 
+  // TODO control this by a state machine
+
   // chrome.devtools.network.onNavigated.addListener((request) => {
   //   // TODO clear the panel on refresh
   // })
@@ -27,18 +29,19 @@
     document.body.appendChild(el)
   }
 
-  // TODO we should determine this from the bkgPort messages. If not actors becomes detected
-  // upon init message, show this. Until then, show a loader
-  // TODO control this by a state machine
-  let actors = new Map()
+  let actors = null
+  function handleInitDoneOnce(message) {
+    if (message.type === EventTypes.initDone) {
+      actors = new Map(message.data.actors)
+      bkgPort.onMessage.removeListener(handleInitDoneOnce)
+    }
+  }
+  bkgPort.onMessage.addListener(handleInitDoneOnce)
 
   function messageListener(message) {
     // TODO handle the register event, render machine dropdown
     // TODO renderer.addMachine(message)
     log('received', { message, bkgPort })
-    if (message.type === EventTypes.actorsRegisteredPreviously) {
-      actors = message.data
-    }
 
     if (message.type === EventTypes.update) {
       // sanitize
@@ -75,7 +78,9 @@
   })
 </script>
 
-{#if actors.size < 1}
+{#if actors == null}
+  Loading...
+{:else if actors.size < 1}
   <Intro />
 {:else}
   <p>TODO: display the machine dropdown</p>

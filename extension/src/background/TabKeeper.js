@@ -23,12 +23,6 @@ export class TabKeeper {
 
   connectDevPort(port) {
     this.devPort = port
-    if (this.actors.size > 0) {
-      this.devPort.postMessage({
-        type: EventTypes.actorsRegisteredPreviously,
-        data: this.actors,
-      })
-    }
   }
 
   onUpdateMessage(message) {
