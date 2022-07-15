@@ -2,6 +2,7 @@
   import Intro from './Intro.svelte'
   import { EventTypes } from '../EventTypes'
   import { connectBackgroundPage } from './connectBackgroundPage'
+  import ActorsDropdown from './ActorsDropdown.svelte'
 
   // TODO control this by a state machine
 
@@ -76,6 +77,10 @@
   bkgPort.onDisconnect.addListener(() => {
     bkgPort.onMessage.removeListener(messageListener)
   })
+
+  // -----------------------------
+  let selectedActor
+  $: log('selectedActor', selectedActor)
 </script>
 
 {#if actors == null}
@@ -83,5 +88,5 @@
 {:else if actors.size < 1}
   <Intro />
 {:else}
-  <p>TODO: display the machine dropdown</p>
+  <ActorsDropdown {actors} bind:selected={selectedActor} />
 {/if}
