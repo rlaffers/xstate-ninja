@@ -14,3 +14,28 @@ export function omit(prop, obj) {
   const { [prop]: x, ...rest } = obj
   return rest
 }
+
+export function last(list) {
+  return list[list.length - 1]
+}
+
+export function prettyJSON(obj) {
+  const result = JSON.stringify(obj, undefined, 2).replace(/"([^"]+)":/g, '$1:')
+  return result
+    .slice(2, -2)
+    .split('\n')
+    .map((l) => l.slice(2))
+    .join('\n')
+}
+
+export function flattenState(stateValue) {
+  if (typeof stateValue === 'string') {
+    return stateValue
+  }
+  let result = ''
+  Object.entries(stateValue).forEach(([key, value]) => {
+    // TODO add support for parallel states
+    result = `${key}.${flattenState(value)}`
+  })
+  return result
+}

@@ -25,13 +25,6 @@
     })
   }
 
-  // TODO temporary. Instead, make an interface for applying updates to HTML
-  /* function print(state) { */
-  /*   const el = document.createElement('div') */
-  /*   el.innerText = state.event.type */
-  /*   document.body.appendChild(el) */
-  /* } */
-
   let actors = null
   function handleInitDoneOnce(message) {
     if (message.type === EventTypes.initDone) {

@@ -36,7 +36,7 @@ export class TabKeeper {
       console.error(`No actor sessionId=${sessionId} registered in this tab!`)
       return
     }
-    actor.history.push(message)
+    actor.history.push(message.data)
     actor.stateValue = message.data.stateValue
     actor.initialized = message.data.initialized
     actor.status = message.data.status
