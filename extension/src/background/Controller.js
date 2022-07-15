@@ -1,4 +1,4 @@
-import { Tab } from './Tab'
+import { TabKeeper } from './TabKeeper'
 import { log, error } from '../utils'
 
 export class Controller {
@@ -7,7 +7,6 @@ export class Controller {
     this.devPorts = new Map()
     this.isKeptAlive = false
 
-    // TODO bind methods
     this.handleMessageFromDevtoolPanel =
       this.handleMessageFromDevtoolPanel.bind(this)
     this.removeDevPort = this.removeDevPort.bind(this)
@@ -33,7 +32,7 @@ export class Controller {
       }
 
       if (port.name === 'xstate-ninja.page') {
-        const tab = new Tab(
+        const tab = new TabKeeper(
           port.sender.tab.id,
           port,
           this.devPorts.get(port.sender.tab.id),
@@ -58,7 +57,7 @@ export class Controller {
         this.devPorts.set(message.tabId, port)
         const tab = this.tabs.get(message.tabId)
         if (tab) {
-          tab.devPort = port
+          tab.connectDevPort(port)
         } else {
           error(
             `No tab ${message.tabId} exists! The devtools panel will receive no messages.`,

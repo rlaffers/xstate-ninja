@@ -16,9 +16,9 @@
         new CustomEvent('xstate-ninja.register', {
           detail: {
             id: actor.id,
+            sessionId: actor.sessionId,
             initialized: actor.initialized,
             status: actor.status,
-            sessionId: actor.sessionId,
           },
         }),
       )
@@ -29,6 +29,7 @@
             detail: {
               id: actor.id,
               sessionId: actor.sessionId,
+              initialized: actor.initialized,
               status: actor.status,
               // context: state.context,
               stateValue: state.value,
