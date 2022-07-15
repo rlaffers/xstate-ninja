@@ -4,6 +4,14 @@
   import { connectBackgroundPage } from './connectBackgroundPage'
   import ActorsDropdown from './ActorsDropdown.svelte'
 
+  function createActorFromMessageData(data) {
+    return {
+      ...data,
+      dead: data.status === 2 || data.done,
+      history: [],
+    }
+  }
+
   // TODO control this panel by a state machine
 
   // chrome.devtools.network.onNavigated.addListener((request) => {
@@ -20,10 +28,6 @@
     })
   }
   // TODO temporary. Instead, make an interface for applying updates to HTML
-  // renderer.updateMachine
-  // renderer.addMachine
-  // renderer.removeMachine
-  // renderer.selectMachine
   function print(state) {
     const el = document.createElement('div')
     el.innerText = state.event.type
@@ -40,21 +44,16 @@
   bkgPort.onMessage.addListener(handleInitDoneOnce)
 
   function messageListener(message) {
-    // TODO handle the register event, render machine dropdown
-    // TODO renderer.addMachine(message)
-    log('received', { message, bkgPort })
+    log('received', { message, bkgPort }) // TODO remove
 
     if (message.type === EventTypes.register) {
       if (!actors) {
         actors = new Map()
       }
-
-      // TODO dry this up
-      actors.set(message.data.sessionId, {
-        ...message.data,
-        dead: message.data.status === 2 || message.data.done,
-        history: [],
-      })
+      actors.set(
+        message.data.sessionId,
+        createActorFromMessageData(message.data),
+      )
       actors = actors
       return
     }
@@ -80,15 +79,13 @@
       }
       const actor = actors.get(message.data.sessionId)
       if (!actor) {
-        actors.set(message.data.sessionId, {
-          ...message.data,
-          dead: message.data.status === 2 || message.data.done,
-          history: [],
-        })
+        actors.set(
+          message.data.sessionId,
+          createActorFromMessageData(message.data),
+        )
       } else {
         actors.set(message.data.sessionId, {
-          ...message.data,
-          dead: message.data.status === 2 || message.data.done,
+          ...createActorFromMessageData(message.data),
           history: [...actor.history, message.data],
         })
       }
@@ -116,7 +113,6 @@
             log('✅ Eval result:', { result })
             // TODO temporary
             print(result)
-            // renderer.updateMachine(result)
           }
         },
       )
@@ -138,5 +134,7 @@
 {:else if actors.size < 1}
   <Intro />
 {:else}
-  <ActorsDropdown {actors} bind:selected={selectedActor} />
+  <div class="actors-view">
+    <ActorsDropdown {actors} bind:selected={selectedActor} />
+  </div>
 {/if}
