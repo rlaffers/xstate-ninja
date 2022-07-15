@@ -2,6 +2,30 @@
 ;(function () {
   const namespace = '__XSTATE_NINJA__'
 
+  function sanitizeEventForSerialization(event) {
+    if (event == null) {
+      return event
+    }
+    let safeEvent
+    try {
+      safeEvent = structuredClone(event)
+    } catch (e) {
+      Object.keys(event).forEach((key) => {
+        if (typeof event[key] === 'function') {
+          event[key] = null
+        }
+      })
+      try {
+        safeEvent = structuredClone(event)
+      } catch (e) {
+        safeEvent = {
+          type: event.type,
+        }
+      }
+    }
+    return safeEvent
+  }
+
   class XStateNinja {
     constructor(...args) {
       this.actors = {}
@@ -36,8 +60,7 @@
               // context: state.context,
               stateValue: state.value,
               done: state.done,
-              // TODO try event with non-serializable data. If it breaks, serialize it here in a try-catch block
-              event: state.event,
+              event: sanitizeEventForSerialization(state.event),
             },
           }),
         )
