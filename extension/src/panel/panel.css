@@ -7,11 +7,6 @@
   src: url('../assets/Cascadia.ttf');
 }
 
-@font-face {
-  font-family: 'CascadiaCode';
-  src: url('../assets/CascadiaCode.ttf');
-}
-
 body {
   font-family: 'Cascadia', system-ui, Helvetica, monospace;
   margin: 0;
