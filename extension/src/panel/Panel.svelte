@@ -4,7 +4,7 @@
   import { connectBackgroundPage } from './connectBackgroundPage'
   import ActorsDropdown from './ActorsDropdown.svelte'
 
-  // TODO control this by a state machine
+  // TODO control this panel by a state machine
 
   // chrome.devtools.network.onNavigated.addListener((request) => {
   //   // TODO clear the panel on refresh
@@ -44,18 +44,68 @@
     // TODO renderer.addMachine(message)
     log('received', { message, bkgPort })
 
+    if (message.type === EventTypes.register) {
+      if (!actors) {
+        actors = new Map()
+      }
+
+      // TODO dry this up
+      actors.set(message.data.sessionId, {
+        ...message.data,
+        dead: message.data.status === 2 || message.data.done,
+        history: [],
+      })
+      actors = actors
+      return
+    }
+
+    if (message.type === EventTypes.unregister) {
+      if (!actors) return
+      const actor = actors.get(message.data.sessionId)
+      if (!actor) {
+        console.error(
+          `The stopped actor ${message.data.sessionId} is not in the list of actors.`,
+        )
+        return
+      }
+      actor.dead = true
+      actors.set(actor.sessionId, actor)
+      actors = actors
+      return
+    }
+
     if (message.type === EventTypes.update) {
-      // sanitize
-      const sessionId = String(message.data.sessionId).replaceAll(
-        /[^a-z0-9:]/gi,
-        '',
-      )
+      if (!actors) {
+        actors = new Map()
+      }
+      const actor = actors.get(message.data.sessionId)
+      if (!actor) {
+        actors.set(message.data.sessionId, {
+          ...message.data,
+          dead: message.data.status === 2 || message.data.done,
+          history: [],
+        })
+      } else {
+        actors.set(message.data.sessionId, {
+          ...message.data,
+          dead: message.data.status === 2 || message.data.done,
+          history: [...actor.history, message.data],
+        })
+      }
+      actors = actors
+
+      // ========================
       // Read extended actor state info from the page window. The serialization mechanism for inspectedWindow.eval() is
       // more robust than the mechanism for serializing CustomEvent.detail which is therefore kept purposefully bare and simple.
       // With eval() we are able to get state.context reasonably safely (serializing functions and object instances will
       // not throw exceptions).
       // At worst (with circular dependencies within serialized objects) we will get an exception here, but since we have already
       // received the update message, we can at least render some minimal information.
+      // sanitize
+      const sessionId = String(message.data.sessionId).replaceAll(
+        /[^a-z0-9:]/gi,
+        '',
+      )
       chrome.devtools.inspectedWindow.eval(
         `console.log('♥ devtools requests actor state', '${sessionId}') || window.__XSTATE_NINJA__?.getSerializableActorState('${sessionId}')`,
         (result, error) => {

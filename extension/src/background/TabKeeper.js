@@ -51,13 +51,15 @@ export class TabKeeper {
 
   registerActor(message) {
     if (message.type === EventTypes.register) {
-      const { id, sessionId, initialized, status } = message.data
+      const { id, sessionId, initialized, status, done } = message.data
       this.actors.set(message.data.sessionId, {
         id,
         sessionId,
         initialized,
         status,
-        stateValue: undefined,
+        done,
+        stateValue: null,
+        dead: status === 2 || done,
         history: [],
       })
       if (this.devPort != null) {

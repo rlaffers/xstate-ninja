@@ -19,6 +19,8 @@
             sessionId: actor.sessionId,
             initialized: actor.initialized,
             status: actor.status,
+            done: actor.state.done,
+            stateValue: null,
           },
         }),
       )
@@ -33,6 +35,7 @@
               status: actor.status,
               // context: state.context,
               stateValue: state.value,
+              done: state.done,
               // TODO try event with non-serializable data. If it breaks, serialize it here in a try-catch block
               event: state.event,
             },
@@ -49,7 +52,6 @@
         this.unregister(actor)
       })
 
-      // this.actors.set(actor, subscription)
       this.actors[actor.sessionId] = { subscription, actor }
     }
 
@@ -57,7 +59,6 @@
      * @param {Interpreter} actor
      */
     unregister(actor) {
-      // const subscription = this.actors.get(actor)
       const { subscription } = this.actors[actor.sessionId] ?? {}
       if (!subscription) {
         return
@@ -69,10 +70,12 @@
             id: actor.id,
             sessionId: actor.sessionId,
             status: actor.status,
+            initialized: actor.initialized,
+            stateValue: actor.state.value,
+            done: actor.state.done,
           },
         }),
       )
-      // this.actors.delete(actor)
       delete this.actors[actor.sessionId]
     }
 
@@ -102,6 +105,7 @@
         event: actor.state.event,
         context: actor.state.context,
         changed: actor.state.changed,
+        done: actor.state.done,
         // configuration: actor.state.configuration,
       }
       return state

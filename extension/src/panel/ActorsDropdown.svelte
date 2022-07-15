@@ -6,6 +6,8 @@
 
 <select name="activeActor" bind:value={selected}>
   {#each [...actors.values()] as actor}
-    <option value={actor.sessionId}>{actor.id} ({actor.sessionId}) </option>
+    <option value={actor.sessionId}
+      >{actor.dead ? '💀' : ''} {actor.id} ({actor.sessionId})
+    </option>
   {/each}
 </select>
