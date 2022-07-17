@@ -13,6 +13,7 @@ export class Controller {
     this.removeDevPort = this.removeDevPort.bind(this)
     this.removeTab = this.removeTab.bind(this)
     this.keepAlive = this.keepAlive.bind(this)
+    this.forceReconnect = this.forceReconnect.bind(this)
   }
 
   start() {
@@ -109,7 +110,6 @@ export class Controller {
   }
 
   forceReconnect(port) {
-    log('reconnecting the page to keep service worker alive')
     this.deleteTimer(port)
     this.isKeptAlive = false
     port.disconnect()
