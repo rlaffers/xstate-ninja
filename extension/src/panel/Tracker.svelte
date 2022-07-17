@@ -24,27 +24,40 @@
     }
   }
 
-  // TODO dead actors keep getting updated with every update on other actors
+  // Array of EventFrame or StateFrame
   let frames = []
-  $: if (actor) {
-    if (actor.sessionId !== frames.sessionId) {
-      frames = []
-      frames.sessionId = actor.sessionId
-    } else {
-      const update = last(actor.history)
-      frames.push(createEventFrame(update))
-      if (update.changed) {
-        frames.push(createStateNodeFrame(update))
-      }
+  // these props serve for tracking when the reactive statements below need to run
+  frames.sessionId = actor?.sessionId
+  frames.history = actor?.history
+
+  // reset frames if actor has been switched
+  // TODO populate frames from the new actor's history
+  $: if (actor?.sessionId !== frames.sessionId) {
+    frames = []
+    frames.sessionId = actor?.sessionId
+    // copy the history so the next reactive statement is executed
+    frames.history = [...actor.history]
+  }
+  $: if (actor && actor?.history !== frames.history) {
+    frames.history = actor.history
+    const update = last(actor.history)
+    frames.push(createEventFrame(update))
+    if (update.changed) {
+      frames.push(createStateNodeFrame(update))
     }
     frames = frames
   }
 </script>
 
 {#if actor != null}
-  Actor selected: {actor.id} ({JSON.stringify(actor.stateValue)}){actor.done
-    ? ' 🏁'
-    : ''}
+  <div class="actor-detail">
+    {#if actor.dead}
+      <span title="This actor is dead">💀</span>
+    {/if}
+    {#if actor.done}
+      <span title="The final state has been reached">🏁</span>
+    {/if}
+  </div>
 
   <div class="frames">
     {#each frames as frame}
@@ -58,36 +71,46 @@
 {/if}
 
 <style>
-  :root {
-    --bg-color: #121212;
-    --color: #839496;
-  }
   .frames {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     height: 100%;
     overflow-y: auto;
-    width: 15rem;
   }
   .frames {
     scrollbar-width: 5px;
-    scrollbar-color: var(--color) var(--bg-color);
+    scrollbar-color: var(--base01) var(--base03);
   }
   .frames::-webkit-scrollbar {
     width: 6px;
   }
 
   .frames::-webkit-scrollbar-track {
-    background: var(--bg-color);
-    border: 1px solid var(--color);
+    background: var(--base03);
+    border: 1px solid var(--base01);
   }
 
   .frames::-webkit-scrollbar-thumb {
-    background-color: var(--color);
+    background-color: var(--base01);
     border-radius: 20px;
-    border: 1px solid var(--color);
+    border: 1px solid var(--base01);
   }
 
   .frames > div {
     cursor: pointer;
     text-align: center;
+  }
+
+  .actor-detail {
+    margin: 0.5rem 0;
+  }
+
+  .actor-detail > span {
+    cursor: help;
+  }
+
+  .actor-detail:empty {
+    margin: 0;
   }
 </style>

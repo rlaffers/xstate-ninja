@@ -1,51 +1,105 @@
 <script>
-  import { prettyJSON } from '../utils'
-
   export let data
 
-  // TODO distinguish: a) changed, b) not changed && guarded, c) not changed && forbidden
+  // Sorts state nodes. The lowest one (the highest order) comes first.
+  function sortStateNodes(stateNodes) {
+    return stateNodes.slice().sort((a, b) => a.order < b.order)
+  }
+
+  // TODO how does configuration look for parallel states?
+  function isTransitionGuarded(eventType, configuration) {
+    for (const stateNode of sortStateNodes(configuration)) {
+      if (stateNode.config.on === undefined) {
+        continue
+      }
+      if (stateNode.config.on[eventType] !== undefined) {
+        const transition = stateNode.config.on[eventType]
+        if (typeof transition === 'string') {
+          return false
+        } else if (Array.isArray(transition)) {
+          return transition.every((x) => x.cond !== undefined)
+        } else {
+          return transition.cond !== undefined
+        }
+      }
+      // forbidden transition
+      if (
+        Object.prototype.hasOwnProperty.call(stateNode.config.on, eventType) &&
+        stateNode.config.on[eventType] === undefined
+      ) {
+        return false
+      }
+    }
+    return false
+  }
+
+  function isTransitionForbidden(eventType, configuration) {
+    for (const stateNode of sortStateNodes(configuration)) {
+      if (
+        stateNode.config.on !== undefined &&
+        Object.prototype.hasOwnProperty.call(stateNode.config.on, eventType) &&
+        stateNode.config.on[eventType] === undefined
+      ) {
+        return true
+      }
+      if (stateNode.config.on?.[eventType] !== undefined) {
+        return false
+      }
+    }
+    return false
+  }
+
+  // TODO get configuration from the actor
+  const configuration = []
+
+  let className
+  let description
+  if (data.changed) {
+    className = 'changed-state'
+    description = 'This event triggered a state transition'
+  } else if (isTransitionGuarded(data.event.type, configuration)) {
+    className = 'guard-not-passed'
+    description =
+      'A guard prevented this event from triggering a state transition'
+  } else if (isTransitionForbidden(data.event.type, configuration)) {
+    className = 'forbidden'
+    description = 'Transition for this event is forbidden explicitly'
+  } else {
+    description = 'No transition exists for this event'
+  }
 </script>
 
-<div class="event-frame" title={prettyJSON(data.event)}>
+<div class="event-frame {className}" title={description}>
   {data.event.type}
 </div>
 
 <style>
-  :root {
-    --color: #839496;
-    --event-unknown-color: #6e757c;
-    --event-unknown-bg-color: var(--bg-color);
-    --event-changed-state-bg-color: #068b3e;
-    --event-skipped-bg-color: #d36b1b;
-    --event-forbidden-bg-color: #e5123b;
-  }
-
   .event-frame {
-    border: 1px solid var(--event-unknown-color);
-    color: var(--event-unknown-color);
-    background-color: var(--event-unknown-bg-color);
-    border-radius: 10px;
+    display: inline-block;
+    border: 1px solid var(--base01);
+    color: var(--base01);
+    border-radius: 1rem;
     padding: 0.5em 1em;
     margin-bottom: 0.5em;
     height: 1em;
     line-height: 1em;
+    text-align: center;
+    cursor: pointer;
   }
 
   .event-frame.changed-state {
-    border-color: var(--color);
-    background-color: var(--event-changed-state-bg-color);
-    color: var(--color);
+    border-color: var(--base1);
+    color: var(--base1);
   }
 
   .event-frame.guard-not-passed {
-    border-color: var(--color);
-    background-color: var(--event-skipped-bg-color);
-    color: var(--color);
+    border-color: var(--orange);
+    color: var(--orange);
   }
 
   .event-frame.forbidden {
-    border-color: var(--color);
-    background-color: var(--event-forbidden-bg-color);
-    color: var(--color);
+    border-color: var(--red);
+    background-color: var(--base03);
+    color: var(--red);
   }
 </style>

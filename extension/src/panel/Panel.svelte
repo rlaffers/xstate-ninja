@@ -58,8 +58,10 @@
         )
         return
       }
-      actor.dead = true
-      actors.set(actor.sessionId, actor)
+      actors.set(actor.sessionId, {
+        ...actor,
+        dead: true,
+      })
       actors = actors
       return
     }

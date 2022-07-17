@@ -50,8 +50,6 @@ const service = useInterpret(machine);
   code {
     display: block;
     white-space: pre;
-    /* background-color: var(--bg-color); */
-    /* color: var(--color); */
     padding: 0.5em 1em;
   }
 </style>

@@ -2,7 +2,12 @@
   export let actors
   let selectedSessionId = actors.values().next().value.sessionId
   export let selected
-  $: selected = actors.get(selectedSessionId)
+  $: {
+    const selectedActor = actors.get(selectedSessionId)
+    if (selectedActor !== selected) {
+      selected = selectedActor
+    }
+  }
 </script>
 
 <select name="activeActor" bind:value={selectedSessionId}>
