@@ -131,9 +131,26 @@
   <Intro />
 {:else}
   <div class="actors-view">
-    <ActorsDropdown {actors} bind:selected={selectedActor} />
+    <ActorsDropdown
+      class="actors-dropdown"
+      {actors}
+      bind:selected={selectedActor}
+    />
     <section class="trackers">
       <Tracker actor={selectedActor} />
     </section>
   </div>
 {/if}
+
+<style>
+  .actors-view {
+    --actors-dropdown-height: 1.8rem;
+    height: calc(100vh - 2em);
+  }
+  .actors-dropdown {
+    height: var(--actors-dropdown-height);
+  }
+  .trackers {
+    height: calc(100% - var(--actors-dropdown-height));
+  }
+</style>

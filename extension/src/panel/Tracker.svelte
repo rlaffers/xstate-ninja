@@ -24,28 +24,39 @@
     }
   }
 
+  function updateIntoFrames(update) {
+    const frames = []
+    frames.push(createEventFrame(update))
+    if (update.changed) {
+      frames.push(createStateNodeFrame(update))
+    }
+    return frames
+  }
+
   // Array of EventFrame or StateFrame
   let frames = []
   // these props serve for tracking when the reactive statements below need to run
   frames.sessionId = actor?.sessionId
   frames.history = actor?.history
 
-  // reset frames if actor has been switched
-  // TODO populate frames from the new actor's history
-  $: if (actor?.sessionId !== frames.sessionId) {
-    frames = []
-    frames.sessionId = actor?.sessionId
-    // copy the history so the next reactive statement is executed
-    frames.history = [...actor.history]
-  }
-  $: if (actor && actor?.history !== frames.history) {
-    frames.history = actor.history
-    const update = last(actor.history)
-    frames.push(createEventFrame(update))
-    if (update.changed) {
-      frames.push(createStateNodeFrame(update))
+  $: if (actor) {
+    if (actor.sessionId !== frames.sessionId) {
+      const newFrames = []
+      newFrames.sessionId = actor?.sessionId
+      newFrames.history = actor.history
+      // populate frames from the selected actor's history
+      if (actor?.history?.length > 0) {
+        actor.history.forEach((update) => {
+          newFrames.push(...updateIntoFrames(update))
+        })
+      }
+      frames = newFrames
+    } else if (actor.history !== frames.history) {
+      frames.history = actor.history
+      const update = last(actor.history)
+      frames.push(...updateIntoFrames(update))
+      frames = frames
     }
-    frames = frames
   }
 </script>
 
@@ -74,6 +85,7 @@
   .frames {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     height: 100%;
     overflow-y: auto;

@@ -1,5 +1,7 @@
 <script>
   export let actors
+  let className
+  export { className as class }
   let selectedSessionId = actors.values().next().value.sessionId
   export let selected
   $: {
