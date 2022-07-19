@@ -23,6 +23,7 @@
 }
 :root:has(.actors-view) body {
   border: none;
+  padding: 0.3rem 0.1rem;
 }
 
 @font-face {
@@ -37,7 +38,7 @@ body {
   font-size: 16px;
 }
 
-main {
+#app {
   box-sizing: border-box;
   margin: 0;
   width: 100%;

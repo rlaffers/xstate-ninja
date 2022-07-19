@@ -4,6 +4,7 @@
   import { connectBackgroundPage } from './connectBackgroundPage'
   import ActorsDropdown from './ActorsDropdown.svelte'
   import Tracker from './Tracker.svelte'
+  import ActorDetail from './ActorDetail.svelte'
 
   function createActorFromMessageData(data) {
     return {
@@ -131,14 +132,17 @@
   <Intro />
 {:else}
   <div class="actors-view">
-    <ActorsDropdown
-      class="actors-dropdown"
-      {actors}
-      bind:selected={selectedActor}
-    />
-    <section class="trackers">
+    <header>
+      <ActorsDropdown
+        class="actors-dropdown"
+        {actors}
+        bind:selected={selectedActor}
+      />
+      <ActorDetail actor={selectedActor} class="actor-detail" />
+    </header>
+    <main class="trackers">
       <Tracker actor={selectedActor} />
-    </section>
+    </main>
   </div>
 {/if}
 
@@ -147,8 +151,15 @@
     --actors-dropdown-height: 1.8rem;
     height: calc(100vh - 2em);
   }
-  .actors-dropdown {
+  header {
+    display: flex;
+    flex-direction: row;
+  }
+  :global(.actors-dropdown) {
     height: var(--actors-dropdown-height);
+  }
+  .actor-detail {
+    margin-left: 1rem;
   }
   .trackers {
     height: calc(100% - var(--actors-dropdown-height));

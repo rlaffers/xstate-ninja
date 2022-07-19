@@ -1,6 +1,6 @@
 <script>
   export let actors
-  let className
+  let className = ''
   export { className as class }
   let selectedSessionId = actors.values().next().value.sessionId
   export let selected
@@ -12,7 +12,7 @@
   }
 </script>
 
-<select name="activeActor" bind:value={selectedSessionId}>
+<select name="activeActor" bind:value={selectedSessionId} class={className}>
   {#each [...actors.values()] as actor}
     <option value={actor.sessionId}
       >{actor.dead ? '💀' : ''}

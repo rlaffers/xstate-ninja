@@ -61,15 +61,6 @@
 </script>
 
 {#if actor != null}
-  <div class="actor-detail">
-    {#if actor.dead}
-      <span title="This actor is dead">💀</span>
-    {/if}
-    {#if actor.done}
-      <span title="The final state has been reached">🏁</span>
-    {/if}
-  </div>
-
   <div class="frames">
     {#each frames as frame}
       {#if frame.type === STATE_NODE}
@@ -112,17 +103,5 @@
   .frames > div {
     cursor: pointer;
     text-align: center;
-  }
-
-  .actor-detail {
-    margin: 0.5rem 0;
-  }
-
-  .actor-detail > span {
-    cursor: help;
-  }
-
-  .actor-detail:empty {
-    margin: 0;
   }
 </style>
