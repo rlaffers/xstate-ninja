@@ -1,4 +1,5 @@
 <script>
+  import { setContext } from 'svelte'
   import Intro from './Intro.svelte'
   import { EventTypes } from '../EventTypes'
   import { connectBackgroundPage } from './connectBackgroundPage'
@@ -25,6 +26,10 @@
       data,
     })
   }
+
+  setContext('logger', {
+    log,
+  })
 
   let actors = null
   function handleInitDoneOnce(message) {
@@ -138,7 +143,7 @@
         {actors}
         bind:selected={selectedActor}
       />
-      <ActorDetail actor={selectedActor} class="actor-detail" />
+      <ActorDetail actor={selectedActor} />
     </header>
     <main class="trackers">
       <Tracker actor={selectedActor} />
@@ -157,9 +162,6 @@
   }
   :global(.actors-dropdown) {
     height: var(--actors-dropdown-height);
-  }
-  .actor-detail {
-    margin-left: 1rem;
   }
   .trackers {
     height: calc(100% - var(--actors-dropdown-height));

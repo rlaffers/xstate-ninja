@@ -5,9 +5,9 @@
   export let data
 </script>
 
-<div class="state-node-frame" transition:fade>
+<article class="state-node-frame" transition:fade>
   {flattenState(data.stateValue)}
-</div>
+</article>
 
 <style>
   .state-node-frame {
@@ -23,7 +23,7 @@
     cursor: pointer;
   }
 
-  .state-node-frame.latest {
+  article:last-of-type {
     position: sticky;
     top: 0px;
   }

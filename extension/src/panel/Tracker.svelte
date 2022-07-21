@@ -1,4 +1,5 @@
 <script>
+  import { beforeUpdate, afterUpdate } from 'svelte'
   import StateNodeFrame from './StateNodeFrame.svelte'
   import EventFrame from './EventFrame.svelte'
   import ArrowDown from './ArrowDown.svelte'
@@ -59,10 +60,25 @@
       frames = frames
     }
   }
+
+  let autoscroll
+  let trackerElement
+  beforeUpdate(() => {
+    autoscroll =
+      trackerElement &&
+      trackerElement.offsetHeight + trackerElement.scrollTop >
+        trackerElement.scrollHeight - 20
+  })
+
+  afterUpdate(() => {
+    if (autoscroll) {
+      trackerElement.scrollTo(0, trackerElement.scrollHeight)
+    }
+  })
 </script>
 
 {#if actor != null}
-  <div class="frames">
+  <div class="tracker" bind:this={trackerElement}>
     {#each frames as frame, index}
       {#if frame.type === STATE_NODE}
         <StateNodeFrame data={frame} />
@@ -77,34 +93,32 @@
 {/if}
 
 <style>
-  .frames {
+  .tracker {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     height: 100%;
     overflow-y: auto;
-  }
-  .frames {
     scrollbar-width: 5px;
     scrollbar-color: var(--base01) var(--base03);
   }
-  .frames::-webkit-scrollbar {
+  .tracker::-webkit-scrollbar {
     width: 6px;
   }
 
-  .frames::-webkit-scrollbar-track {
+  .tracker::-webkit-scrollbar-track {
     background: var(--base03);
     border: 1px solid var(--base01);
   }
 
-  .frames::-webkit-scrollbar-thumb {
+  .tracker::-webkit-scrollbar-thumb {
     background-color: var(--base01);
     border-radius: 20px;
     border: 1px solid var(--base01);
   }
 
-  .frames > div {
+  .tracker > div {
     cursor: pointer;
     text-align: center;
   }
