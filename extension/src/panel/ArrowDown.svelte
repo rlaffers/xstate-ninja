@@ -6,15 +6,13 @@
 
 <style>
   .arrow-down {
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    z-index: -1;
-    /* 2rem+2px is the height+border of event frame */
-    transform: translateY(calc(-2rem - 2px));
-    margin-bottom: -45px;
+    z-index: 1;
+    margin-bottom: -16px;
   }
 
   .arrow-down::after {
@@ -34,7 +32,7 @@
     content: '';
     display: block;
     width: 0;
-    height: 70px;
+    height: 30px;
     border-width: 0 2px 0 0;
     border-style: solid;
     border-color: var(--base01);

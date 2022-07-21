@@ -87,11 +87,13 @@
     line-height: 1rem;
     text-align: center;
     cursor: pointer;
+    z-index: 2;
   }
 
   .event-frame.changed-state {
     border-color: var(--base1);
-    color: var(--base1);
+    color: var(--base03);
+    background-color: var(--base1);
   }
 
   .event-frame.guard-not-passed {
@@ -103,10 +105,5 @@
     border-color: var(--red);
     background-color: var(--base03);
     color: var(--red);
-  }
-
-  .event-frame:has(+ .arrow-down) {
-    margin-top: 0;
-    transform: translateY(12px);
   }
 </style>

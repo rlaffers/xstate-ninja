@@ -159,6 +159,9 @@
   header {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    background-color: var(--base02);
+    padding: 0.5rem;
   }
   :global(.actors-dropdown) {
     height: var(--actors-dropdown-height);
