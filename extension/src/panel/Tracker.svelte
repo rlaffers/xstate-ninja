@@ -1,6 +1,7 @@
 <script>
   import StateNodeFrame from './StateNodeFrame.svelte'
   import EventFrame from './EventFrame.svelte'
+  import ArrowDown from './ArrowDown.svelte'
   import { last } from '../utils'
 
   export let actor = null
@@ -62,11 +63,14 @@
 
 {#if actor != null}
   <div class="frames">
-    {#each frames as frame}
+    {#each frames as frame, index}
       {#if frame.type === STATE_NODE}
         <StateNodeFrame data={frame} />
       {:else if frame.type === EVENT}
         <EventFrame data={frame} />
+        {#if frames[index + 1]?.type === STATE_NODE}
+          <ArrowDown />
+        {/if}
       {/if}
     {/each}
   </div>

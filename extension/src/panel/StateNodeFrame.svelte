@@ -1,10 +1,11 @@
 <script>
+  import { fade } from 'svelte/transition'
   import { flattenState } from '../utils'
 
   export let data
 </script>
 
-<div class="state-node-frame">
+<div class="state-node-frame" transition:fade>
   {flattenState(data.stateValue)}
 </div>
 
@@ -12,7 +13,7 @@
   .state-node-frame {
     border: 1px solid var(--magenta);
     padding: 0.5em 1em;
-    margin-bottom: 0.5em;
+    /* margin-bottom: 0.5em; */
     background-color: var(--base03);
     color: var(--magenta);
     min-width: 10em;

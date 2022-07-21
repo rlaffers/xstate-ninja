@@ -1,4 +1,5 @@
 <script>
+  import { fade } from 'svelte/transition'
   export let data
 
   // Sorts state nodes. The lowest one (the highest order) comes first.
@@ -52,7 +53,7 @@
   // TODO get configuration from the actor
   const configuration = []
 
-  let className
+  let className = ''
   let description
   if (data.changed) {
     className = 'changed-state'
@@ -69,7 +70,7 @@
   }
 </script>
 
-<div class="event-frame {className}" title={description}>
+<div class="event-frame {className}" title={description} transition:fade>
   {data.event.type}
 </div>
 
@@ -78,11 +79,12 @@
     display: inline-block;
     border: 1px solid var(--base01);
     color: var(--base01);
+    background-color: var(--base03);
     border-radius: 1rem;
-    padding: 0.5em 1em;
-    margin-bottom: 0.5em;
-    height: 1em;
-    line-height: 1em;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+    height: 1rem;
+    line-height: 1rem;
     text-align: center;
     cursor: pointer;
   }
@@ -101,5 +103,10 @@
     border-color: var(--red);
     background-color: var(--base03);
     color: var(--red);
+  }
+
+  .event-frame:has(+ .arrow-down) {
+    margin-top: 0;
+    transform: translateY(12px);
   }
 </style>
