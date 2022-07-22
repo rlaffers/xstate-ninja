@@ -89,7 +89,11 @@
         <button type="button" on:click={() => service.send('SPEED_DEC')}
           >➖</button
         >
-        <button type="button">Reset speed</button>
+        <button
+          type="button"
+          on:click={() => service.send({ type: 'SET_SPEED', value: 0 })}
+          >Reset speed</button
+        >
       </div>
 
       <button type="button" on:click={resetMachine} class="reset-btn">
