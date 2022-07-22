@@ -11,17 +11,24 @@
     "semantic-release": "semantic-release",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
-  "keywords": ["xstate"],
+  "keywords": [
+    "xstate"
+  ],
   "author": "Richard Laffers",
   "license": "ICS",
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.49",
+    "@tsconfig/svelte": "^3.0.0",
     "@types/chrome": "^0.0.193",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
     "concurrently": "^7.2.2",
+    "eslint-plugin-svelte3": "^4.0.0",
     "jest": "^27.5.1",
     "svelte": "^3.49.0",
     "svelte-check": "^2.8.0",
     "svelte-preprocess": "^4.10.7",
+    "typescript": "^4.6.4",
     "vite": "^2.9.9",
     "vite-plugin-web-extension": "^1.4.0",
     "wait-on": "^6.0.1"

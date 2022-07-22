@@ -8,12 +8,14 @@ A dedicated devtool for XState state machines.
 
 ## TODO
 
+- typescript
+- create the xstate integration
 - mark the final state with double border
 - mark the initial state
 - mark events guarded, forbidden
 - display context
 - display actions
-- display invokations
+- display invocations
 - add second tracker
 - add button for linking events in two trackers
 - add option to re-emit an event

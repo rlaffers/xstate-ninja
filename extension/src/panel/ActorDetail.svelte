@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+  /* eslint-disable no-use-before-define */
   export let actor = null
 </script>
 

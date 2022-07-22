@@ -21,8 +21,7 @@
         "import/no-duplicates": "off",
         "import/no-mutable-exports": "off",
         "import/no-unresolved": "off",
-        "import/prefer-default-export": "off",
-        "no-use-before-define": "off"
+        "import/prefer-default-export": "off"
       }
     }
   ],
