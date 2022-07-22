@@ -36,7 +36,6 @@
      */
     register(actor) {
       window.dispatchEvent(
-        // TODO use the EventTypes enum
         new CustomEvent('xstate-ninja.register', {
           detail: {
             id: actor.id,
@@ -50,6 +49,11 @@
       )
 
       const subscription = actor.subscribe((state) => {
+        console.log(
+          '%cactor',
+          'background: red; color: black; padding: 1px 5px',
+          actor,
+        ) // TODO
         window.dispatchEvent(
           new CustomEvent('xstate-ninja.update', {
             detail: {

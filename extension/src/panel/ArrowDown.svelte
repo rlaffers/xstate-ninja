@@ -2,7 +2,7 @@
   import { fade } from 'svelte/transition'
 </script>
 
-<span class="arrow-down" transition:fade />
+<span class="arrow-down" in:fade />
 
 <style>
   .arrow-down {

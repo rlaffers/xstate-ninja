@@ -117,9 +117,4 @@
     border-radius: 20px;
     border: 1px solid var(--base01);
   }
-
-  .tracker > div {
-    cursor: pointer;
-    text-align: center;
-  }
 </style>

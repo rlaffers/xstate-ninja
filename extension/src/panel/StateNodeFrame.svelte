@@ -5,7 +5,7 @@
   export let data
 </script>
 
-<article class="state-node-frame" transition:fade>
+<article class="state-node-frame" in:fade>
   {flattenState(data.stateValue)}
 </article>
 

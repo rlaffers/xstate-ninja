@@ -70,7 +70,7 @@
   }
 </script>
 
-<div class="event-frame {className}" title={description} transition:fade>
+<div class="event-frame {className}" title={description} in:fade>
   {data.event.type}
 </div>
 

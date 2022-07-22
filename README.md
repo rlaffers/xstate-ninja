@@ -8,7 +8,6 @@ A dedicated devtool for XState state machines.
 
 ## TODO
 
-- fade effect only on "in"
 - mark the final state with double border
 - mark the initial state
 - mark events guarded, forbidden

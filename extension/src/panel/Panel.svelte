@@ -1,11 +1,11 @@
 <script>
   import { setContext } from 'svelte'
-  import Intro from './Intro.svelte'
   import { EventTypes } from '../EventTypes'
-  import { connectBackgroundPage } from './connectBackgroundPage'
-  import ActorsDropdown from './ActorsDropdown.svelte'
-  import Tracker from './Tracker.svelte'
   import ActorDetail from './ActorDetail.svelte'
+  import ActorsDropdown from './ActorsDropdown.svelte'
+  import { connectBackgroundPage } from './connectBackgroundPage'
+  import Intro from './Intro.svelte'
+  import Tracker from './Tracker.svelte'
 
   function createActorFromMessageData(data) {
     return {
@@ -14,8 +14,6 @@
       history: [],
     }
   }
-
-  // TODO control this panel by a state machine
 
   const bkgPort = connectBackgroundPage()
 
