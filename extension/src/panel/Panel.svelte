@@ -123,7 +123,7 @@
   // -----------------------------
   let selectedActor
 
-  chrome.devtools.network.onNavigated.addListener((request) => {
+  chrome.devtools.network.onNavigated.addListener(() => {
     actors = new Map()
     selectedActor = null
   })

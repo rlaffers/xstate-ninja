@@ -11,7 +11,8 @@ export function warn(...args) {
 }
 
 export function omit(prop, obj) {
-  const { [prop]: x, ...rest } = obj
+  // eslint-disable-next-line
+  const { [prop]: _, ...rest } = obj
   return rest
 }
 

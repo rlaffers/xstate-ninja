@@ -1,6 +1,6 @@
 /* global CustomEvent */
 ;(function () {
-  const namespace = '__XSTATE_NINJA__'
+  const namespace = '__xstate_ninja__'
 
   function sanitizeEventForSerialization(event) {
     if (event == null) {
@@ -27,7 +27,7 @@
   }
 
   class XStateNinja {
-    constructor(...args) {
+    constructor() {
       this.actors = {}
     }
 

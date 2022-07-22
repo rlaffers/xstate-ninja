@@ -1,41 +1,48 @@
-import { createMachine, actions, spawn as spawnOriginal } from 'xstate'
+import type { ActorRefFrom, StateMachine, EventObject } from 'xstate'
+import { actions, createMachine, spawn as spawnOriginal } from 'xstate'
+import { childMachine } from './child-machine'
+import type { WindowWithXStateNinja } from './xstateDevTypes'
 
-const { assign, send } = actions
+const { assign } = actions
+
+interface SpawnOptions {
+  name?: string
+  autoForward?: boolean
+  sync?: boolean
+}
+
+declare let window: WindowWithXStateNinja
+const xn = window.__xstate_ninja__
 
 // TODO put this overriden spawn into the npm library
-const spawn = (x, name) => {
-  const actor = spawnOriginal(x, name)
-  window.__XSTATE_NINJA__?.register(actor)
+function spawn<TC, TE extends EventObject>(
+  entity: StateMachine<TC, any, TE>,
+  nameOrOptions: string | SpawnOptions,
+): ActorRefFrom<StateMachine<TC, any, TE>> {
+  const actor = spawnOriginal(entity, nameOrOptions)
+  xn?.register(actor)
   // actor.subscribe((state) => {
   //   console.log('child is', state.value)
   // })
-  actor.onStop(() => {
-    console.log('child stopped') // TODO remove console.log
-    // window.__XSTATE_NINJA__?.unregister(actor)
-  })
+  // TODO onStop not on ActorRef
+  // actor.onStop.(() => {
+  //   console.log('child stopped') // TODO remove console.log
+  //   // xn?.unregister(actor)
+  // })
   return actor
 }
 
-const childMachine = createMachine({
-  id: 'the_child',
-  initial: 'Born',
-  states: {
-    Born: {
-      entry: send('BIRTH'), // TODO will this event be caught on a spawned child?
-      after: {
-        3000: 'Adult',
-      },
-    },
-    Adult: {
-      after: {
-        3000: 'Old',
-      },
-    },
-    Old: {
-      type: 'final',
-    },
-  },
-})
+interface CustomEventWithMyFunc extends CustomEvent {
+  myFunc: () => void
+}
+
+function createCustomEvent(): CustomEventWithMyFunc {
+  const event: any = new CustomEvent('dummy-event', {
+    detail: { foo: 42 },
+  })
+  event.myFunc = () => true
+  return event
+}
 
 export default createMachine(
   {
@@ -47,10 +54,7 @@ export default createMachine(
       results: [9, 8, 7],
       // non-serializable
       customEvent: (function () {
-        /* global CustomEvent */
-        const event = new CustomEvent('dummy-event', { detail: { foo: 42 } })
-        event.myFunc = function () {}
-        event.myFunc.funcname = 'myFunc'
+        const event = createCustomEvent()
         return event
       })(),
       spawnedRef: null,

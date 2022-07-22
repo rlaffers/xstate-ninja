@@ -1,17 +1,17 @@
 {
   "name": "xstate-ninja-extension",
   "version": "0.0.0-development",
+  "type": "module",
   "description": "Devtools extension for XState state machines",
   "scripts": {
     "test": "jest --passWithNoTests",
     "dev": "concurrently \"cd ../example && npm run dev\"  \"wait-on -c .wait-on-config.json http-get://localhost:4000 && vite build --watch\"",
     "preview": "vite preview",
     "build": "vite build",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
-  "keywords": [
-    "xstate"
-  ],
+  "keywords": ["xstate"],
   "author": "Richard Laffers",
   "license": "ICS",
   "devDependencies": {
@@ -20,6 +20,8 @@
     "concurrently": "^7.2.2",
     "jest": "^27.5.1",
     "svelte": "^3.49.0",
+    "svelte-check": "^2.8.0",
+    "svelte-preprocess": "^4.10.7",
     "vite": "^2.9.9",
     "vite-plugin-web-extension": "^1.4.0",
     "wait-on": "^6.0.1"

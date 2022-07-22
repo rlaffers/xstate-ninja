@@ -1,12 +1,17 @@
 {
   "root": true,
-  "extends": ["standard", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "extends": ["standard", "plugin:@typescript-eslint/recommended", "prettier"],
   "env": {
     "jest": true,
     "es6": true,
     "browser": true
   },
-  "plugins": ["svelte3"],
+  "plugins": ["svelte3", "@typescript-eslint"],
   "overrides": [
     {
       "files": ["**/*.svelte"],
@@ -16,14 +21,19 @@
         "import/no-duplicates": "off",
         "import/no-mutable-exports": "off",
         "import/no-unresolved": "off",
-        "import/prefer-default-export": "off"
+        "import/prefer-default-export": "off",
+        "no-use-before-define": "off"
       }
     }
   ],
+  "settings": {
+    "svelte3/typescript": true
+  },
   "globals": {
     "chrome": "readonly"
   },
   "rules": {
-    "a11y-autofocus": "off"
+    "a11y-autofocus": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

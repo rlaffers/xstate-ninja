@@ -1,22 +1,34 @@
 {
-  "name": "xstate-ninja-example",
+  "name": "svelte-app",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.49",
+    "@sveltejs/vite-plugin-svelte": "^1.0.1",
+    "@tsconfig/svelte": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "@xstate/cli": "^0.2.1",
+    "eslint-plugin-svelte3": "^4.0.0",
     "svelte": "^3.49.0",
-    "vite": "^2.9.9",
-    "xstate": "^4.32.1"
-  },
-  "peerDependencies": {
-    "xstate": "^4.32.1"
+    "svelte-check": "^2.8.0",
+    "svelte-preprocess": "^4.10.7",
+    "ts-standard": "^11.0.0",
+    "tslib": "^2.4.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.0.0"
   },
   "dependencies": {
-    "@xstate/svelte": "^2.0.0"
+    "@xstate/svelte": "^2.0.0",
+    "xstate": "^4.32.1"
+  },
+  "ts-standard": {
+    "project": "./tsconfig.json"
   }
 }

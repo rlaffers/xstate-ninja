@@ -1,41 +1,51 @@
-<script>
-  /* global __XSTATE_NINJA__ */
+<script context="module" lang="ts">
+  import type { WindowWithXStateNinja } from './xstateDevTypes'
+
+  declare let window: WindowWithXStateNinja
+</script>
+
+<script lang="ts">
   import { onDestroy } from 'svelte'
   import logo from './assets/logo_512.png'
   import { interpret } from 'xstate'
+  import type { AnyInterpreter, State } from 'xstate'
   import { useSelector } from '@xstate/svelte'
   import machine from './state-machine'
+  import type { Readable } from 'svelte/store'
+
+  const xn = window.__xstate_ninja__
 
   let service = interpret(machine).start()
-  let state
+  let state: Readable<State<any>>
 
-  function subscribe(actor) {
-    const sub = service.subscribe((state) => {
-      console.groupCollapsed(state.event.type)
-      console.log(state.event)
-      if (state.changed) {
-        console.log(`»`, state.value)
+  function subscribe(actor: AnyInterpreter) {
+    const sub = actor.subscribe((s) => {
+      console.groupCollapsed(s.event.type)
+      console.log(s.event)
+      if (s.changed) {
+        console.log(`»`, s.value)
       }
-      console.log(`changed: ${state.changed}`, state.context)
-      console.groupEnd(state.event.type)
+      console.log(`changed: ${s.changed}`, s.context)
+      /* console.groupEnd(st.event.type) */
+      console.groupEnd()
     })
 
-    state = useSelector(service, (s) => s)
+    state = useSelector(actor, (s) => s)
     return sub
   }
 
   let subscription = subscribe(service)
-  window.__XSTATE_NINJA__?.register(service)
+  xn?.register(service)
 
   onDestroy(() => subscription.unsubscribe())
 
   function resetMachine() {
-    __XSTATE_NINJA__?.unregister(service)
+    xn?.unregister(service)
     service.stop()
     subscription.unsubscribe()
     service = interpret(machine).start()
     subscription = subscribe(service)
-    __XSTATE_NINJA__?.register(service)
+    xn?.register(service)
   }
 
   let eventName = ''
