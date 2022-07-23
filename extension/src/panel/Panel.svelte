@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { setContext } from 'svelte'
   import { EventTypes } from '../EventTypes'
   import ActorDetail from './ActorDetail.svelte'
@@ -6,6 +6,7 @@
   import { connectBackgroundPage } from './connectBackgroundPage'
   import Intro from './Intro.svelte'
   import Tracker from './Tracker.svelte'
+  import type { AnyEventObject } from 'xstate'
 
   function createActorFromMessageData(data) {
     return {
@@ -38,7 +39,21 @@
   }
   bkgPort.onMessage.addListener(handleInitDoneOnce)
 
-  function messageListener(message) {
+  interface Message {
+    type: string
+    data: {
+      id: string
+      sessionId: string
+      initialized: boolean
+      status: number
+      stateValue: string | object
+      changed: boolean
+      done: boolean
+      event: AnyEventObject
+    }
+  }
+
+  function messageListener(message: Message) {
     log('received', { message, bkgPort }) // TODO remove
 
     if (message.type === EventTypes.register) {

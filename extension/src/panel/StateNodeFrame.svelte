@@ -21,6 +21,7 @@
     line-height: 2em;
     text-align: center;
     cursor: pointer;
+    z-index: 3;
   }
 
   article:last-of-type {

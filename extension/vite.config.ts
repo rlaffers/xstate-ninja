@@ -1,8 +1,12 @@
-import { resolve } from 'path'
-import { defineConfig } from 'vite'
-import webExtension from 'vite-plugin-web-extension'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import {svelte} from '@sveltejs/vite-plugin-svelte'
+import {defineConfig} from 'vite'
+import {resolve} from 'path'
+// import webExtension from 'vite-plugin-web-extension'
+import pluginWebExtension from 'vite-plugin-web-extension'
 
+const webExtension = pluginWebExtension.default
+
+// https://vitejs.dev/config/
 export default defineConfig({
   root: 'src',
   build: {
@@ -10,7 +14,9 @@ export default defineConfig({
     emptyOutDir: true,
   },
   plugins: [
-    svelte(),
+    svelte({
+      configFile: '../svelte.config.js'
+    }),
     webExtension({
       manifest: resolve(__dirname, 'src/manifest.json'),
       assets: 'assets',
@@ -31,5 +37,5 @@ export default defineConfig({
       },
       verbose: false,
     }),
-  ],
+  ]
 })
