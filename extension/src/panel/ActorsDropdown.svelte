@@ -1,9 +1,12 @@
-<script>
-  export let actors
+<script lang="ts">
+  import type { Actor } from './actor'
+
+  export let actors: Map<string, Actor>
+
   let className = ''
   export { className as class }
-  let selectedSessionId = actors.values().next().value.sessionId
-  export let selected
+  let selectedSessionId: string = actors.values().next().value.sessionId
+  export let selected: Actor
   $: {
     const selectedActor = actors.get(selectedSessionId)
     if (selectedActor !== selected) {

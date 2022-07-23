@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import logo from '../assets/logo_256.png'
 </script>
 

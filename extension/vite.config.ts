@@ -1,6 +1,6 @@
-import {svelte} from '@sveltejs/vite-plugin-svelte'
-import {defineConfig} from 'vite'
-import {resolve} from 'path'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { defineConfig } from 'vite'
+import { resolve } from 'path'
 // import webExtension from 'vite-plugin-web-extension'
 import pluginWebExtension from 'vite-plugin-web-extension'
 
@@ -15,7 +15,7 @@ export default defineConfig({
   },
   plugins: [
     svelte({
-      configFile: '../svelte.config.js'
+      configFile: '../svelte.config.js',
     }),
     webExtension({
       manifest: resolve(__dirname, 'src/manifest.json'),
@@ -24,7 +24,7 @@ export default defineConfig({
         'devtools/devtools.html',
         'devtools/devtools.js',
         'panel/panel.html',
-        'panel/panel.js',
+        'panel/panel.ts',
         'inject/page.js',
         'inject/page_wrapper.js',
         'inject/content_script.js',
@@ -37,5 +37,5 @@ export default defineConfig({
       },
       verbose: false,
     }),
-  ]
+  ],
 })
