@@ -1,14 +1,26 @@
-<script>
+<script context="module" lang="ts">
+  import type { AnyEventObject } from 'xstate'
+
+  export interface EventFrame {
+    type: 'event'
+    event: AnyEventObject
+    changed: boolean
+  }
+</script>
+
+<script lang="ts">
   import { fade } from 'svelte/transition'
-  export let data
+  import type { StateNode } from 'xstate'
+
+  export let data: EventFrame
 
   // Sorts state nodes. The lowest one (the highest order) comes first.
-  function sortStateNodes(stateNodes) {
-    return stateNodes.slice().sort((a, b) => a.order < b.order)
+  function sortStateNodes(stateNodes: StateNode[]) {
+    return stateNodes.slice().sort((a, b) => (a.order < b.order ? -1 : 1))
   }
 
   // TODO how does configuration look for parallel states?
-  function isTransitionGuarded(eventType, configuration) {
+  function isTransitionGuarded(eventType: string, configuration: StateNode[]) {
     for (const stateNode of sortStateNodes(configuration)) {
       if (stateNode.config.on === undefined) {
         continue
@@ -34,7 +46,10 @@
     return false
   }
 
-  function isTransitionForbidden(eventType, configuration) {
+  function isTransitionForbidden(
+    eventType: string,
+    configuration: StateNode[],
+  ) {
     for (const stateNode of sortStateNodes(configuration)) {
       if (
         stateNode.config.on !== undefined &&
@@ -54,7 +69,7 @@
   const configuration = []
 
   let className = ''
-  let description
+  let description = ''
   if (data.changed) {
     className = 'changed-state'
     description = 'This event triggered a state transition'

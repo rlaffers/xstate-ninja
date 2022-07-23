@@ -1,8 +1,18 @@
-<script>
+<script context="module" lang="ts">
+  import type { StateValue } from 'xstate'
+
+  export interface StateNodeFrame {
+    type: 'stateNode'
+    stateValue: StateValue
+    changed: boolean
+  }
+</script>
+
+<script lang="ts">
   import { fade } from 'svelte/transition'
   import { flattenState } from '../utils'
 
-  export let data
+  export let data: StateNodeFrame
 </script>
 
 <article class="state-node-frame" in:fade>

@@ -1,4 +1,4 @@
-import type { AnyEventObject } from 'xstate'
+import type { AnyEventObject, StateValue, InterpreterStatus } from 'xstate'
 import type { Actor } from './panel/actor'
 
 export enum MessageTypes {
@@ -15,8 +15,8 @@ export interface UpdateMessage {
     id: string
     sessionId: string
     initialized: boolean
-    status: number
-    stateValue: string | object
+    status: InterpreterStatus
+    stateValue: StateValue
     done: boolean
     changed: boolean
     event: AnyEventObject
@@ -29,8 +29,8 @@ export interface RegisterMessage {
     id: string
     sessionId: string
     initialized: boolean
-    status: number
-    stateValue: string | object
+    status: InterpreterStatus
+    stateValue: StateValue
     done: boolean
   }
 }
@@ -41,8 +41,8 @@ export interface UnregisterMessage {
     id: string
     sessionId: string
     initialized: boolean
-    status: number
-    stateValue: string | object
+    status: InterpreterStatus
+    stateValue: StateValue
     changed: boolean
     done: boolean
   }
