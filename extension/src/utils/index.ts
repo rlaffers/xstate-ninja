@@ -1,3 +1,5 @@
+import type { StateValue } from 'xstate'
+
 export function log(...args) {
   console.log('%c[LOG]', 'color: cyan', ...args)
 }
@@ -10,17 +12,17 @@ export function warn(...args) {
   console.log('%c[WARN]', 'color: orangered', ...args)
 }
 
-export function omit(prop, obj) {
+export function omit(prop: string, obj: Record<string, unknown>) {
   // eslint-disable-next-line
   const { [prop]: _, ...rest } = obj
   return rest
 }
 
-export function last(list) {
+export function last(list: []) {
   return list[list.length - 1]
 }
 
-export function prettyJSON(obj) {
+export function prettyJSON(obj: [] | Record<string, unknown>) {
   const result = JSON.stringify(obj, undefined, 2).replace(/"([^"]+)":/g, '$1:')
   return result
     .slice(2, -2)
@@ -29,7 +31,7 @@ export function prettyJSON(obj) {
     .join('\n')
 }
 
-export function flattenState(stateValue) {
+export function flattenState(stateValue: StateValue) {
   if (typeof stateValue === 'string') {
     return stateValue
   }

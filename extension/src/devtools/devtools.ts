@@ -1,4 +1,4 @@
-/* global chrome */
+export {}
 
 chrome.devtools.panels.create(
   '🥷 XState',

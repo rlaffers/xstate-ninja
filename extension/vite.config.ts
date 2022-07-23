@@ -22,7 +22,7 @@ export default defineConfig({
       assets: 'assets',
       additionalInputs: [
         'devtools/devtools.html',
-        'devtools/devtools.js',
+        'devtools/devtools.ts',
         'panel/panel.html',
         'panel/panel.ts',
         'inject/page.js',
