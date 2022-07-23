@@ -25,9 +25,9 @@ export default defineConfig({
         'devtools/devtools.ts',
         'panel/panel.html',
         'panel/panel.ts',
-        'inject/page.js',
-        'inject/page_wrapper.js',
-        'inject/content_script.js',
+        'inject/page.ts',
+        'inject/page_wrapper.ts',
+        'inject/content_script.ts',
       ],
       webExtConfig: {
         // URL from which the example page is served

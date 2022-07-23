@@ -1,12 +1,18 @@
-/* global CustomEvent */
+import type { AnyEventObject, AnyInterpreter, Subscription } from 'xstate'
+import {
+  MessageTypes,
+  type RegisterMessage,
+  type UnregisterMessage,
+  type UpdateMessage,
+} from '../messages'
 ;(function () {
   const namespace = '__xstate_ninja__'
 
-  function sanitizeEventForSerialization(event) {
+  function sanitizeEventForSerialization(event: AnyEventObject) {
     if (event == null) {
       return event
     }
-    let safeEvent
+    let safeEvent: AnyEventObject
     try {
       safeEvent = structuredClone(event)
     } catch (e) {
@@ -27,46 +33,45 @@
   }
 
   class XStateNinja {
+    actors: Record<
+      string,
+      { actor: AnyInterpreter; subscription: Subscription }
+    >
+
     constructor() {
       this.actors = {}
     }
 
-    /**
-     * @param {Interpreter} actor
-     */
-    register(actor) {
+    register(actor: AnyInterpreter) {
+      const detailRegister: RegisterMessage['data'] = {
+        id: actor.id,
+        sessionId: actor.sessionId,
+        initialized: actor.initialized,
+        status: actor.status,
+        done: actor.state.done,
+        stateValue: null,
+      }
       window.dispatchEvent(
-        new CustomEvent('xstate-ninja.register', {
-          detail: {
-            id: actor.id,
-            sessionId: actor.sessionId,
-            initialized: actor.initialized,
-            status: actor.status,
-            done: actor.state.done,
-            stateValue: null,
-          },
+        new CustomEvent(MessageTypes.register, {
+          detail: detailRegister,
         }),
       )
 
       const subscription = actor.subscribe((state) => {
-        console.log(
-          '%cactor',
-          'background: red; color: black; padding: 1px 5px',
-          actor,
-        ) // TODO
+        const detail: UpdateMessage['data'] = {
+          id: actor.id,
+          sessionId: actor.sessionId,
+          initialized: actor.initialized,
+          status: actor.status,
+          // context: state.context,
+          stateValue: state.value,
+          changed: state.changed,
+          done: state.done,
+          event: sanitizeEventForSerialization(state.event),
+        }
         window.dispatchEvent(
-          new CustomEvent('xstate-ninja.update', {
-            detail: {
-              id: actor.id,
-              sessionId: actor.sessionId,
-              initialized: actor.initialized,
-              status: actor.status,
-              // context: state.context,
-              stateValue: state.value,
-              changed: state.changed,
-              done: state.done,
-              event: sanitizeEventForSerialization(state.event),
-            },
+          new CustomEvent(MessageTypes.update, {
+            detail,
           }),
         )
 
@@ -86,23 +91,24 @@
     /**
      * @param {Interpreter} actor
      */
-    unregister(actor) {
+    unregister(actor: AnyInterpreter) {
       const { subscription } = this.actors[actor.sessionId] ?? {}
       if (!subscription) {
         return
       }
       subscription.unsubscribe()
+      const detail: UnregisterMessage['data'] = {
+        id: actor.id,
+        sessionId: actor.sessionId,
+        status: actor.status,
+        initialized: actor.initialized,
+        stateValue: actor.state.value,
+        changed: actor.state.changed,
+        done: actor.state.done,
+      }
       window.dispatchEvent(
-        new CustomEvent('xstate-ninja.unregister', {
-          detail: {
-            id: actor.id,
-            sessionId: actor.sessionId,
-            status: actor.status,
-            initialized: actor.initialized,
-            stateValue: actor.state.value,
-            changed: actor.state.changed,
-            done: actor.state.done,
-          },
+        new CustomEvent(MessageTypes.unregister, {
+          detail,
         }),
       )
       delete this.actors[actor.sessionId]
@@ -114,11 +120,8 @@
      * 1. Objects may contain functions but they will be converted into objects. Function props, if any will be cloned.
      * 2. Objects will be cloned with own props only (no props inherited from object's prototype)
      * 3. Circular dependencies will cause a failure. The eval callback will receive E_PROTOCOLERROR and no result.
-     *
-     * @param {string} sessionId
-     * @return {Object}
      */
-    getSerializableActorState(sessionId) {
+    getSerializableActorState(sessionId: string) {
       const { actor } = this.actors[sessionId] ?? {}
       if (!actor) {
         throw new Error(`Requested sessionId (${sessionId}) is invalid`)
