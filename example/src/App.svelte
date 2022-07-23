@@ -5,13 +5,13 @@
 </script>
 
 <script lang="ts">
-  import { onDestroy } from 'svelte'
-  import logo from './assets/logo_512.png'
-  import { interpret } from 'xstate'
-  import type { AnyInterpreter, State } from 'xstate'
   import { useSelector } from '@xstate/svelte'
-  import machine from './state-machine'
+  import { onDestroy } from 'svelte'
   import type { Readable } from 'svelte/store'
+  import type { AnyInterpreter, State } from 'xstate'
+  import { interpret } from 'xstate'
+  import logo from './assets/logo_512.png'
+  import machine from './state-machine'
 
   const xn = window.__xstate_ninja__
 

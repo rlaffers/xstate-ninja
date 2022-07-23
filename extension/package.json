@@ -1,7 +1,6 @@
 {
   "name": "xstate-ninja-extension",
   "version": "0.0.0-development",
-  "type": "module",
   "description": "Devtools extension for XState state machines",
   "scripts": {
     "test": "jest --passWithNoTests",
@@ -11,9 +10,7 @@
     "semantic-release": "semantic-release",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
-  "keywords": [
-    "xstate"
-  ],
+  "keywords": ["xstate"],
   "author": "Richard Laffers",
   "license": "ICS",
   "devDependencies": {
