@@ -1,4 +1,4 @@
-import { EventTypes } from '../EventTypes'
+import { MessageTypes } from '../messages'
 
 let port
 function connect() {
@@ -21,6 +21,6 @@ function listen(eventName) {
     })
   })
 }
-listen(EventTypes.register)
-listen(EventTypes.unregister)
-listen(EventTypes.update)
+listen(MessageTypes.register)
+listen(MessageTypes.unregister)
+listen(MessageTypes.update)

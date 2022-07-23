@@ -1,6 +1,6 @@
 import { TabKeeper } from './TabKeeper'
 import { log, error } from '../utils'
-import { EventTypes } from '../EventTypes'
+import { MessageTypes } from '../messages'
 
 export class Controller {
   constructor() {
@@ -55,13 +55,13 @@ export class Controller {
   handleMessageFromDevtoolPanel(message, port) {
     if (port.name === 'xstate-ninja.panel') {
       this.logDevtoolsMessage(message, port.name)
-      if (message.type === EventTypes.init) {
+      if (message.type === MessageTypes.init) {
         this.devPorts.set(message.tabId, port)
         const tab = this.tabs.get(message.tabId)
         if (tab) {
           tab.connectDevPort(port)
           port.postMessage({
-            type: EventTypes.initDone,
+            type: MessageTypes.initDone,
             data: {
               actors: [...tab.actors.entries()],
             },

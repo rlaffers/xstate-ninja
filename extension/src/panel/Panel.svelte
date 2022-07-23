@@ -1,14 +1,22 @@
 <script lang="ts">
   import { setContext } from 'svelte'
-  import { EventTypes } from '../EventTypes'
+  import {
+    isUpdateMessage,
+    isRegisterMessage,
+    isUnregisterMessage,
+    isInitDoneMessage,
+  } from '../messages'
   import ActorDetail from './ActorDetail.svelte'
   import ActorsDropdown from './ActorsDropdown.svelte'
   import { connectBackgroundPage } from './connectBackgroundPage'
   import Intro from './Intro.svelte'
   import Tracker from './Tracker.svelte'
-  import type { AnyEventObject } from 'xstate'
+  import type { AnyMessage, UpdateMessage, RegisterMessage } from '../messages'
+  import type { Actor } from './actor'
 
-  function createActorFromMessageData(data) {
+  function createActorFromMessageData(
+    data: UpdateMessage['data'] | RegisterMessage['data'],
+  ): Actor {
     return {
       ...data,
       dead: data.status === 2 || data.done,
@@ -16,9 +24,9 @@
     }
   }
 
-  const bkgPort = connectBackgroundPage()
+  const bkgPort: chrome.runtime.Port = connectBackgroundPage()
 
-  function log(text, data) {
+  function log(text: string, data: any) {
     bkgPort.postMessage({
       type: 'log',
       text,
@@ -30,33 +38,20 @@
     log,
   })
 
-  let actors = null
-  function handleInitDoneOnce(message) {
-    if (message.type === EventTypes.initDone) {
+  let actors: Map<string, Actor> = null
+
+  function handleInitDoneOnce(message: AnyMessage) {
+    if (isInitDoneMessage(message)) {
       actors = new Map(message.data.actors)
       bkgPort.onMessage.removeListener(handleInitDoneOnce)
     }
   }
   bkgPort.onMessage.addListener(handleInitDoneOnce)
 
-  interface Message {
-    type: string
-    data: {
-      id: string
-      sessionId: string
-      initialized: boolean
-      status: number
-      stateValue: string | object
-      changed: boolean
-      done: boolean
-      event: AnyEventObject
-    }
-  }
-
-  function messageListener(message: Message) {
+  function messageListener(message: AnyMessage) {
     log('received', { message, bkgPort }) // TODO remove
 
-    if (message.type === EventTypes.register) {
+    if (isRegisterMessage(message)) {
       if (!actors) {
         actors = new Map()
       }
@@ -68,7 +63,7 @@
       return
     }
 
-    if (message.type === EventTypes.unregister) {
+    if (isUnregisterMessage(message)) {
       if (!actors) return
       const actor = actors.get(message.data.sessionId)
       if (!actor) {
@@ -85,7 +80,7 @@
       return
     }
 
-    if (message.type === EventTypes.update) {
+    if (isUpdateMessage(message)) {
       if (!actors) {
         actors = new Map()
       }
@@ -136,7 +131,7 @@
   })
 
   // -----------------------------
-  let selectedActor
+  let selectedActor: Actor
 
   chrome.devtools.network.onNavigated.addListener(() => {
     actors = new Map()

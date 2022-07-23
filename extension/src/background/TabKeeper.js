@@ -1,5 +1,5 @@
 import { log } from '../utils'
-import { EventTypes } from '../EventTypes'
+import { MessageTypes } from '../messages'
 
 export class TabKeeper {
   constructor(id, port, devPort = null) {
@@ -27,7 +27,7 @@ export class TabKeeper {
 
   onUpdateMessage(message) {
     log(`→ message from tab ${this.id}:`, message)
-    if (message.type !== EventTypes.update) {
+    if (message.type !== MessageTypes.update) {
       return
     }
     const { sessionId } = message.data
@@ -50,7 +50,7 @@ export class TabKeeper {
   }
 
   registerActor(message) {
-    if (message.type === EventTypes.register) {
+    if (message.type === MessageTypes.register) {
       const { id, sessionId, initialized, status, done } = message.data
       this.actors.set(message.data.sessionId, {
         id,
@@ -69,7 +69,7 @@ export class TabKeeper {
   }
 
   unregisterActor(message) {
-    if (message.type === EventTypes.unregister) {
+    if (message.type === MessageTypes.unregister) {
       this.actors.delete(message.data.sessionId)
       if (this.devPort != null) {
         this.devPort.postMessage(message)
