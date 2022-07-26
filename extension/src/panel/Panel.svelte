@@ -5,6 +5,7 @@
     isRegisterMessage,
     isUnregisterMessage,
     isInitDoneMessage,
+    type DevtoolMessage,
   } from '../messages'
   import ActorDetail from './ActorDetail.svelte'
   import ActorsDropdown from './ActorsDropdown.svelte'
@@ -12,7 +13,7 @@
   import Intro from './Intro.svelte'
   import Tracker from './Tracker.svelte'
   import type { AnyMessage, UpdateMessage, RegisterMessage } from '../messages'
-  import type { Actor } from './actor'
+  import type { Actor } from '../actor'
 
   function createActorFromMessageData(
     data: UpdateMessage['data'] | RegisterMessage['data'],
@@ -27,11 +28,12 @@
   const bkgPort: chrome.runtime.Port = connectBackgroundPage()
 
   function log(text: string, data: any) {
-    bkgPort.postMessage({
+    const msg: DevtoolMessage = {
       type: 'log',
       text,
       data,
-    })
+    }
+    bkgPort.postMessage(msg)
   }
 
   setContext('logger', {

@@ -1,5 +1,5 @@
 import type { AnyEventObject, StateValue, InterpreterStatus } from 'xstate'
-import type { Actor } from './panel/actor'
+import type { Actor } from './actor'
 
 export enum MessageTypes {
   update = 'xstate-ninja.update',
@@ -62,14 +62,26 @@ export interface InitDoneMessage {
   }
 }
 
+export interface LogMessage {
+  type: 'log'
+  text: string
+  data: any
+}
+
 export type AnyMessage =
   | UpdateMessage
+  | InitMessage
   | InitDoneMessage
   | RegisterMessage
   | UnregisterMessage
+  | LogMessage
 
 export function isUpdateMessage(message: AnyMessage): message is UpdateMessage {
   return message.type === MessageTypes.update
+}
+
+export function isInitMessage(message: AnyMessage): message is InitMessage {
+  return message.type === MessageTypes.init
 }
 
 export function isInitDoneMessage(
@@ -88,4 +100,8 @@ export function isUnregisterMessage(
   message: AnyMessage,
 ): message is UnregisterMessage {
   return message.type === MessageTypes.unregister
+}
+
+export function isLogMessage(message: AnyMessage): message is LogMessage {
+  return message.type === 'log'
 }

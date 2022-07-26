@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Actor } from './actor'
+  import type { Actor } from '../actor'
 
   export let actors: Map<string, Actor>
 

@@ -1,8 +1,23 @@
 import { log } from '../utils'
-import { MessageTypes } from '../messages'
+import {
+  MessageTypes,
+  type UpdateMessage,
+  type RegisterMessage,
+  type UnregisterMessage,
+} from '../messages'
+import type { Actor } from '../actor'
 
 export class TabKeeper {
-  constructor(id, port, devPort = null) {
+  id: number
+  port: chrome.runtime.Port
+  devPort: chrome.runtime.Port
+  actors: Map<string, Actor>
+
+  constructor(
+    id: number,
+    port: chrome.runtime.Port,
+    devPort: chrome.runtime.Port = null,
+  ) {
     if (port.name !== 'xstate-ninja.page') {
       throw new Error(`Invalid port.name: ${port.name}`)
     }
@@ -17,15 +32,13 @@ export class TabKeeper {
     port.onMessage.addListener(this.onUpdateMessage)
     port.onMessage.addListener(this.registerActor)
     port.onMessage.addListener(this.unregisterActor)
-    port.onDisconnect.removeListener(this.onUpdateMessage)
-    port.onDisconnect.removeListener(this.unregisterActor)
   }
 
-  connectDevPort(port) {
+  connectDevPort(port: chrome.runtime.Port) {
     this.devPort = port
   }
 
-  onUpdateMessage(message) {
+  onUpdateMessage(message: UpdateMessage) {
     log(`→ message from tab ${this.id}:`, message)
     if (message.type !== MessageTypes.update) {
       return
@@ -49,7 +62,7 @@ export class TabKeeper {
     }
   }
 
-  registerActor(message) {
+  registerActor(message: RegisterMessage) {
     if (message.type === MessageTypes.register) {
       const { id, sessionId, initialized, status, done } = message.data
       this.actors.set(message.data.sessionId, {
@@ -68,7 +81,7 @@ export class TabKeeper {
     }
   }
 
-  unregisterActor(message) {
+  unregisterActor(message: UnregisterMessage) {
     if (message.type === MessageTypes.unregister) {
       this.actors.delete(message.data.sessionId)
       if (this.devPort != null) {

@@ -1,8 +1,22 @@
 import { TabKeeper } from './TabKeeper'
 import { log, error } from '../utils'
-import { MessageTypes } from '../messages'
+import {
+  MessageTypes,
+  isInitMessage,
+  isLogMessage,
+  type InitMessage,
+  type LogMessage,
+} from '../messages'
+
+interface IKeptAlivePort extends chrome.runtime.Port {
+  _timer: NodeJS.Timeout
+}
 
 export class Controller {
+  tabs: Map<number, TabKeeper>
+  devPorts: Map<number, chrome.runtime.Port>
+  isKeptAlive: boolean
+
   constructor() {
     this.tabs = new Map()
     this.devPorts = new Map()
@@ -29,8 +43,10 @@ export class Controller {
 
       if (port.name === 'xstate-ninja.panel') {
         port.onMessage.addListener(this.handleMessageFromDevtoolPanel)
-        port.onDisconnect.addListener(this.removeDevPort)
-        port.onDisconnect.removeListener(this.handleMessageFromDevtoolPanel)
+        port.onDisconnect.addListener((port) => {
+          this.removeDevPort(port)
+          port.onMessage.removeListener(this.handleMessageFromDevtoolPanel)
+        })
       }
 
       if (port.name === 'xstate-ninja.page') {
@@ -44,7 +60,7 @@ export class Controller {
       }
 
       if (!this.isKeptAlive && port.name === 'xstate-ninja.page') {
-        this.keepAlive(port)
+        this.keepAlive(port as IKeptAlivePort)
       }
       log(
         `Connected tabs: ${this.tabs.size}\nDev panels: ${this.devPorts.size}`,
@@ -52,10 +68,13 @@ export class Controller {
     })
   }
 
-  handleMessageFromDevtoolPanel(message, port) {
+  handleMessageFromDevtoolPanel(
+    message: InitMessage | LogMessage,
+    port: chrome.runtime.Port,
+  ) {
     if (port.name === 'xstate-ninja.panel') {
       this.logDevtoolsMessage(message, port.name)
-      if (message.type === MessageTypes.init) {
+      if (isInitMessage(message)) {
         this.devPorts.set(message.tabId, port)
         const tab = this.tabs.get(message.tabId)
         if (tab) {
@@ -73,7 +92,7 @@ export class Controller {
     }
   }
 
-  removeDevPort(port) {
+  removeDevPort(port: chrome.runtime.Port) {
     log('disconnecting port:', port.name)
     for (const [tabId, value] of this.devPorts.entries()) {
       if (value === port) {
@@ -86,7 +105,7 @@ export class Controller {
     }
   }
 
-  removeTab(port) {
+  removeTab(port: chrome.runtime.Port) {
     log('disconnecting tab port', port.name)
     for (const [id, tab] of this.tabs.entries()) {
       if (tab.port === port) {
@@ -97,11 +116,11 @@ export class Controller {
   }
 
   // periodically reconnect the page port to keep the background service worker alive
-  keepAlive(port) {
+  keepAlive(port: IKeptAlivePort) {
     port._timer = setTimeout(this.forceReconnect, 250e3, port)
     // triggered when the tab is closed
     port.onDisconnect.addListener((disconnectedPort) => {
-      this.deleteTimer(disconnectedPort)
+      this.deleteTimer(disconnectedPort as IKeptAlivePort)
       if (this.tabs.size > 0) {
         this.keepAlive(this.tabs.values().next().value.port)
       }
@@ -109,34 +128,33 @@ export class Controller {
     this.isKeptAlive = true
   }
 
-  forceReconnect(port) {
+  forceReconnect(port: IKeptAlivePort) {
     this.deleteTimer(port)
     this.isKeptAlive = false
     port.disconnect()
   }
 
-  deleteTimer(port) {
+  deleteTimer(port: IKeptAlivePort) {
     if (port._timer) {
       clearTimeout(port._timer)
       delete port._timer
     }
   }
 
-  logDevtoolsMessage({ type, ...msg }, senderName) {
+  logDevtoolsMessage(message: InitMessage | LogMessage, senderName: string) {
     let bkg = 'gray'
-    let args = [msg]
-    switch (type) {
-      case 'log':
-        bkg = 'fuchsia'
-        args = [msg.text]
-        if (msg.data !== undefined) {
-          args.push(msg.data)
-        }
-        break
-
-      case 'init':
-        bkg = 'lime'
-        break
+    let args: any[]
+    const { type, ...rest } = message
+    if (isLogMessage(message)) {
+      bkg = 'fuchsia'
+      const { text, data } = rest as { text: string; data?: any }
+      args = [text]
+      if (data !== undefined) {
+        args.push(data)
+      }
+    } else if (isInitMessage(message)) {
+      bkg = 'lime'
+      args = [rest]
     }
     console.log(
       `%c${senderName}:${type}`,
