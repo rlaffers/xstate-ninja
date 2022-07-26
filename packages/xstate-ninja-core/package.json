@@ -2,14 +2,33 @@
   "name": "xstate-ninja",
   "version": "1.0.0",
   "description": "XState Ninja hooks for vanilla JS in browsers",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": ["xstate", "fsm", "state machine"],
   "author": "Richard Laffers",
   "license": "ISC",
-  "homepage": "https://github.com/rlaffers/xstate-ninja",
+  "type": "module",
+  "main": "./dist/xstate-ninja.umd.js",
+  "module": "./dist/xstate-ninja.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/xstate-ninja.js",
+      "require": "./dist/xstate-ninja.umd.cjs"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.4",
+    "vite": "^3.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/rlaffers/xstate-ninja"
