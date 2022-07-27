@@ -5,7 +5,6 @@ import type {
   Subscription,
 } from 'xstate'
 
-// TODO move these types to the extension
 export interface InspectedEventObject {
   name: string // Event type
   data: AnyEventObject // The actual event object
@@ -52,10 +51,6 @@ export interface XStateDevInterface {
   onUpdate: (listener: (update: ActorUpdate) => void) => Subscription
 }
 
-declare global {
-  interface Window {
-    __xstate_ninja__?: XStateDevInterface
-  }
+export interface WindowWithXStateNinja {
+  __xstate_ninja__?: XStateDevInterface
 }
-
-export {}
