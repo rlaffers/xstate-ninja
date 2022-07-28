@@ -1,6 +1,5 @@
 /** @type {import('vite').UserConfig} */
 import { defineConfig } from 'vite'
-import typescript from 'rollup-plugin-typescript2'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,10 +9,6 @@ export default defineConfig({
       name: 'XStateNinja',
       fileName: 'xstate-ninja',
     },
-    rollupOptions: {
-      plugins: [
-        typescript()
-      ]
-    }
-  }
+    rollupOptions: {},
+  },
 })
