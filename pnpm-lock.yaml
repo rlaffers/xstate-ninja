@@ -64,9 +64,11 @@ importers:
       typescript: ^4.6.4
       vite: ^3.0.0
       xstate: ^4.32.1
+      xstate-ninja: workspace:^1.0.0
     dependencies:
       '@xstate/svelte': 2.0.0_5nqzgo6nrjikrre2vucxc5symi
       xstate: 4.32.1
+      xstate-ninja: link:../packages/xstate-ninja-core
     devDependencies:
       '@sveltejs/vite-plugin-svelte': 1.0.1_svelte@3.49.0+vite@3.0.2
       '@tsconfig/svelte': 3.0.0

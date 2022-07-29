@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  import type { WindowWithXStateNinja } from './xstateDevTypes'
+  import type { WindowWithXStateNinja } from 'xstate-ninja'
 
   declare let window: WindowWithXStateNinja
 </script>

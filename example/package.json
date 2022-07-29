@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@xstate/svelte": "^2.0.0",
-    "xstate": "^4.32.1"
+    "xstate": "^4.32.1",
+    "xstate-ninja": "workspace:^1.0.0"
   }
 }

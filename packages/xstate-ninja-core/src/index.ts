@@ -7,7 +7,8 @@ import type {
   AnyInterpreter,
   AnyActorRef,
 } from 'xstate'
-export type { XStateDevInterface, WindowWithXStateNinja } from './types'
+import type { XStateDevInterface, WindowWithXStateNinja } from './types'
+export type { XStateDevInterface, WindowWithXStateNinja }
 
 // SpawnOptions are not exported from xstate, so here's a copy
 interface SpawnOptions {
@@ -42,4 +43,11 @@ export function unregister(actor: AnyInterpreter | AnyActorRef) {
   return extensionAPI?.unregister(actor)
 }
 
-export {}
+// TODO import this into the example
+// TODO unit with the injected page script
+const xstateNinja: XStateDevInterface = {
+  register,
+  unregister,
+}
+
+export default xstateNinja
