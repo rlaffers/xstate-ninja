@@ -18,7 +18,7 @@
   },
   "sideEffects": false,
   "scripts": {
-    "dev": "vite",
+    "dev": "tsc --watch --noEmit true",
     "build": "vite build && tsc --noEmit false --emitDeclarationOnly true",
     "preview": "vite preview"
   },

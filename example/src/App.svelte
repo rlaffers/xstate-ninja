@@ -1,10 +1,5 @@
-<script context="module" lang="ts">
-  import type { WindowWithXStateNinja } from 'xstate-ninja'
-
-  declare let window: WindowWithXStateNinja
-</script>
-
 <script lang="ts">
+  import { register, unregister } from 'xstate-ninja'
   import { useSelector } from '@xstate/svelte'
   import { onDestroy } from 'svelte'
   import type { Readable } from 'svelte/store'
@@ -12,8 +7,6 @@
   import { interpret } from 'xstate'
   import logo from './assets/logo_512.png'
   import machine from './state-machine'
-
-  const xn = window.__xstate_ninja__
 
   let service = interpret(machine).start()
   let state: Readable<State<any>>
@@ -35,17 +28,17 @@
   }
 
   let subscription = subscribe(service)
-  xn?.register(service)
+  register(service)
 
   onDestroy(() => subscription.unsubscribe())
 
   function resetMachine() {
-    xn?.unregister(service)
+    unregister(service)
     service.stop()
     subscription.unsubscribe()
     service = interpret(machine).start()
     subscription = subscribe(service)
-    xn?.register(service)
+    register(service)
   }
 
   let eventName = ''
