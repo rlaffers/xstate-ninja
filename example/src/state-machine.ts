@@ -1,36 +1,8 @@
-import type { ActorRefFrom, StateMachine, EventObject } from 'xstate'
-import { actions, createMachine, spawn as spawnOriginal } from 'xstate'
+import { actions, createMachine } from 'xstate'
+import { spawn } from 'xstate-ninja'
 import { childMachine } from './child-machine'
-import type { WindowWithXStateNinja } from './xstateDevTypes'
 
 const { assign } = actions
-
-interface SpawnOptions {
-  name?: string
-  autoForward?: boolean
-  sync?: boolean
-}
-
-declare let window: WindowWithXStateNinja
-const xn = window.__xstate_ninja__
-
-// TODO put this overriden spawn into the npm library
-function spawn<TC, TE extends EventObject>(
-  entity: StateMachine<TC, any, TE>,
-  nameOrOptions: string | SpawnOptions,
-): ActorRefFrom<StateMachine<TC, any, TE>> {
-  const actor = spawnOriginal(entity, nameOrOptions)
-  xn?.register(actor)
-  // actor.subscribe((state) => {
-  //   console.log('child is', state.value)
-  // })
-  // TODO onStop not on ActorRef
-  // actor.onStop.(() => {
-  //   console.log('child stopped') // TODO remove console.log
-  //   // xn?.unregister(actor)
-  // })
-  return actor
-}
 
 interface CustomEventWithMyFunc extends CustomEvent {
   myFunc: () => void

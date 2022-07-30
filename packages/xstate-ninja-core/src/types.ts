@@ -4,6 +4,7 @@ import type {
   AnyEventObject,
   Subscription,
 } from 'xstate'
+import type { XStateInspectUpdateEvent } from './events'
 
 export interface InspectedEventObject {
   name: string // Event type
@@ -17,13 +18,30 @@ export interface InspectedActorObject {
   sessionId: string
   parent?: string // Session ID
   snapshot: any
-  machine?: StateMachineDefinition<any, any, AnyEventObject> // This is originally StateNodeDefinition (renaming)
+  machine?: StateMachineDefinition<any, any, AnyEventObject>
   events: InspectedEventObject[]
   createdAt: number // Timestamp
   updatedAt: number // Timestamp
   status: 0 | 1 | 2 // 0 = not started, 1 = started, 2 = stopped
   // xstate-ninja custom props
   subscription?: Subscription
+  history: XStateInspectUpdateEvent[]
+}
+
+export type SerializedInspectedActorObject = Omit<
+  InspectedActorObject,
+  'actorRef' | 'subscription' | 'snapshot' | 'machine'
+> & {
+  snapshot: string // JSON-stringified
+  machine?: string // JSON-stringified
+}
+
+export interface SerializedInspectedActorObjectSimple {
+  sessionId: string
+  parent?: string
+  machine?: string // JSON-stringified
+  snapshot: string // JSON-stringified
+  createdAt: number
 }
 
 export interface ActorUpdate {

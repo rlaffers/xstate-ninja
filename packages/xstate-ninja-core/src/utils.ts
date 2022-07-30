@@ -89,3 +89,25 @@ function keys<T extends object>(value: T): Array<keyof T & string> {
 function getStateNodeId(stateNode: StateNode): string {
   return `#${stateNode.id}`
 }
+
+export function omit(
+  names: (string | number)[],
+  obj: { [k: string]: any },
+): { [k: string]: any } {
+  const result: { [k: string]: any } = {}
+  const index: Record<string, 1> = {}
+  let idx = 0
+  const len = names.length
+
+  while (idx < len) {
+    index[names[idx]] = 1
+    idx += 1
+  }
+
+  for (const prop in obj) {
+    if (!Object.prototype.hasOwnProperty.call(index, prop)) {
+      result[prop] = obj[prop]
+    }
+  }
+  return result
+}

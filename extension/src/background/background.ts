@@ -1,4 +1,4 @@
-import { Controller } from './Controller'
+import { MessageBroker } from './MessageBroker'
 
-const controller = new Controller()
-controller.start()
+const messageBroker = new MessageBroker()
+messageBroker.start()

@@ -1,30 +1,33 @@
-import { MessageTypes, type AnyMessage } from '../messages'
+import {
+  EventTypes,
+  ActorEvent,
+  UpdateEvent,
+  UnregisterEvent,
+} from 'xstate-ninja'
 
 let port: chrome.runtime.Port
 function connect() {
   port = chrome.runtime.connect({ name: 'xstate-ninja.page' })
   port.onDisconnect.addListener(connect)
-  // port.onMessage.addListener(msg => {
-  //   console.log('received', msg, 'from bg');
-  // })
+  port.onMessage.addListener((msg) => {
+    console.log('[content-script] received from bg', msg) // TODO remove
+    window.dispatchEvent(msg)
+  })
 }
 connect()
 
-function listen(eventName: string) {
-  window.addEventListener(eventName, (event: CustomEvent) => {
-    if (event.target !== window) {
-      return
-    }
-    const msg: AnyMessage = {
-      type: event.type as
-        | MessageTypes.update
-        | MessageTypes.register
-        | MessageTypes.unregister,
-      data: event.detail,
-    }
-    port.postMessage(msg)
-  })
+function forwardEvent(eventName: string) {
+  window.addEventListener(
+    eventName,
+    (event: ActorEvent | UpdateEvent | UnregisterEvent) => {
+      if (event.target !== window) {
+        return
+      }
+      port.postMessage(event)
+    },
+  )
 }
-listen(MessageTypes.register)
-listen(MessageTypes.unregister)
-listen(MessageTypes.update)
+forwardEvent(EventTypes.actor)
+forwardEvent(EventTypes.actors)
+forwardEvent(EventTypes.unregister)
+forwardEvent(EventTypes.update)

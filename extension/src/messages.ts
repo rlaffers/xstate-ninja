@@ -1,14 +1,16 @@
 import type { AnyEventObject, StateValue, InterpreterStatus } from 'xstate'
+import type { XStateInspectAnyEvent } from 'xstate-ninja'
 import type { Actor } from './actor'
 
 export enum MessageTypes {
   update = 'xstate-ninja.update',
   register = 'xstate-ninja.register',
   unregister = 'xstate-ninja.unregister',
-  init = 'xstate-ninja.init',
+  init = '@xstate-ninja/init',
   initDone = 'xstate-ninja.initDone',
 }
 
+// TODO deprecated
 export interface UpdateMessage {
   type: MessageTypes.update
   data: {
@@ -23,6 +25,7 @@ export interface UpdateMessage {
   }
 }
 
+// TODO deprecated
 export interface RegisterMessage {
   type: MessageTypes.register
   data: {
@@ -35,6 +38,7 @@ export interface RegisterMessage {
   }
 }
 
+// TODO deprecated
 export interface UnregisterMessage {
   type: MessageTypes.unregister
   data: {
@@ -55,6 +59,7 @@ export interface InitMessage {
 
 type ActorTuple = [sessionId: string, actor: Actor]
 
+// TODO deprecate, use ActorsEvent instead
 export interface InitDoneMessage {
   type: MessageTypes.initDone
   data: {
@@ -75,6 +80,7 @@ export type AnyMessage =
   | RegisterMessage
   | UnregisterMessage
   | LogMessage
+  | XStateInspectAnyEvent
 
 export function isUpdateMessage(message: AnyMessage): message is UpdateMessage {
   return message.type === MessageTypes.update

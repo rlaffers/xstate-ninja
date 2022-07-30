@@ -10,14 +10,27 @@ import type {
 } from 'xstate'
 import type {
   XStateDevInterface,
-  WindowWithXStateNinja,
   ActorRegistration,
   ActorUpdate,
   InspectedActorObject,
 } from './types'
-import { ActorEvent, UpdateEvent, UnregisterEvent } from './events'
 import { isInterpreterLike } from './utils'
-export type { XStateDevInterface, WindowWithXStateNinja }
+import {
+  ActorEvent,
+  ActorsEvent,
+  UpdateEvent,
+  UnregisterEvent,
+  ConnectEvent,
+  ConnectedEvent,
+  ReadEvent,
+  SendEvent,
+  EventTypes,
+} from './events'
+// export { EventTypes } from './events'
+// export { ActorEvent, UpdateEvent, UnregisterEvent }
+export * from './events'
+export * from './types'
+// export type { XStateDevInterface, WindowWithXStateNinja }
 
 // SpawnOptions are not exported from xstate, so here's a copy
 interface SpawnOptions {
@@ -26,22 +39,38 @@ interface SpawnOptions {
   sync?: boolean
 }
 
-// TODO import this into the example instead of the window type
-// TODO does this interface need to be injected by the chrome extension?
+enum LogLevels {
+  error,
+  warn,
+  info,
+  debug,
+}
+
+interface XStateNinjaOptions {
+  logLevel?: LogLevels
+}
+
 class XStateNinja implements XStateDevInterface {
   actors: Record<string, InspectedActorObject>
-  // TODO changed from
-  // actors: Record<
-  //   string,
-  //   { actor: AnyInterpreter; subscription: Subscription }
-  // >
+  logLevel: LogLevels = LogLevels.error
 
-  constructor() {
+  constructor({ logLevel }: XStateNinjaOptions = {}) {
     this.actors = {}
     this.register = this.register.bind(this)
     this.unregister = this.unregister.bind(this)
     this.onRegister = this.onRegister.bind(this)
     this.onUpdate = this.onUpdate.bind(this)
+    this.onConnect = this.onConnect.bind(this)
+    this.onRead = this.onRead.bind(this)
+    this.onSend = this.onSend.bind(this)
+
+    if (logLevel !== undefined) {
+      this.logLevel = logLevel
+    }
+
+    window.addEventListener(EventTypes.connect, this.onConnect as EventListener)
+    window.addEventListener(EventTypes.read, this.onRead as EventListener)
+    window.addEventListener(EventTypes.send, this.onSend as EventListener)
   }
 
   register(actor: AnyInterpreter | AnyActorRef) {
@@ -63,8 +92,6 @@ class XStateNinja implements XStateDevInterface {
     // TODO handle this new register message in the ext
     globalThis.dispatchEvent(new ActorEvent(inspectedActor))
 
-    // TODO we need to keep track of this sub to be able to unsub
-    // TODO keep even unsubbed actors around?
     inspectedActor.subscription = actor.subscribe((state) => {
       // const detail: UpdateMessage['data'] = {
       //   id: actor.id,
@@ -78,7 +105,11 @@ class XStateNinja implements XStateDevInterface {
       //   event: sanitizeEventForSerialization(state.event),
       // }
       // TODO handle this new update message in the ext
-      globalThis.dispatchEvent(new UpdateEvent(inspectedActor))
+      const event = new UpdateEvent(inspectedActor)
+      globalThis.dispatchEvent(event)
+
+      inspectedActor.history.push(event)
+      // TODO push InspectedEventObject into inspectedActor.events
 
       if (state.done) {
         this.unregister(actor)
@@ -92,7 +123,8 @@ class XStateNinja implements XStateDevInterface {
       })
     }
 
-    // TODO call this.onUpdate
+    // TODO call this.onUpdate()
+
     this.actors[inspectedActor.sessionId] = inspectedActor
   }
 
@@ -124,6 +156,62 @@ class XStateNinja implements XStateDevInterface {
     listener({} as ActorUpdate)
     return {} as Subscription
   }
+
+  onConnect(event: ConnectEvent) {
+    this.log('received', event)
+    window.dispatchEvent(new ConnectedEvent())
+    window.dispatchEvent(new ActorsEvent(Object.values(this.actors)))
+  }
+
+  // TODO implement onRead
+  onRead(event: ReadEvent) {
+    console.log('onSend not implemented', event)
+  }
+
+  // TODO implement onSend
+  onSend(event: SendEvent) {
+    console.log('onSend not implemented', event)
+  }
+
+  log(...args: any[]) {
+    if (this.logLevel >= LogLevels.debug) {
+      console.log(
+        '%c[xstate-ninja]',
+        'background-color: gray; color: black; padding: 1px 2px;',
+        ...args,
+      )
+    }
+  }
+
+  error(...args: any[]) {
+    if (this.logLevel >= LogLevels.error) {
+      console.log(
+        '%c[xstate-ninja]',
+        'background-color: red; color: black; padding: 1px 2px;',
+        ...args,
+      )
+    }
+  }
+
+  warn(...args: any[]) {
+    if (this.logLevel >= LogLevels.warn) {
+      console.log(
+        '%c[xstate-ninja]',
+        'background-color: orange; color: black; padding: 1px 2px;',
+        ...args,
+      )
+    }
+  }
+
+  info(...args: any[]) {
+    if (this.logLevel >= LogLevels.info) {
+      console.log(
+        '%c[xstate-ninja]',
+        'background-color: teal; color: black; padding: 1px 2px;',
+        ...args,
+      )
+    }
+  }
 }
 
 // Usage:
@@ -136,7 +224,7 @@ export default xstateNinja
 
 export function interpret(
   machine: AnyStateMachine,
-  options: Partial<InterpreterOptions>,
+  options?: Partial<InterpreterOptions>,
 ) {
   const service = xstateInterpret(machine, options)
   xstateNinja.register(service)
@@ -147,7 +235,9 @@ export function spawn(
   entity: Spawnable,
   nameOrOptions?: string | SpawnOptions,
 ): ActorRef<any> {
-  return xstateSpawn(entity, nameOrOptions)
+  const service = xstateSpawn(entity, nameOrOptions)
+  xstateNinja.register(service)
+  return service
 }
 
 function createInspectedActorObject(
@@ -163,12 +253,14 @@ function createInspectedActorObject(
     createdAt: Date.now(),
     updatedAt: Date.now(),
     status: 0,
+    history: [],
   }
 
   if (isInterpreterLike(actor)) {
     inspectedActor.sessionId = actor.sessionId
     inspectedActor.parent = actor.parent?.sessionId
     inspectedActor.status = actor.status
+    inspectedActor.machine = actor.machine.definition
   } else {
     inspectedActor.sessionId =
       globalThis.crypto?.randomUUID() ?? String(Math.round(Math.random() * 1e6))

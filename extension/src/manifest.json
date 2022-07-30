@@ -8,12 +8,6 @@
   },
   "devtools_page": "devtools/devtools.html",
   "permissions": ["activeTab"],
-  "web_accessible_resources": [
-    {
-      "resources": ["inject/page.js"],
-      "matches": ["<all_urls>"]
-    }
-  ],
   "icons": {
     "16": "assets/icon_16x16.png",
     "32": "assets/icon_32x32.png",
@@ -24,7 +18,7 @@
     {
       "matches": ["<all_urls>"],
       "exclude_globs": ["https://www.google*"],
-      "js": ["inject/page_wrapper.js", "inject/content_script.js"],
+      "js": ["inject/content_script.ts"],
       "run_at": "document_start",
       "all_frames": true
     }

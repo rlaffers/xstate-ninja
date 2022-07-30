@@ -1,3 +1,4 @@
+// TODO eliminate this script. This stuff is provided by the npm package
 import type { AnyEventObject, AnyInterpreter, Subscription } from 'xstate'
 import {
   MessageTypes,

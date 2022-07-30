@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { register, unregister } from 'xstate-ninja'
+  import xstateNinja, { interpret } from 'xstate-ninja'
   import { useSelector } from '@xstate/svelte'
   import { onDestroy } from 'svelte'
   import type { Readable } from 'svelte/store'
   import type { AnyInterpreter, State } from 'xstate'
-  import { interpret } from 'xstate'
   import logo from './assets/logo_512.png'
   import machine from './state-machine'
 
@@ -28,17 +27,15 @@
   }
 
   let subscription = subscribe(service)
-  register(service)
 
   onDestroy(() => subscription.unsubscribe())
 
   function resetMachine() {
-    unregister(service)
+    xstateNinja.unregister(service)
     service.stop()
     subscription.unsubscribe()
     service = interpret(machine).start()
     subscription = subscribe(service)
-    register(service)
   }
 
   let eventName = ''

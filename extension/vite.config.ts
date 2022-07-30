@@ -26,8 +26,6 @@ export default defineConfig({
         'devtools/devtools.ts',
         'panel/panel.html',
         'panel/panel.ts',
-        'inject/page.ts',
-        'inject/page_wrapper.ts',
         'inject/content_script.ts',
       ],
       webExtConfig: {

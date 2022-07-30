@@ -1,6 +1,11 @@
 import type { AnyEventObject } from 'xstate'
-import { InspectedEventObject, InspectedActorObject } from './types'
-import { isInterpreterLike } from './utils'
+import {
+  InspectedEventObject,
+  InspectedActorObject,
+  SerializedInspectedActorObject,
+  SerializedInspectedActorObjectSimple,
+} from './types'
+import { isInterpreterLike, omit } from './utils'
 
 // client -> inspector
 export interface XStateInspectConnectEvent {
@@ -24,14 +29,9 @@ export interface XStateInspectActorsEvent {
       createdAt: number
     }
   }
-}
 
-// inspector -> client when actor is registered
-export interface XStateInspectActorEvent {
-  type: '@xstate/inspect.actor'
-  sessionId: string
-  machine?: string // JSON-stringified machine definition
-  createdAt: number
+  // custom xstate-ninja events
+  inspectedActors: SerializedInspectedActorObject[]
 }
 
 // inspector -> client on actor updates
@@ -42,6 +42,16 @@ export interface XStateInspectUpdateEvent {
   event: InspectedEventObject
   status: 0 | 1 | 2 // Actor status
   createdAt: number
+}
+
+// inspector -> client when actor is registered
+export interface XStateInspectActorEvent {
+  type: '@xstate/inspect.actor'
+  sessionId: string
+  machine?: string // JSON-stringified machine definition
+  createdAt: number
+  // custom xstate-ninja events
+  history: XStateInspectUpdateEvent[]
 }
 
 // Client -> Inspector
@@ -58,6 +68,15 @@ export interface XStateInspectReadEvent {
   type: '@xstate/inspect.read'
 }
 
+export type XStateInspectAnyEvent =
+  | XStateInspectReadEvent
+  | XStateInspectSendEvent
+  | XStateInspectUpdateEvent
+  | XStateInspectActorEvent
+  | XStateInspectActorsEvent
+  | XStateInspectConnectEvent
+  | XStateInspectConnectedEvent
+
 // -----------------------------
 // TODO implement these changes in the extension
 export enum EventTypes {
@@ -65,11 +84,14 @@ export enum EventTypes {
   update = '@xstate/inspect.update',
   // register = 'xstate-ninja.register',
   actor = '@xstate/inspect.actor',
+  actors = '@xstate/inspect.actors',
+  connect = '@xstate/inspect.connect',
+  connected = '@xstate/inspect.connected',
+  send = '@xstate/inspect.send',
+  read = '@xstate/inspect.read',
 
   // custom xstate-ninja events
   unregister = '@xstate-ninja/unregister',
-  init = '@xstate-ninja/init',
-  initDone = '@xstate-ninja/initDone',
 }
 
 export class ActorEvent extends Event implements XStateInspectActorEvent {
@@ -77,10 +99,12 @@ export class ActorEvent extends Event implements XStateInspectActorEvent {
   sessionId: string
   createdAt: number
   machine?: string
+  history: XStateInspectUpdateEvent[]
 
   constructor(actor: InspectedActorObject) {
     super(EventTypes.actor)
     this.sessionId = actor.sessionId
+    this.history = actor.history
     if (isInterpreterLike(actor.actorRef)) {
       this.machine = JSON.stringify(actor.actorRef.machine)
     }
@@ -141,5 +165,91 @@ export class UnregisterEvent extends Event {
       // TODO how to get status from actors which are not interpreters?
       this.status = 0
     }
+  }
+}
+
+export class ConnectEvent extends Event implements XStateInspectConnectEvent {
+  type: EventTypes.connect = EventTypes.connect
+
+  constructor() {
+    super(EventTypes.connect)
+  }
+}
+
+export class ConnectedEvent
+  extends Event
+  implements XStateInspectConnectedEvent
+{
+  type: EventTypes.connected = EventTypes.connected
+
+  constructor() {
+    super(EventTypes.connected)
+  }
+}
+
+export class ReadEvent extends Event implements XStateInspectReadEvent {
+  type: EventTypes.read = EventTypes.read
+
+  constructor() {
+    super(EventTypes.read)
+  }
+}
+
+export class SendEvent extends Event implements XStateInspectSendEvent {
+  type: EventTypes.send = EventTypes.send
+  sessionId: string
+  event: AnyEventObject
+  createdAt: number
+
+  constructor(event: AnyEventObject, sessionId: string) {
+    super(EventTypes.send)
+    this.createdAt = Date.now()
+    this.sessionId = sessionId
+    this.event = event
+  }
+}
+
+export class ActorsEvent extends Event implements XStateInspectActorsEvent {
+  type: EventTypes.actors = EventTypes.actors
+  actors: {
+    [sessionId: string]: SerializedInspectedActorObjectSimple
+  }
+
+  // custom xstate-ninja events
+  inspectedActors: SerializedInspectedActorObject[]
+
+  constructor(actors: InspectedActorObject[]) {
+    super(EventTypes.actors)
+
+    this.actors = actors.reduce(
+      (result: Record<string, SerializedInspectedActorObjectSimple>, actor) => {
+        result[actor.sessionId] = {
+          sessionId: actor.sessionId,
+          parent: actor.parent,
+          machine: JSON.stringify(actor.machine),
+          snapshot: JSON.stringify(actor.snapshot),
+          createdAt: actor.createdAt,
+        }
+        return result
+      },
+      {},
+    )
+
+    this.inspectedActors = actors.reduce(
+      (result: SerializedInspectedActorObject[], actor) => {
+        result.push(this.serializeActor(actor))
+        return result
+      },
+      [],
+    )
+  }
+
+  serializeActor(actor: InspectedActorObject): SerializedInspectedActorObject {
+    const serialized = omit(['actorRef', 'subscription'], actor)
+    serialized.snapshot = JSON.stringify(serialized.snapshot)
+    if (serialized.machine !== undefined) {
+      serialized.machine = JSON.stringify(serialized.machine)
+    }
+    return serialized as SerializedInspectedActorObject
   }
 }

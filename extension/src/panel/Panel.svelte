@@ -5,7 +5,6 @@
     isRegisterMessage,
     isUnregisterMessage,
     isInitDoneMessage,
-    type DevtoolMessage,
   } from '../messages'
   import ActorDetail from './ActorDetail.svelte'
   import ActorsDropdown from './ActorsDropdown.svelte'
@@ -25,10 +24,16 @@
     }
   }
 
+  // communication with devtools
   const bkgPort: chrome.runtime.Port = connectBackgroundPage()
+  bkgPort.onMessage.addListener(handleInitDoneOnce)
+  bkgPort.onMessage.addListener(messageListener)
+  bkgPort.onDisconnect.addListener(() => {
+    bkgPort.onMessage.removeListener(messageListener)
+  })
 
   function log(text: string, data: any) {
-    const msg: DevtoolMessage = {
+    const msg: AnyMessage = {
       type: 'log',
       text,
       data,
@@ -40,6 +45,7 @@
     log,
   })
 
+  // TODO actor should become the InspectedActorObject
   let actors: Map<string, Actor> = null
 
   function handleInitDoneOnce(message: AnyMessage) {
@@ -48,7 +54,6 @@
       bkgPort.onMessage.removeListener(handleInitDoneOnce)
     }
   }
-  bkgPort.onMessage.addListener(handleInitDoneOnce)
 
   function messageListener(message: AnyMessage) {
     log('received', { message, bkgPort }) // TODO remove
@@ -127,10 +132,6 @@
     }
     return false
   }
-  bkgPort.onMessage.addListener(messageListener)
-  bkgPort.onDisconnect.addListener(() => {
-    bkgPort.onMessage.removeListener(messageListener)
-  })
 
   // -----------------------------
   let selectedActor: Actor

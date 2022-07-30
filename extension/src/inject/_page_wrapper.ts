@@ -1,3 +1,4 @@
+// TODO eliminate this script
 export {}
 
 const s = document.createElement('script')
