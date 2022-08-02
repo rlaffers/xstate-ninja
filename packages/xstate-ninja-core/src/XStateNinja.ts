@@ -61,39 +61,13 @@ export class XStateNinja implements XStateDevInterface {
 
   register(actor: AnyInterpreter | AnyActorRef) {
     this.log('register actor', actor)
-    // const detailRegister: RegisterMessage['data'] = {
-    //   id: actor.id,
-    //   sessionId: actor.sessionId,
-    //   initialized: actor.initialized,
-    //   status: actor.status,
-    //   done: actor.state.done,
-    //   stateValue: null,
-    // }
-    // globalThis.dispatchEvent(
-    //   new CustomEvent(MessageTypes.register, {
-    //     detail: detailRegister,
-    //   }),
-    // )
     const inspectedActor = createInspectedActorObject(actor)
 
-    // TODO handle this new register message in the ext
-    // globalThis.dispatchEvent(new ActorEvent(inspectedActor))
     const actorEvent = new ActorEvent(inspectedActor)
     this.log('actor event', actorEvent)
     globalThis.dispatchEvent(actorEvent)
 
     inspectedActor.subscription = actor.subscribe((state) => {
-      // const detail: UpdateMessage['data'] = {
-      //   id: actor.id,
-      //   sessionId: actor.sessionId,
-      //   initialized: actor.initialized,
-      //   status: actor.status,
-      //   // context: state.context,
-      //   stateValue: state.value,
-      //   changed: state.changed,
-      //   done: state.done,
-      //   event: sanitizeEventForSerialization(state.event),
-      // }
       inspectedActor.updatedAt = Date.now()
       if (state.done) {
         inspectedActor.dead = true
@@ -109,7 +83,6 @@ export class XStateNinja implements XStateDevInterface {
         ),
       )
 
-      // TODO handle this new update message in the ext
       globalThis.dispatchEvent(event)
 
       if (state.done) {
@@ -145,7 +118,6 @@ export class XStateNinja implements XStateDevInterface {
     inspectedActor.dead = true
     inspectedActor.updatedAt = Date.now()
 
-    // TODO handle this new unregister event
     globalThis.dispatchEvent(new UnregisterEvent(inspectedActor))
     delete this.actors[sessionId]
   }

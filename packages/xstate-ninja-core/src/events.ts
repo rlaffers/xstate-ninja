@@ -23,13 +23,6 @@ export interface XStateInspectActorsEvent {
   type: '@xstate/inspect.actors'
   actors: {
     [sessionId: string]: SerializedInspectedActorObject
-    // [sessionId: string]: {
-    //   sessionId: string
-    //   parent?: string
-    //   machine?: string // JSON-stringified
-    //   snapshot: string // JSON-stringified
-    //   createdAt: number
-    // }
   }
 
   // custom xstate-ninja events
@@ -51,7 +44,6 @@ export interface XStateInspectUpdateEvent {
 }
 
 // inspector -> client when actor is registered
-// TODO we need to include serialized inspected actor just like in actors event
 export interface XStateInspectActorEvent {
   type: '@xstate/inspect.actor'
   sessionId: string
@@ -98,11 +90,8 @@ export type XStateInspectAnyEvent =
   | XStateNinjaUnregisterEvent
 
 // -----------------------------
-// TODO implement these changes in the extension
 export enum EventTypes {
-  // update = 'xstate-ninja.update',
   update = '@xstate/inspect.update',
-  // register = 'xstate-ninja.register',
   actor = '@xstate/inspect.actor',
   actors = '@xstate/inspect.actors',
   connect = '@xstate/inspect.connect',

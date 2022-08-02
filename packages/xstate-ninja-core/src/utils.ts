@@ -116,18 +116,6 @@ export function omit(
   return result
 }
 
-// function serializeActorRef(
-//   actor: (AnyActorRef | AnyInterpreter) & { [k: string]: any },
-// ): string {
-//   const flatObject: Record<string, any> = {}
-//   for (const k in actor) {
-//     if (typeof actor[k] !== 'function') {
-//       flatObject[k] = actor[k]
-//     }
-//   }
-//   return JSON.stringify(flatObject)
-// }
-
 export function serializeActor(
   actor: InspectedActorObject,
 ): SerializedExtendedInspectedActorObject {

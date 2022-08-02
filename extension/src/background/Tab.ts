@@ -4,7 +4,7 @@ import type {
   XStateInspectReadEvent,
 } from 'xstate-ninja'
 import { isInitMessage, isLogMessage } from '../messages'
-import type { InitMessage, LogMessage } from '../messages'
+import type { AnyMessage } from '../messages'
 
 export class Tab {
   id: number
@@ -42,11 +42,7 @@ export class Tab {
   }
 
   forwardMessageToTab(
-    message:
-      | InitMessage
-      | LogMessage
-      | XStateInspectSendEvent
-      | XStateInspectReadEvent,
+    message: AnyMessage | XStateInspectSendEvent | XStateInspectReadEvent,
   ) {
     if (isInitMessage(message) || isLogMessage(message)) {
       // these events are handled by the MessageBroker

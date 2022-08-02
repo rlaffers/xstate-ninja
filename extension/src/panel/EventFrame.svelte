@@ -3,8 +3,6 @@
 
   export interface EventFrame {
     type: 'event'
-    // TODO changed
-    // event: AnyEventObject
     event: InspectedEventObject
     changed: boolean
   }

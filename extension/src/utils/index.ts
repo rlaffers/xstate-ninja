@@ -1,14 +1,14 @@
 import type { StateValue } from 'xstate'
 
-export function log(...args) {
+export function log(...args: any[]) {
   console.log('%c[LOG]', 'color: cyan', ...args)
 }
 
-export function error(...args) {
+export function error(...args: any[]) {
   console.log('%c[ERR]', 'color: red', ...args)
 }
 
-export function warn(...args) {
+export function warn(...args: any[]) {
   console.log('%c[WARN]', 'color: orangered', ...args)
 }
 

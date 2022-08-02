@@ -1,12 +1,7 @@
 import { ConnectEvent } from 'xstate-ninja'
 import { Tab } from './Tab'
 import { log, error } from '../utils'
-import {
-  isInitMessage,
-  isLogMessage,
-  type InitMessage,
-  type LogMessage,
-} from '../messages'
+import { isInitMessage, isLogMessage, type AnyMessage } from '../messages'
 
 interface IKeptAlivePort extends chrome.runtime.Port {
   _timer: NodeJS.Timeout
@@ -76,7 +71,7 @@ export class MessageBroker {
   }
 
   onInitMessageFromDevtoolsPanel(
-    message: InitMessage,
+    message: AnyMessage,
     devPort: chrome.runtime.Port,
   ) {
     if (devPort.name !== 'xstate-ninja.panel') {
@@ -144,10 +139,7 @@ export class MessageBroker {
     }
   }
 
-  logDevtoolsMessage(
-    message: InitMessage | LogMessage,
-    port: chrome.runtime.Port,
-  ) {
+  logDevtoolsMessage(message: AnyMessage, port: chrome.runtime.Port) {
     let bkg = 'gray'
     let args: any[]
     const { type, ...rest } = message

@@ -50,19 +50,24 @@
   // Array of EventFrame or StateFrame
   interface FrameList extends Array<EventFrame | StateNodeFrame> {
     sessionId?: string
-    history?: XStateInspectUpdateEvent[]
+    historySize: number
   }
 
-  let frames: FrameList = []
+  function createFrameList(): FrameList {
+    const frames = [] as FrameList
+    frames.sessionId = actor?.sessionId
+    frames.historySize = actor?.history?.length ?? 0
+    return frames
+  }
+
+  let frames: FrameList = createFrameList()
   // these props serve for tracking when the reactive statements below need to run
-  frames.sessionId = actor?.sessionId
-  frames.history = actor?.history
 
   $: if (actor) {
     if (actor.sessionId !== frames.sessionId) {
-      const newFrames: FrameList = []
+      const newFrames: FrameList = createFrameList()
       newFrames.sessionId = actor?.sessionId
-      newFrames.history = actor.history
+      newFrames.historySize = actor.history.length
       // populate frames from the selected actor's history
       if (actor?.history?.length > 0) {
         actor.history.forEach((update) => {
@@ -70,8 +75,8 @@
         })
       }
       frames = newFrames
-    } else if (actor.history !== frames.history) {
-      frames.history = actor.history
+    } else if (actor.history.length !== frames.historySize) {
+      frames.historySize = actor.history.length
       const update = last(actor.history)
       frames.push(...updateIntoFrames(update))
       frames = frames
