@@ -1,6 +1,6 @@
 import type { AnyEventObject, StateValue, InterpreterStatus } from 'xstate'
 import type { XStateInspectAnyEvent } from 'xstate-ninja'
-import type { Actor } from './actor'
+import type { Actor } from './_actor'
 
 export enum MessageTypes {
   update = 'xstate-ninja.update',
@@ -39,18 +39,18 @@ export interface RegisterMessage {
 }
 
 // TODO deprecated
-export interface UnregisterMessage {
-  type: MessageTypes.unregister
-  data: {
-    id: string
-    sessionId: string
-    initialized: boolean
-    status: InterpreterStatus
-    stateValue: StateValue
-    changed: boolean
-    done: boolean
-  }
-}
+// export interface UnregisterMessage {
+//   type: MessageTypes.unregister
+//   data: {
+//     id: string
+//     sessionId: string
+//     initialized: boolean
+//     status: InterpreterStatus
+//     stateValue: StateValue
+//     changed: boolean
+//     done: boolean
+//   }
+// }
 
 export interface InitMessage {
   type: MessageTypes.init
@@ -78,7 +78,7 @@ export type AnyMessage =
   | InitMessage
   | InitDoneMessage
   | RegisterMessage
-  | UnregisterMessage
+  // | UnregisterMessage
   | LogMessage
   | XStateInspectAnyEvent
 
@@ -102,11 +102,11 @@ export function isRegisterMessage(
   return message.type === MessageTypes.register
 }
 
-export function isUnregisterMessage(
-  message: AnyMessage,
-): message is UnregisterMessage {
-  return message.type === MessageTypes.unregister
-}
+// export function isUnregisterMessage(
+//   message: AnyMessage,
+// ): message is UnregisterMessage {
+//   return message.type === MessageTypes.unregister
+// }
 
 export function isLogMessage(message: AnyMessage): message is LogMessage {
   return message.type === 'log'

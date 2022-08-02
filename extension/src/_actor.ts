@@ -11,7 +11,6 @@ import type { InspectedActorObject } from 'xstate-ninja'
 //   history: Array<UpdateMessage['data']>
 // }
 
-// TODO this comes from ninja
 export type Actor = Omit<InspectedActorObject, 'actorRef' | 'subscription'> & {
   dead: boolean // status=2 || done
   // history: Array<XStateInspectUpdateEvent>

@@ -11,4 +11,7 @@ export default defineConfig({
     },
     rollupOptions: {},
   },
+  define: {
+    'process.env': {},
+  },
 })

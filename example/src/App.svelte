@@ -1,11 +1,13 @@
 <script lang="ts">
-  import xstateNinja, { interpret } from 'xstate-ninja'
+  import createXStateNinja, { interpret, LogLevels } from 'xstate-ninja'
   import { useSelector } from '@xstate/svelte'
   import { onDestroy } from 'svelte'
   import type { Readable } from 'svelte/store'
   import type { AnyInterpreter, State } from 'xstate'
   import logo from './assets/logo_512.png'
   import machine from './state-machine'
+
+  const xstateNinja = createXStateNinja({ logLevel: LogLevels.debug })
 
   let service = interpret(machine).start()
   let state: Readable<State<any>>

@@ -1,6 +1,7 @@
 import type {
-  XStateInspectReadEvent,
+  XStateInspectAnyEvent,
   XStateInspectSendEvent,
+  XStateInspectReadEvent,
 } from 'xstate-ninja'
 import { isInitMessage, isLogMessage } from '../messages'
 import type { InitMessage, LogMessage } from '../messages'
@@ -19,12 +20,13 @@ export class Tab {
       throw new Error(`Invalid port.name: ${port.name}`)
     }
     this.id = id
+    this.port = port
     if (devPort) {
       this.setDevPort(devPort)
     }
 
     // set up message forwarding from page -> devtools
-    port.onMessage.addListener((message) => {
+    port.onMessage.addListener((message: XStateInspectAnyEvent) => {
       this.devPort?.postMessage(message)
     })
 

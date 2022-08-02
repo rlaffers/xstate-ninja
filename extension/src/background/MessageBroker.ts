@@ -1,6 +1,6 @@
 import { ConnectEvent } from 'xstate-ninja'
 import { Tab } from './Tab'
-import { log, error } from '../utils'
+import { log, error, pick } from '../utils'
 import {
   isInitMessage,
   isLogMessage,
@@ -89,7 +89,7 @@ export class MessageBroker {
       const tab = this.tabs.get(message.tabId)
       if (tab) {
         tab.setDevPort(devPort)
-        tab.port.postMessage(new ConnectEvent())
+        tab.port.postMessage(new ConnectEvent().detail)
       }
     }
   }

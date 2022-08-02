@@ -6,6 +6,10 @@ import {
   InvokeDefinition,
   Guard,
 } from 'xstate'
+import {
+  InspectedActorObject,
+  SerializedExtendedInspectedActorObject,
+} from './types'
 
 export function isInterpreterLike(
   entity: AnyActorRef | AnyInterpreter,
@@ -110,4 +114,28 @@ export function omit(
     }
   }
   return result
+}
+
+// function serializeActorRef(
+//   actor: (AnyActorRef | AnyInterpreter) & { [k: string]: any },
+// ): string {
+//   const flatObject: Record<string, any> = {}
+//   for (const k in actor) {
+//     if (typeof actor[k] !== 'function') {
+//       flatObject[k] = actor[k]
+//     }
+//   }
+//   return JSON.stringify(flatObject)
+// }
+
+export function serializeActor(
+  actor: InspectedActorObject,
+): SerializedExtendedInspectedActorObject {
+  const serialized = omit(['actorRef', 'subscription'], actor)
+  serialized.snapshot = JSON.stringify(serialized.snapshot)
+  serialized.actorId = actor.actorRef.id
+  if (serialized.machine !== undefined) {
+    serialized.machine = JSON.stringify(serialized.machine)
+  }
+  return serialized as SerializedExtendedInspectedActorObject
 }

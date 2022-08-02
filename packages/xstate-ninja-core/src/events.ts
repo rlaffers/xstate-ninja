@@ -1,11 +1,12 @@
-import type { AnyEventObject } from 'xstate'
+import { InterpreterStatus } from 'xstate'
+import type { AnyEventObject, AnyActorRef, AnyInterpreter } from 'xstate'
 import {
   InspectedEventObject,
   InspectedActorObject,
+  SerializedExtendedInspectedActorObject,
   SerializedInspectedActorObject,
-  SerializedInspectedActorObjectSimple,
 } from './types'
-import { isInterpreterLike, omit } from './utils'
+import { isInterpreterLike, serializeActor } from './utils'
 
 // client -> inspector
 export interface XStateInspectConnectEvent {
@@ -21,17 +22,20 @@ export interface XStateInspectConnectedEvent {
 export interface XStateInspectActorsEvent {
   type: '@xstate/inspect.actors'
   actors: {
-    [sessionId: string]: {
-      sessionId: string
-      parent?: string
-      machine?: string // JSON-stringified
-      snapshot: string // JSON-stringified
-      createdAt: number
-    }
+    [sessionId: string]: SerializedInspectedActorObject
+    // [sessionId: string]: {
+    //   sessionId: string
+    //   parent?: string
+    //   machine?: string // JSON-stringified
+    //   snapshot: string // JSON-stringified
+    //   createdAt: number
+    // }
   }
 
   // custom xstate-ninja events
-  inspectedActors: SerializedInspectedActorObject[]
+  inspectedActors: {
+    [sessionId: string]: SerializedExtendedInspectedActorObject
+  }
 }
 
 // inspector -> client on actor updates
@@ -45,6 +49,7 @@ export interface XStateInspectUpdateEvent {
 }
 
 // inspector -> client when actor is registered
+// TODO we need to include serialized inspected actor just like in actors event
 export interface XStateInspectActorEvent {
   type: '@xstate/inspect.actor'
   sessionId: string
@@ -52,6 +57,7 @@ export interface XStateInspectActorEvent {
   createdAt: number
   // custom xstate-ninja events
   history: XStateInspectUpdateEvent[]
+  inspectedActor: SerializedExtendedInspectedActorObject
 }
 
 // Client -> Inspector
@@ -68,6 +74,17 @@ export interface XStateInspectReadEvent {
   type: '@xstate/inspect.read'
 }
 
+// custom xstate-ninja event to notify client about an un registered actor (no more updates will be coming)
+// Inspector -> Client
+export interface XStateNinjaUnregisterEvent {
+  type: '@xstate-ninja/unregister'
+  sessionId: string
+  snapshot: string
+  status: 0 | 1 | 2
+  dead: boolean
+  createdAt: number
+}
+
 export type XStateInspectAnyEvent =
   | XStateInspectReadEvent
   | XStateInspectSendEvent
@@ -76,6 +93,7 @@ export type XStateInspectAnyEvent =
   | XStateInspectActorsEvent
   | XStateInspectConnectEvent
   | XStateInspectConnectedEvent
+  | XStateNinjaUnregisterEvent
 
 // -----------------------------
 // TODO implement these changes in the extension
@@ -94,162 +112,216 @@ export enum EventTypes {
   unregister = '@xstate-ninja/unregister',
 }
 
-export class ActorEvent extends Event implements XStateInspectActorEvent {
+export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
   type: EventTypes.actor = EventTypes.actor
-  sessionId: string
-  createdAt: number
-  machine?: string
-  history: XStateInspectUpdateEvent[]
 
   constructor(actor: InspectedActorObject) {
-    super(EventTypes.actor)
-    this.sessionId = actor.sessionId
-    this.history = actor.history
-    if (isInterpreterLike(actor.actorRef)) {
-      this.machine = JSON.stringify(actor.actorRef.machine)
-    }
-    this.createdAt = Date.now()
+    super(EventTypes.actor, {
+      detail: {
+        type: EventTypes.actor,
+        sessionId: actor.sessionId,
+        history: actor.history,
+        createdAt: Date.now(),
+        machine: isInterpreterLike(actor.actorRef)
+          ? JSON.stringify(actor.actorRef.machine)
+          : undefined,
+        inspectedActor: serializeActor(actor),
+      },
+    })
   }
 }
 
-export class UpdateEvent extends Event implements XStateInspectUpdateEvent {
+export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
   type: EventTypes.update = EventTypes.update
-  sessionId: string
-  snapshot: string // JSON-stringified snapshot
-  event: InspectedEventObject
-  status: 0 | 1 | 2 // Actor status
-  createdAt: number
 
   constructor(actor: InspectedActorObject) {
-    super(EventTypes.actor)
-    this.createdAt = Date.now()
-    this.sessionId = actor.sessionId
-    this.snapshot = actor.actorRef.getSnapshot()
-    if (isInterpreterLike(actor.actorRef)) {
-      this.status = actor.actorRef.status
-      const event = actor.actorRef.state.event
-      this.event = {
-        name: event.type,
-        data: event,
-        origin: actor.sessionId,
+    super(EventTypes.update, {
+      detail: {
+        type: EventTypes.update,
+        sessionId: actor.sessionId,
+        snapshot: JSON.stringify(actor.actorRef.getSnapshot()),
         createdAt: Date.now(),
-      }
-    } else {
-      // TODO how to get status and event from actors which are not interpreters?
-      this.status = 0
-      this.event = {
-        name: '???',
-        data: { type: '???' },
-        origin: actor.sessionId,
-        createdAt: Date.now(),
-      }
-    }
+        // TODO how to get status and event from actors which are not interpreters?
+        status: isInterpreterLike(actor.actorRef) ? actor.actorRef.status : 0,
+        event: isInterpreterLike(actor.actorRef)
+          ? createInspectedEventObject(
+              actor.actorRef.state.event,
+              actor.sessionId,
+            )
+          : createInspectedEventObject({ type: '' }, actor.sessionId),
+      },
+    })
   }
 }
 
-export class UnregisterEvent extends Event {
+export class UnregisterEvent extends CustomEvent<XStateNinjaUnregisterEvent> {
   type: EventTypes.unregister = EventTypes.unregister
-  sessionId: string
-  snapshot: string
-  status: 0 | 1 | 2
-  createdAt: number
 
   constructor(actor: InspectedActorObject) {
-    super(EventTypes.unregister)
-    this.createdAt = Date.now()
-    this.sessionId = actor.sessionId
-    this.snapshot = actor.actorRef.getSnapshot()
-    if (isInterpreterLike(actor.actorRef)) {
-      this.status = actor.actorRef.status
-    } else {
-      // TODO how to get status from actors which are not interpreters?
-      this.status = 0
-    }
+    super(EventTypes.actor, {
+      detail: {
+        type: EventTypes.unregister,
+        sessionId: actor.sessionId,
+        snapshot: JSON.stringify(actor.actorRef.getSnapshot()),
+        createdAt: Date.now(),
+        // TODO how to get status and event from actors which are not interpreters?
+        status: isInterpreterLike(actor.actorRef) ? actor.actorRef.status : 0,
+        dead: actor.dead,
+      },
+    })
   }
 }
 
-export class ConnectEvent extends Event implements XStateInspectConnectEvent {
+export class ConnectEvent extends CustomEvent<XStateInspectConnectEvent> {
   type: EventTypes.connect = EventTypes.connect
 
   constructor() {
-    super(EventTypes.connect)
+    super(EventTypes.connect, {
+      detail: {
+        type: EventTypes.connect,
+      },
+    })
   }
 }
 
-export class ConnectedEvent
-  extends Event
-  implements XStateInspectConnectedEvent
-{
+export class ConnectedEvent extends CustomEvent<XStateInspectConnectedEvent> {
   type: EventTypes.connected = EventTypes.connected
 
   constructor() {
-    super(EventTypes.connected)
+    super(EventTypes.connected, {
+      detail: {
+        type: EventTypes.connected,
+      },
+    })
   }
 }
 
-export class ReadEvent extends Event implements XStateInspectReadEvent {
+export class ReadEvent extends CustomEvent<XStateInspectReadEvent> {
   type: EventTypes.read = EventTypes.read
 
   constructor() {
-    super(EventTypes.read)
+    super(EventTypes.read, {
+      detail: {
+        type: EventTypes.read,
+      },
+    })
   }
 }
 
-export class SendEvent extends Event implements XStateInspectSendEvent {
+export class SendEvent extends CustomEvent<XStateInspectSendEvent> {
   type: EventTypes.send = EventTypes.send
-  sessionId: string
-  event: AnyEventObject
-  createdAt: number
 
   constructor(event: AnyEventObject, sessionId: string) {
-    super(EventTypes.send)
-    this.createdAt = Date.now()
-    this.sessionId = sessionId
-    this.event = event
+    super(EventTypes.send, {
+      detail: {
+        type: EventTypes.send,
+        sessionId: sessionId,
+        event: event,
+        createdAt: Date.now(),
+      },
+    })
   }
 }
 
-export class ActorsEvent extends Event implements XStateInspectActorsEvent {
+export class ActorsEvent extends CustomEvent<XStateInspectActorsEvent> {
   type: EventTypes.actors = EventTypes.actors
-  actors: {
-    [sessionId: string]: SerializedInspectedActorObjectSimple
-  }
-
-  // custom xstate-ninja events
-  inspectedActors: SerializedInspectedActorObject[]
 
   constructor(actors: InspectedActorObject[]) {
-    super(EventTypes.actors)
-
-    this.actors = actors.reduce(
-      (result: Record<string, SerializedInspectedActorObjectSimple>, actor) => {
-        result[actor.sessionId] = {
-          sessionId: actor.sessionId,
-          parent: actor.parent,
-          machine: JSON.stringify(actor.machine),
-          snapshot: JSON.stringify(actor.snapshot),
-          createdAt: actor.createdAt,
-        }
-        return result
+    super(EventTypes.actors, {
+      detail: {
+        type: EventTypes.actors,
+        actors: actors.reduce(
+          (result: Record<string, SerializedInspectedActorObject>, actor) => {
+            result[actor.sessionId] = {
+              sessionId: actor.sessionId,
+              parent: actor.parent,
+              machine: JSON.stringify(actor.machine),
+              snapshot: JSON.stringify(actor.snapshot),
+              createdAt: actor.createdAt,
+            }
+            return result
+          },
+          {},
+        ),
+        inspectedActors: actors.reduce(
+          (
+            result: Record<string, SerializedExtendedInspectedActorObject>,
+            actor,
+          ) => {
+            result[actor.sessionId] = serializeActor(actor)
+            return result
+          },
+          {},
+        ),
       },
-      {},
-    )
+    })
+  }
+}
 
-    this.inspectedActors = actors.reduce(
-      (result: SerializedInspectedActorObject[], actor) => {
-        result.push(this.serializeActor(actor))
-        return result
-      },
-      [],
-    )
+export function isXStateInspectActorsEvent(
+  event: XStateInspectAnyEvent,
+): event is XStateInspectActorsEvent {
+  return event.type === EventTypes.actors
+}
+
+export function isXStateInspectActorEvent(
+  event: XStateInspectAnyEvent,
+): event is XStateInspectActorEvent {
+  return event.type === EventTypes.actor
+}
+
+export function isXStateNinjaUnregisterEvent(
+  event: XStateInspectAnyEvent,
+): event is XStateNinjaUnregisterEvent {
+  return event.type === EventTypes.unregister
+}
+
+export function isXStateInspectUpdateEvent(
+  event: XStateInspectAnyEvent,
+): event is XStateInspectUpdateEvent {
+  return event.type === EventTypes.update
+}
+
+// TODO move them to utils
+export function createInspectedActorObject(
+  actor: AnyActorRef | AnyInterpreter,
+): InspectedActorObject {
+  const inspectedActor: InspectedActorObject = {
+    actorRef: actor,
+    sessionId: '',
+    parent: undefined,
+    snapshot: actor.getSnapshot(),
+    machine: undefined,
+    events: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    status: 0,
+    history: [],
+    dead: isInterpreterLike(actor)
+      ? actor.state.done || actor.status === InterpreterStatus.Stopped
+      : false,
   }
 
-  serializeActor(actor: InspectedActorObject): SerializedInspectedActorObject {
-    const serialized = omit(['actorRef', 'subscription'], actor)
-    serialized.snapshot = JSON.stringify(serialized.snapshot)
-    if (serialized.machine !== undefined) {
-      serialized.machine = JSON.stringify(serialized.machine)
-    }
-    return serialized as SerializedInspectedActorObject
+  if (isInterpreterLike(actor)) {
+    inspectedActor.sessionId = actor.sessionId
+    inspectedActor.parent = actor.parent?.sessionId
+    inspectedActor.status = actor.status
+    inspectedActor.machine = actor.machine.definition
+  } else {
+    inspectedActor.sessionId =
+      globalThis.crypto?.randomUUID() ?? String(Math.round(Math.random() * 1e6))
+  }
+  return inspectedActor
+}
+
+export function createInspectedEventObject(
+  event: AnyEventObject,
+  originSessionId: string,
+): InspectedEventObject {
+  return {
+    name: event.type,
+    data: event,
+    origin: originSessionId,
+    createdAt: Date.now(),
   }
 }

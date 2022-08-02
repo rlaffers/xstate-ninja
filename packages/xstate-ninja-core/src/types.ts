@@ -26,17 +26,32 @@ export interface InspectedActorObject {
   // xstate-ninja custom props
   subscription?: Subscription
   history: XStateInspectUpdateEvent[]
+  // dead actor is unsubscribed, done or stopped
+  dead: boolean
 }
 
-export type SerializedInspectedActorObject = Omit<
+// used for ActorsEvent.inspectedActors custom prop
+export type SerializedExtendedInspectedActorObject = Omit<
   InspectedActorObject,
   'actorRef' | 'subscription' | 'snapshot' | 'machine'
 > & {
   snapshot: string // JSON-stringified
+  actorId: string
   machine?: string // JSON-stringified
 }
 
-export interface SerializedInspectedActorObjectSimple {
+// The same as SerializedExtendedInspectedActorObject with snapshot and machine deserialized. Importanly,
+// compared to InspectedActorObject the "actorRef" and "subscription" props are missing
+export type DeserializedExtendedInspectedActorObject = Omit<
+  SerializedExtendedInspectedActorObject,
+  'snapshot' | 'machine'
+> & {
+  snapshot: any
+  machine?: any
+}
+
+// This is used for ActorsEvent.actors
+export interface SerializedInspectedActorObject {
   sessionId: string
   parent?: string
   machine?: string // JSON-stringified

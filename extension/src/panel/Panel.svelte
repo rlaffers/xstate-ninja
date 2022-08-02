@@ -1,39 +1,97 @@
 <script lang="ts">
   import { setContext } from 'svelte'
+  import { InterpreterStatus } from 'xstate'
   import {
-    isUpdateMessage,
-    isRegisterMessage,
-    isUnregisterMessage,
-    isInitDoneMessage,
-  } from '../messages'
+    isXStateInspectActorsEvent,
+    isXStateInspectActorEvent,
+    isXStateInspectUpdateEvent,
+    isXStateNinjaUnregisterEvent,
+  } from 'xstate-ninja'
+  import type {
+    XStateInspectAnyEvent,
+    XStateInspectUpdateEvent,
+    SerializedExtendedInspectedActorObject,
+    DeserializedExtendedInspectedActorObject,
+  } from 'xstate-ninja'
   import ActorDetail from './ActorDetail.svelte'
   import ActorsDropdown from './ActorsDropdown.svelte'
   import { connectBackgroundPage } from './connectBackgroundPage'
   import Intro from './Intro.svelte'
   import Tracker from './Tracker.svelte'
-  import type { AnyMessage, UpdateMessage, RegisterMessage } from '../messages'
-  import type { Actor } from '../actor'
+  import type { Actor } from '../_actor'
 
-  function createActorFromMessageData(
-    data: UpdateMessage['data'] | RegisterMessage['data'],
-  ): Actor {
+  // TODO deprecated
+  // function createActorFromMessageData(
+  //   data: UpdateMessage['data'] | RegisterMessage['data'],
+  // ): Actor {
+  //   return {
+  //     ...data,
+  //     dead: data.status === 2 || data.done,
+  //     history: [],
+  //   }
+  // }
+
+  function deserializeInspectedActor(
+    serializedActor: SerializedExtendedInspectedActorObject,
+  ): DeserializedExtendedInspectedActorObject {
     return {
-      ...data,
-      dead: data.status === 2 || data.done,
-      history: [],
+      ...serializedActor,
+      snapshot: JSON.parse(serializedActor.snapshot),
+      machine:
+        serializedActor.machine != null
+          ? JSON.parse(serializedActor.machine)
+          : undefined,
+    } as DeserializedExtendedInspectedActorObject
+  }
+
+  // This is not typically used. An actor is typically created from the ActorEvent or ActorsEvent.
+  function createActorFromUpdateEvent(
+    event: XStateInspectUpdateEvent,
+  ): DeserializedExtendedInspectedActorObject {
+    const snapshot = JSON.parse(event.snapshot)
+    const actor = {
+      sessionId: event.sessionId,
+      parent: undefined,
+      snapshot,
+      machine: undefined,
+      events: [event.event],
+      createdAt: event.createdAt,
+      updatedAt: event.createdAt,
+      status: event.status,
+      // xstate-ninja custom props
+      history: [event],
+      dead: event.status === InterpreterStatus.Stopped || snapshot.done,
     }
+    return actor
+  }
+
+  function updateActorFromUpdateEvent(
+    actor: DeserializedExtendedInspectedActorObject,
+    event: XStateInspectUpdateEvent,
+  ): DeserializedExtendedInspectedActorObject {
+    const snapshot = JSON.parse(event.snapshot)
+    actor.history.push(event)
+    actor.events.push(event.event)
+    const updatedActor = {
+      ...actor,
+      snapshot,
+      status: event.status,
+      dead: event.status === InterpreterStatus.Stopped || snapshot.done,
+      updatedAt: event.createdAt,
+      history: actor.history,
+    }
+    return updatedActor
   }
 
   // communication with devtools
   const bkgPort: chrome.runtime.Port = connectBackgroundPage()
-  bkgPort.onMessage.addListener(handleInitDoneOnce)
   bkgPort.onMessage.addListener(messageListener)
   bkgPort.onDisconnect.addListener(() => {
     bkgPort.onMessage.removeListener(messageListener)
   })
 
   function log(text: string, data: any) {
-    const msg: AnyMessage = {
+    const msg: any = {
       type: 'log',
       text,
       data,
@@ -45,37 +103,38 @@
     log,
   })
 
-  // TODO actor should become the InspectedActorObject
-  let actors: Map<string, Actor> = null
+  let actors: Map<string, DeserializedExtendedInspectedActorObject> = null
 
-  function handleInitDoneOnce(message: AnyMessage) {
-    if (isInitDoneMessage(message)) {
-      actors = new Map(message.data.actors)
-      bkgPort.onMessage.removeListener(handleInitDoneOnce)
+  function messageListener(event: XStateInspectAnyEvent) {
+    log('received', { event, bkgPort }) // TODO remove
+
+    if (isXStateInspectActorsEvent(event)) {
+      actors = new Map(
+        Object.entries(event.inspectedActors).map(([k, v]) => [
+          k,
+          deserializeInspectedActor(v),
+        ]),
+      )
     }
-  }
 
-  function messageListener(message: AnyMessage) {
-    log('received', { message, bkgPort }) // TODO remove
-
-    if (isRegisterMessage(message)) {
+    if (isXStateInspectActorEvent(event)) {
       if (!actors) {
         actors = new Map()
       }
       actors.set(
-        message.data.sessionId,
-        createActorFromMessageData(message.data),
+        event.sessionId,
+        deserializeInspectedActor(event.inspectedActor),
       )
       actors = actors
       return
     }
 
-    if (isUnregisterMessage(message)) {
+    if (isXStateNinjaUnregisterEvent(event)) {
       if (!actors) return
-      const actor = actors.get(message.data.sessionId)
+      const actor = actors.get(event.sessionId)
       if (!actor) {
         console.error(
-          `The stopped actor ${message.data.sessionId} is not in the list of actors.`,
+          `The stopped actor ${event.sessionId} is not in the list of actors.`,
         )
         return
       }
@@ -87,21 +146,15 @@
       return
     }
 
-    if (isUpdateMessage(message)) {
+    if (isXStateInspectUpdateEvent(event)) {
       if (!actors) {
         actors = new Map()
       }
-      const actor = actors.get(message.data.sessionId)
+      const actor = actors.get(event.sessionId)
       if (!actor) {
-        actors.set(
-          message.data.sessionId,
-          createActorFromMessageData(message.data),
-        )
+        actors.set(event.sessionId, createActorFromUpdateEvent(event))
       } else {
-        actors.set(message.data.sessionId, {
-          ...createActorFromMessageData(message.data),
-          history: [...actor.history, message.data],
-        })
+        actors.set(event.sessionId, updateActorFromUpdateEvent(actor, event))
       }
       actors = actors
 
@@ -134,7 +187,7 @@
   }
 
   // -----------------------------
-  let selectedActor: Actor
+  let selectedActor: DeserializedExtendedInspectedActorObject
 
   chrome.devtools.network.onNavigated.addListener(() => {
     actors = new Map()
