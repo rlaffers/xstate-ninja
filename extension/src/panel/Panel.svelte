@@ -18,18 +18,6 @@
   import { connectBackgroundPage } from './connectBackgroundPage'
   import Intro from './Intro.svelte'
   import Tracker from './Tracker.svelte'
-  import type { Actor } from '../_actor'
-
-  // TODO deprecated
-  // function createActorFromMessageData(
-  //   data: UpdateMessage['data'] | RegisterMessage['data'],
-  // ): Actor {
-  //   return {
-  //     ...data,
-  //     dead: data.status === 2 || data.done,
-  //     history: [],
-  //   }
-  // }
 
   function deserializeInspectedActor(
     serializedActor: SerializedExtendedInspectedActorObject,
@@ -61,6 +49,7 @@
       // xstate-ninja custom props
       history: [event],
       dead: event.status === InterpreterStatus.Stopped || snapshot.done,
+      actorId: event.actorId,
     }
     return actor
   }

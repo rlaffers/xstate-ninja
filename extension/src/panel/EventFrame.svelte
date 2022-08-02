@@ -1,9 +1,11 @@
 <script context="module" lang="ts">
-  import type { AnyEventObject } from 'xstate'
+  import type { InspectedEventObject } from 'xstate-ninja'
 
   export interface EventFrame {
     type: 'event'
-    event: AnyEventObject
+    // TODO changed
+    // event: AnyEventObject
+    event: InspectedEventObject
     changed: boolean
   }
 </script>
@@ -73,11 +75,11 @@
   if (data.changed) {
     className = 'changed-state'
     description = 'This event triggered a state transition'
-  } else if (isTransitionGuarded(data.event.type, configuration)) {
+  } else if (isTransitionGuarded(data.event.data.type, configuration)) {
     className = 'guard-not-passed'
     description =
       'A guard prevented this event from triggering a state transition'
-  } else if (isTransitionForbidden(data.event.type, configuration)) {
+  } else if (isTransitionForbidden(data.event.data.type, configuration)) {
     className = 'forbidden'
     description = 'Transition for this event is forbidden explicitly'
   } else {
@@ -86,7 +88,7 @@
 </script>
 
 <div class="event-frame {className}" title={description} in:fade>
-  {data.event.type}
+  {data.event.data.type}
 </div>
 
 <style>

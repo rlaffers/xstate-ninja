@@ -46,6 +46,8 @@ export interface XStateInspectUpdateEvent {
   event: InspectedEventObject
   status: 0 | 1 | 2 // Actor status
   createdAt: number
+  // xstate-ninja custom props
+  actorId: string
 }
 
 // inspector -> client when actor is registered
@@ -139,6 +141,7 @@ export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
       detail: {
         type: EventTypes.update,
         sessionId: actor.sessionId,
+        actorId: actor.actorRef.id,
         snapshot: JSON.stringify(actor.actorRef.getSnapshot()),
         createdAt: Date.now(),
         // TODO how to get status and event from actors which are not interpreters?
@@ -298,7 +301,7 @@ export function createInspectedActorObject(
     status: 0,
     history: [],
     dead: isInterpreterLike(actor)
-      ? actor.state.done || actor.status === InterpreterStatus.Stopped
+      ? actor.state?.done || actor.status === InterpreterStatus.Stopped
       : false,
   }
 

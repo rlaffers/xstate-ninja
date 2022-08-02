@@ -18,7 +18,7 @@ export function omit(prop: string, obj: Record<string, unknown>) {
   return rest
 }
 
-export function last(list: []) {
+export function last(list: any[]) {
   return list[list.length - 1]
 }
 

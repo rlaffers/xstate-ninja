@@ -1,6 +1,6 @@
 import { ConnectEvent } from 'xstate-ninja'
 import { Tab } from './Tab'
-import { log, error, pick } from '../utils'
+import { log, error } from '../utils'
 import {
   isInitMessage,
   isLogMessage,

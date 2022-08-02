@@ -1,40 +1,48 @@
 <script lang="ts">
   import { beforeUpdate, afterUpdate } from 'svelte'
+  import type {
+    DeserializedExtendedInspectedActorObject,
+    XStateInspectUpdateEvent,
+  } from 'xstate-ninja'
   import StateNodeFrameComponent, {
     type StateNodeFrame,
   } from './StateNodeFrame.svelte'
   import EventFrameComponent, { type EventFrame } from './EventFrame.svelte'
   import ArrowDown from './ArrowDown.svelte'
   import { last } from '../utils'
-  import type { UpdateMessage } from '../messages'
-  import type { Actor } from './actor'
 
-  export let actor: Actor = null
+  export let actor: DeserializedExtendedInspectedActorObject = null
 
   const STATE_NODE = 'stateNode'
   const EVENT = 'event'
 
-  function createEventFrame(update: UpdateMessage['data']): EventFrame {
+  function createEventFrame(
+    update: XStateInspectUpdateEvent,
+    snapshot: any,
+  ): EventFrame {
     return {
       type: EVENT,
       event: update.event,
-      changed: update.changed,
+      changed: snapshot.changed,
     }
   }
 
-  function createStateNodeFrame(update: UpdateMessage['data']): StateNodeFrame {
+  function createStateNodeFrame(snapshot: any): StateNodeFrame {
     return {
       type: STATE_NODE,
-      stateValue: update.stateValue,
-      changed: update.changed,
+      stateValue: snapshot.value,
+      changed: snapshot.changed,
     }
   }
 
-  function updateIntoFrames(update: UpdateMessage['data']): Array<EventFrame> {
+  function updateIntoFrames(
+    update: XStateInspectUpdateEvent,
+  ): Array<EventFrame> {
     const frames = []
-    frames.push(createEventFrame(update))
-    if (update.changed) {
-      frames.push(createStateNodeFrame(update))
+    const snapshot = JSON.parse(update.snapshot)
+    frames.push(createEventFrame(update, snapshot))
+    if (snapshot.changed) {
+      frames.push(createStateNodeFrame(snapshot))
     }
     return frames
   }
@@ -42,7 +50,7 @@
   // Array of EventFrame or StateFrame
   interface FrameList extends Array<EventFrame | StateNodeFrame> {
     sessionId?: string
-    history?: Array<UpdateMessage['data']>
+    history?: XStateInspectUpdateEvent[]
   }
 
   let frames: FrameList = []
