@@ -17,7 +17,6 @@ import {
   SendEvent,
   EventTypes,
   createInspectedActorObject,
-  createInspectedEventObject,
 } from './events'
 
 export enum LogLevels {
@@ -68,6 +67,7 @@ export class XStateNinja implements XStateDevInterface {
     globalThis.dispatchEvent(actorEvent)
 
     inspectedActor.subscription = actor.subscribe((state) => {
+      this.log('» actor updated', state)
       inspectedActor.updatedAt = Date.now()
       if (state.done) {
         inspectedActor.dead = true
@@ -76,12 +76,7 @@ export class XStateNinja implements XStateDevInterface {
       this.log('update event', event)
 
       inspectedActor.history.push(event.detail)
-      inspectedActor.events.push(
-        createInspectedEventObject(
-          state?.event ?? { type: '' },
-          inspectedActor.sessionId,
-        ),
-      )
+      inspectedActor.events.push(event.detail.event)
 
       globalThis.dispatchEvent(event)
 

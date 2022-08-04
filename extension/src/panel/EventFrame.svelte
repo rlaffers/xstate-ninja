@@ -1,4 +1,5 @@
 <script context="module" lang="ts">
+  import { TransitionTypes } from 'xstate-ninja'
   import type { InspectedEventObject } from 'xstate-ninja'
 
   export interface EventFrame {
@@ -10,78 +11,31 @@
 
 <script lang="ts">
   import { fade } from 'svelte/transition'
-  import type { StateNode } from 'xstate'
 
   export let data: EventFrame
 
-  // Sorts state nodes. The lowest one (the highest order) comes first.
-  function sortStateNodes(stateNodes: StateNode[]) {
-    return stateNodes.slice().sort((a, b) => (a.order < b.order ? -1 : 1))
-  }
-
-  // TODO how does configuration look for parallel states?
-  function isTransitionGuarded(eventType: string, configuration: StateNode[]) {
-    for (const stateNode of sortStateNodes(configuration)) {
-      if (stateNode.config.on === undefined) {
-        continue
-      }
-      if (stateNode.config.on[eventType] !== undefined) {
-        const transition = stateNode.config.on[eventType]
-        if (typeof transition === 'string') {
-          return false
-        } else if (Array.isArray(transition)) {
-          return transition.every((x) => x.cond !== undefined)
-        } else {
-          return transition.cond !== undefined
-        }
-      }
-      // forbidden transition
-      if (
-        Object.prototype.hasOwnProperty.call(stateNode.config.on, eventType) &&
-        stateNode.config.on[eventType] === undefined
-      ) {
-        return false
-      }
-    }
-    return false
-  }
-
-  function isTransitionForbidden(
-    eventType: string,
-    configuration: StateNode[],
-  ) {
-    for (const stateNode of sortStateNodes(configuration)) {
-      if (
-        stateNode.config.on !== undefined &&
-        Object.prototype.hasOwnProperty.call(stateNode.config.on, eventType) &&
-        stateNode.config.on[eventType] === undefined
-      ) {
-        return true
-      }
-      if (stateNode.config.on?.[eventType] !== undefined) {
-        return false
-      }
-    }
-    return false
-  }
-
-  // TODO get configuration from the actor
-  const configuration = []
-
   let className = ''
   let description = ''
-  if (data.changed) {
-    className = 'changed-state'
-    description = 'This event triggered a state transition'
-  } else if (isTransitionGuarded(data.event.data.type, configuration)) {
-    className = 'guard-not-passed'
-    description =
-      'A guard prevented this event from triggering a state transition'
-  } else if (isTransitionForbidden(data.event.data.type, configuration)) {
-    className = 'forbidden'
-    description = 'Transition for this event is forbidden explicitly'
-  } else {
-    description = 'No transition exists for this event'
+  switch (data.event.transitionType) {
+    case TransitionTypes.taken:
+      className = 'changed-state'
+      description = 'This event triggered a state transition'
+      break
+
+    case TransitionTypes.guardedAndNoChange:
+      className = 'guard-not-passed'
+      description =
+        'A guard prevented this event from triggering a state transition'
+      break
+
+    case TransitionTypes.forbidden:
+      className = 'forbidden'
+      description = 'Transition for this event is forbidden explicitly'
+      break
+
+    case TransitionTypes.missing:
+      description = 'No transition exists for this event'
+      break
   }
 </script>
 
@@ -112,8 +66,8 @@
   }
 
   .event-frame.guard-not-passed {
-    border-color: var(--orange);
-    color: var(--orange);
+    border-color: var(--yellow);
+    color: var(--yellow);
   }
 
   .event-frame.forbidden {

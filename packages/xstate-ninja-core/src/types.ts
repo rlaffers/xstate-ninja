@@ -6,11 +6,21 @@ import type {
 } from 'xstate'
 import type { XStateInspectUpdateEvent } from './events'
 
+export enum TransitionTypes {
+  unknown,
+  missing, // empty
+  forbidden, // red
+  guardedAndNoChange, // orange
+  taken, // full color
+}
+
 export interface InspectedEventObject {
   name: string // Event type
   data: AnyEventObject // The actual event object
   origin?: string // Session ID
   createdAt: number // Timestamp
+  // xstate-ninja custom props
+  transitionType: TransitionTypes
 }
 
 export interface InspectedActorObject {

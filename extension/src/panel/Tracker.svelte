@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { beforeUpdate, afterUpdate } from 'svelte'
+  import { beforeUpdate, afterUpdate, getContext } from 'svelte'
   import type {
     DeserializedExtendedInspectedActorObject,
     XStateInspectUpdateEvent,
@@ -15,6 +15,9 @@
 
   const STATE_NODE = 'stateNode'
   const EVENT = 'event'
+
+  // TODO remove
+  const { log } = getContext('logger')
 
   function createEventFrame(
     update: XStateInspectUpdateEvent,
@@ -64,6 +67,7 @@
   // these props serve for tracking when the reactive statements below need to run
 
   $: if (actor) {
+    log('actor changed', actor) // TODO
     if (actor.sessionId !== frames.sessionId) {
       const newFrames: FrameList = createFrameList()
       newFrames.sessionId = actor?.sessionId

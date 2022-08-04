@@ -1,12 +1,36 @@
-import { InterpreterStatus } from 'xstate'
-import type { AnyEventObject, AnyActorRef, AnyInterpreter } from 'xstate'
+import { InterpreterStatus, StateNode } from 'xstate'
+import type {
+  AnyEventObject,
+  AnyActorRef,
+  AnyInterpreter,
+  EventObject,
+  TransitionConfig,
+  TransitionsConfig,
+} from 'xstate'
 import {
   InspectedEventObject,
   InspectedActorObject,
   SerializedExtendedInspectedActorObject,
   SerializedInspectedActorObject,
+  TransitionTypes,
 } from './types'
 import { isInterpreterLike, serializeActor } from './utils'
+
+// from xstate
+// TODO move to types
+type TransitionsConfigArray<TContext, TEvent extends EventObject> = Array<
+  | (TEvent extends EventObject
+      ? TransitionConfig<TContext, TEvent> & {
+          event: TEvent['type']
+        }
+      : never)
+  | (TransitionConfig<TContext, TEvent> & {
+      event: ''
+    })
+  | (TransitionConfig<TContext, TEvent> & {
+      event: '*'
+    })
+>
 
 // client -> inspector
 export interface XStateInspectConnectEvent {
@@ -139,8 +163,13 @@ export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
           ? createInspectedEventObject(
               actor.actorRef.state.event,
               actor.sessionId,
+              actor.actorRef,
             )
-          : createInspectedEventObject({ type: '' }, actor.sessionId),
+          : createInspectedEventObject(
+              { type: '' },
+              actor.sessionId,
+              actor.actorRef,
+            ),
       },
     })
   }
@@ -309,11 +338,118 @@ export function createInspectedActorObject(
 export function createInspectedEventObject(
   event: AnyEventObject,
   originSessionId: string,
+  actor: AnyInterpreter | AnyActorRef,
 ): InspectedEventObject {
+  // TODO rationalize arguments
   return {
     name: event.type,
     data: event,
     origin: originSessionId,
     createdAt: Date.now(),
+    transitionType: getTransitionInfo(actor),
   }
+}
+
+function getTransitionInfo(
+  actor: AnyInterpreter | AnyActorRef,
+): TransitionTypes {
+  if (isInterpreterLike(actor)) {
+    // TODO how does configuration look for parallel states?
+    const { configuration, event } = actor.state
+    const sortedStateNodes = sortStateNodes(configuration)
+    switch (true) {
+      case actor.state.changed:
+        return TransitionTypes.taken
+      case isTransitionGuarded(event.type, sortedStateNodes):
+        return TransitionTypes.guardedAndNoChange
+      case isTransitionForbidden(event.type, sortedStateNodes):
+        return TransitionTypes.forbidden
+      default:
+        return TransitionTypes.missing
+    }
+  }
+  return TransitionTypes.unknown
+}
+
+// Sorts state nodes. The lowest one (the highest order) comes first.
+function sortStateNodes(stateNodes: StateNode[]): StateNode[] {
+  return stateNodes.slice().sort((a, b) => (a.order < b.order ? -1 : 1))
+}
+
+function isTransitionGuarded(eventType: string, sortedStateNodes: StateNode[]) {
+  for (const stateNode of sortedStateNodes) {
+    if (stateNode.config.on === undefined) {
+      continue
+    }
+    const transitionsConfig = stateNode.config.on
+    if (isTransitionsConfigArray(transitionsConfig)) {
+      const transitions = transitionsConfig.filter((x) => x.event === eventType)
+      return (
+        transitions.length > 0 && transitions.every((x) => x.cond !== undefined)
+      )
+    } else if (transitionsConfig[eventType] !== undefined) {
+      const transition = transitionsConfig[eventType]
+      if (typeof transition === 'string') {
+        return false
+      } else if (Array.isArray(transition)) {
+        return transition.every(
+          (x) => isTransitionConfig(x) && x.cond !== undefined,
+        )
+      } else if (isTransitionConfig(transition)) {
+        return transition.cond !== undefined
+      }
+    } else if (
+      transitionsConfig[eventType] === undefined &&
+      Object.prototype.hasOwnProperty.call(transitionsConfig, eventType)
+    ) {
+      // forbidden transition
+      return false
+    }
+  }
+  return false
+}
+
+function isTransitionForbidden(
+  eventType: string,
+  sortedStateNodes: StateNode[],
+) {
+  for (const stateNode of sortedStateNodes) {
+    const transitionsConfig = stateNode.config.on
+    if (transitionsConfig === undefined) {
+      continue
+    }
+    if (isTransitionsConfigArray(transitionsConfig)) {
+      if (transitionsConfig.some((x) => x.event === eventType)) {
+        return false
+      }
+      continue
+    }
+
+    if (
+      Object.prototype.hasOwnProperty.call(transitionsConfig, eventType) &&
+      transitionsConfig[eventType] === undefined
+    ) {
+      return true
+    }
+    if (transitionsConfig[eventType] !== undefined) {
+      return false
+    }
+  }
+  return false
+}
+
+// TODO move to types
+function isTransitionConfig(
+  entity: any,
+): entity is TransitionConfig<any, EventObject> {
+  return (
+    (entity as TransitionConfig<any, EventObject>).target != null ||
+    (entity as TransitionConfig<any, EventObject>).actions != null
+  )
+}
+
+function isTransitionsConfigArray(
+  transitionsConfig: TransitionsConfig<any, EventObject>,
+): transitionsConfig is TransitionsConfigArray<any, EventObject> {
+  return Array.isArray(transitionsConfig)
 }
