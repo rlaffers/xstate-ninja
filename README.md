@@ -1,26 +1,51 @@
-# xstate-ninja
+<div align="center">
+  <h1>XState Ninja</h1>
+  <img src="https://user-images.githubusercontent.com/489018/182801436-1a9c7cfd-9c67-4343-a430-17ec63f0ff3b.png" alt="logo" />
+  <p>A dedicated devtool for XState state machines.</p>
+  <p>
+    <a href="https://npmjs.com/package/xstate-ninja"><img src="https://img.shields.io/npm/v/xstate-ninja" alt="npm version" /></a>
+    <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="code style: prettier" /></a>
+    <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome" /></a>
+  </p>
+  <hr/>
+</div>
 
-A dedicated devtool for XState state machines.
+## Installation
+1. Install the browser extension from the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/).
+2. Install the npm package in your project:
+```bash
+npm install --save xstate-ninja xstate
+```
+3. Interpret your state machine with the provided **interpret** function:
+```javascript
+import { interpret } from 'xstate-ninja'
+const service = interpret(machine)
+```
 
-[![npm version](https://img.shields.io/npm/v/xstate-ninja)](https://npmjs.com/package/xstate-ninja)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
+## How it works
+The **interpret** function is just a thin wrapper around the [core interpreter](https://xstate.js.org/docs/guides/interpretation.html#interpreter) provided by the XState library. It observes your state machines and sends updates to the XState Ninja browser extension.
+
 
 ## TODO
 
-- typescript
-- create the xstate integration
+- ~~typescript~~
+- ~~create the xstate integration~~
+- add React integration
+- add Svelte integration
+- add Vue integration
 - mark the final state with double border
 - mark the initial state
-- mark events guarded, forbidden
+- ~~mark events guarded, forbidden~~
 - display context
 - display actions
 - display invocations
-- add second tracker
+- add second tracker lane
 - add button for linking events in two trackers
-- add option to re-emit an event
-- convert to TS
-- annotate
+- add button to emit an event
+- user annotations tool
+- optimize memory usage by dead actors
+- add option to disable logging (in the production mode)
 
 ## Attribution
 
