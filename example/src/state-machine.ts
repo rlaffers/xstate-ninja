@@ -50,7 +50,7 @@ export default createMachine(
           ],
         },
         after: {
-          '4000': {
+          '3000': {
             cond: 'hasFuel',
             target: 'EngineRunning',
           },
@@ -184,7 +184,8 @@ export default createMachine(
       }),
 
       addFuel: assign({
-        fuel: ({ fuel }, { amount }) => fuel + amount,
+        fuel: ({ fuel }, { amount }) =>
+          fuel + amount > 60 ? 60 : fuel + amount,
       }),
 
       removeFuel: assign({

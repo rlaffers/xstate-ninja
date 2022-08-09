@@ -43,7 +43,7 @@ export const fuelMachine = createMachine(
                 actions: 'addFuel',
               },
               {
-                cond: 'willBeOk',
+                cond: 'willBeOK',
                 actions: ['addFuel', 'sendFuelOK'],
               },
               {
@@ -73,7 +73,8 @@ export const fuelMachine = createMachine(
         fuel: ({ fuel }, { amount }) => (fuel - amount < 0 ? 0 : fuel - amount),
       }),
       addFuel: assign({
-        fuel: ({ fuel }, { amount }) => fuel + amount,
+        fuel: ({ fuel }, { amount }) =>
+          fuel + amount > 60 ? 60 : fuel + amount,
       }),
       sendFuelTankEmpty: sendParent('FUEL_TANK_EMPTY'),
       sendLowFuelWarning: sendParent('LOW_FUEL_WARNING'),

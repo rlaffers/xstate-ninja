@@ -35,7 +35,7 @@ export const batteryMachine = createMachine(
                 actions: 'increaseBattery',
               },
               {
-                cond: 'willBeOk',
+                cond: 'willBeOK',
                 actions: ['increaseBattery', 'sendBatteryOK'],
               },
               {

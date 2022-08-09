@@ -118,8 +118,20 @@
       >
     </div>
 
+    <button
+      class="fuel-btn"
+      on:click={() => service.send({ type: 'FUEL_ADDED', amount: 15 })}
+      >Add fuel</button
+    >
+
+    <button
+      class="battery-btn"
+      on:click={() => service.send({ type: 'CHARGED_BATTERY', amount: 15 })}
+      >Charge battery</button
+    >
+
     <button type="button" on:click={resetMachine} class="reset-btn">
-      💀 Reset the car!
+      💀 Reset
     </button>
   </section>
 </main>
@@ -172,10 +184,7 @@
   }
 
   button.reset-btn {
-    color: var(--base3);
-    background-color: var(--orange);
     margin-left: 50px;
-    font-size: 2rem;
   }
 
   img {
@@ -240,6 +249,11 @@
 
   button.start-stop-btn.stop:active {
     background: radial-gradient(var(--base3), var(--red));
+  }
+
+  button.fuel-btn,
+  button.battery-btn {
+    margin-left: 50px;
   }
 
   @media (min-width: 480px) {
