@@ -11,21 +11,24 @@
 </div>
 
 ## Installation
+
 1. Install the browser extension from the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/).
 2. Install the npm package in your project:
+
 ```bash
 npm install --save xstate-ninja xstate
 ```
+
 3. Interpret your state machine with the provided **interpret** function:
+
 ```javascript
 import { interpret } from 'xstate-ninja'
 const service = interpret(machine)
 ```
 
-
 ## How it works
-The **interpret** function is just a thin wrapper around the [core interpreter](https://xstate.js.org/docs/guides/interpretation.html#interpreter) provided by the XState library. It observes your state machines and sends updates to the XState Ninja browser extension.
 
+The **interpret** function is just a thin wrapper around the [core interpreter](https://xstate.js.org/docs/guides/interpretation.html#interpreter) provided by the XState library. It observes your state machines and sends updates to the XState Ninja browser extension.
 
 ## TODO
 
@@ -35,7 +38,6 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - add Svelte integration
 - add Vue integration
 - mark the final state with double border
-- mark the initial state
 - ~~mark events guarded, forbidden~~
 - display context
 - display actions
@@ -46,6 +48,10 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - user annotations tool
 - optimize memory usage by dead actors
 - add option to disable logging (in the production mode)
+- display the initial state right before xstate.init
+- support parallel states
+- highlight transitions guarded by "in" state guards
+- add a light theme
 
 ## Attribution
 

@@ -22,7 +22,7 @@ export function last(list: any[]) {
   return list[list.length - 1]
 }
 
-export function prettyJSON(obj: [] | Record<string, unknown>) {
+export function prettyJSON(obj: [] | Record<string, unknown> = {}): string {
   const result = JSON.stringify(obj, undefined, 2).replace(/"([^"]+)":/g, '$1:')
   return result
     .slice(2, -2)

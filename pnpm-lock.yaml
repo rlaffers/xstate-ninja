@@ -89,6 +89,7 @@ importers:
       '@tsconfig/svelte': ^3.0.0
       '@types/chrome': ^0.0.193
       concurrently: ^7.3.0
+      json-formatter-js: ^2.3.4
       svelte: ^3.49.0
       svelte-check: ^2.8.0
       svelte-preprocess: ^4.10.7
@@ -100,6 +101,7 @@ importers:
       xstate: ^4.32.1
       xstate-ninja: workspace:^1.0.0
     dependencies:
+      json-formatter-js: 2.3.4
       xstate: 4.32.1
       xstate-ninja: link:../packages/xstate-ninja-core
     devDependencies:
@@ -4737,6 +4739,10 @@ packages:
   /json-buffer/3.0.0:
     resolution: {integrity: sha512-CuUqjv0FUZIdXkHPI8MezCnFCdaTAacej1TZYulLoAg1h/PhwkdXFN4V/gzY4g+fMBCOV2xF+rp7t2XD2ns/NQ==}
     dev: true
+
+  /json-formatter-js/2.3.4:
+    resolution: {integrity: sha512-gmAzYRtPRmYzeAT4T7+t3NhTF89JOAIioCVDddl9YDb3ls3kWcskirafw/MZGJaRhEU6fRimGJHl7CC7gaAI2Q==}
+    dev: false
 
   /json-merge-patch/0.2.3:
     resolution: {integrity: sha512-mjd5eObNGOhWkKCztwVuF25KOzLj2T4TJaWXLBgCQPeoPRJrMxKNgjNBE8sPmXoWRT0WDlo4Itd/gTlFh29TFw==}

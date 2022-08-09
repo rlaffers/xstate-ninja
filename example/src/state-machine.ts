@@ -38,6 +38,14 @@ export default createMachine(
           },
         },
       },
+      myFunc: function () {
+        // empty fu
+      },
+      myMap: new Map([
+        ['foo', { enabled: true }],
+        ['bar', { enabled: false }],
+      ]),
+      thisIsUndefined: undefined,
     },
     initial: 'Ready',
     states: {

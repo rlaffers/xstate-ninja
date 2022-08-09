@@ -1,0 +1,34 @@
+.json-formatter-row,
+.json-formatter-row a,
+.json-formatter-row a:hover {
+  color: var(--base0) !important;
+}
+
+.json-formatter-key {
+  color: var(--green) !important;
+}
+
+.json-formatter-number {
+  color: var(--cyan) !important;
+}
+
+.json-formatter-string {
+  color: var(--orange) !important;
+}
+
+.json-formatter-bracket {
+  color: var(--base0) !important;
+}
+
+.json-formatter-boolean {
+  color: var(--blue) !important;
+}
+
+.json-formatter-null {
+  color: var(--violet) !important;
+}
+
+.json-formatter-empty {
+  color: var(--base01) !important;
+  opacity: 1 !important;
+}

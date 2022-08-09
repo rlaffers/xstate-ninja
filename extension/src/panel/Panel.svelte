@@ -15,6 +15,7 @@
   } from 'xstate-ninja'
   import ActorDetail from './ActorDetail.svelte'
   import ActorsDropdown from './ActorsDropdown.svelte'
+  import SideBar from './SideBar.svelte'
   import { connectBackgroundPage } from './connectBackgroundPage'
   import Intro from './Intro.svelte'
   import Tracker from './Tracker.svelte'
@@ -189,27 +190,37 @@
 {:else if actors.size < 1}
   <Intro />
 {:else}
-  <div class="actors-view">
-    <header>
-      <ActorsDropdown
-        class="actors-dropdown"
-        {actors}
-        bind:selected={selectedActor}
-      />
-      <ActorDetail actor={selectedActor} />
-    </header>
-    <main class="trackers">
-      <Tracker actor={selectedActor} />
-    </main>
-  </div>
+  <main class="actors-view">
+    <header>This is the header</header>
+    <section class="trackers">
+      <section class="tracker-0">
+        <ActorsDropdown
+          class="actors-dropdown"
+          {actors}
+          bind:selected={selectedActor}
+        />
+        <ActorDetail actor={selectedActor} />
+        <Tracker actor={selectedActor} />
+      </section>
+    </section>
+    <SideBar actor={selectedActor} />
+  </main>
 {/if}
 
 <style>
-  .actors-view {
+  main.actors-view {
     --actors-dropdown-height: 1.8rem;
-    height: calc(100vh - 2em);
+    /* height: calc(100vh - 2em); */
+    height: 100%;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 42px 1fr;
+    grid-template-areas:
+      'header sidebar'
+      'trackers sidebar';
   }
   header {
+    grid-area: header;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -220,6 +231,10 @@
     height: var(--actors-dropdown-height);
   }
   .trackers {
-    height: calc(100% - var(--actors-dropdown-height));
+    grid-area: trackers;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* height: calc(100% - var(--actors-dropdown-height)); */
   }
 </style>

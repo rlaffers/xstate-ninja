@@ -25,6 +25,7 @@
     "wait-on": "^6.0.1"
   },
   "dependencies": {
+    "json-formatter-js": "^2.3.4",
     "xstate": "^4.32.1",
     "xstate-ninja": "workspace:^1.0.0"
   },
