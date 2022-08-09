@@ -4,14 +4,23 @@
 
   /* eslint-disable no-use-before-define */
   export let actor: DeserializedExtendedInspectedActorObject = null
+  export let selectedSnapshot: any = null
 
   let contextContainer: HTMLElement
   $: {
-    if (actor?.snapshot?.context) {
-      const formatter = new JSONFormatter(actor.snapshot.context)
+    if (contextContainer) {
       contextContainer.innerHTML = ''
-      contextContainer.appendChild(formatter.render())
-      formatter.openAtDepth(2)
+      if (selectedSnapshot?.context) {
+        const formatter = new JSONFormatter(selectedSnapshot.context, 2, {
+          animateOpen: false,
+        })
+        contextContainer.appendChild(formatter.render())
+      } else if (actor?.snapshot?.context) {
+        const formatter = new JSONFormatter(actor.snapshot.context, 2, {
+          animateOpen: false,
+        })
+        contextContainer.appendChild(formatter.render())
+      }
     }
   }
 </script>

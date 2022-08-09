@@ -6,6 +6,7 @@
     type: 'event'
     event: InspectedEventObject
     changed: boolean
+    snapshot: string
   }
 </script>
 
@@ -13,6 +14,13 @@
   import { fade } from 'svelte/transition'
 
   export let data: EventFrame
+  export let onSelectFrame: (frame: EventFrame) => void
+  export let isSelected = false
+
+  function selectFrame(event: MouseEvent) {
+    onSelectFrame(data)
+    event.stopPropagation()
+  }
 
   let className = ''
   let description = ''
@@ -39,7 +47,13 @@
   }
 </script>
 
-<div class="event-frame {className}" title={description} in:fade>
+<div
+  class:selected={isSelected}
+  class="event-frame {className}"
+  title={description}
+  in:fade
+  on:click={selectFrame}
+>
   {data.event.data.type}
 </div>
 
@@ -57,6 +71,10 @@
     text-align: center;
     cursor: pointer;
     z-index: 2;
+  }
+
+  .selected {
+    box-shadow: inset 0 0 7px;
   }
 
   .event-frame.changed-state {

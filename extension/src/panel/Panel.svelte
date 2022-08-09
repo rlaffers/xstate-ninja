@@ -178,6 +178,8 @@
 
   // -----------------------------
   let selectedActor: DeserializedExtendedInspectedActorObject
+  // if selectedSnapshot=null, then the latest actor's snapshot is implied
+  let selectedSnapshot: any = null
 
   chrome.devtools.network.onNavigated.addListener(() => {
     actors = new Map()
@@ -193,17 +195,17 @@
   <main class="actors-view">
     <header>This is the header</header>
     <section class="trackers">
-      <section class="tracker-0">
+      <section class="tracker-container">
         <ActorsDropdown
           class="actors-dropdown"
           {actors}
           bind:selected={selectedActor}
         />
         <ActorDetail actor={selectedActor} />
-        <Tracker actor={selectedActor} />
+        <Tracker actor={selectedActor} bind:selectedSnapshot />
       </section>
     </section>
-    <SideBar actor={selectedActor} />
+    <SideBar actor={selectedActor} {selectedSnapshot} />
   </main>
 {/if}
 
@@ -233,8 +235,14 @@
   .trackers {
     grid-area: trackers;
     display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    /* height: calc(100% - var(--actors-dropdown-height)); */
+  }
+  .trackers > .tracker-container {
+    flex: 1;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    /* height: calc(100% - var(--actors-dropdown-height)); */
   }
 </style>

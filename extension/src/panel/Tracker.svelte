@@ -12,6 +12,7 @@
   import { last } from '../utils'
 
   export let actor: DeserializedExtendedInspectedActorObject = null
+  export let selectedSnapshot: any = null
 
   const STATE_NODE = 'stateNode'
   const EVENT = 'event'
@@ -27,14 +28,19 @@
       type: EVENT,
       event: update.event,
       changed: snapshot.changed,
+      snapshot: update.snapshot,
     }
   }
 
-  function createStateNodeFrame(snapshot: any): StateNodeFrame {
+  function createStateNodeFrame(
+    update: XStateInspectUpdateEvent,
+    snapshot: any,
+  ): StateNodeFrame {
     return {
       type: STATE_NODE,
       stateValue: snapshot.value,
       changed: snapshot.changed,
+      snapshot: update.snapshot,
     }
   }
 
@@ -45,7 +51,7 @@
     const snapshot = JSON.parse(update.snapshot)
     frames.push(createEventFrame(update, snapshot))
     if (snapshot.changed) {
-      frames.push(createStateNodeFrame(snapshot))
+      frames.push(createStateNodeFrame(update, snapshot))
     }
     return frames
   }
@@ -58,13 +64,19 @@
 
   function createFrameList(): FrameList {
     const frames = [] as FrameList
+    // these props serve for tracking when the reactive statements below need to run
     frames.sessionId = actor?.sessionId
     frames.historySize = actor?.history?.length ?? 0
     return frames
   }
 
   let frames: FrameList = createFrameList()
-  // these props serve for tracking when the reactive statements below need to run
+  let selectedFrame: StateNodeFrame | EventFrame
+
+  function clearSelectedFrame() {
+    selectedFrame = null
+    selectedSnapshot = null
+  }
 
   $: if (actor) {
     log('actor changed', actor) // TODO
@@ -79,6 +91,7 @@
         })
       }
       frames = newFrames
+      clearSelectedFrame()
     } else if (actor.history.length !== frames.historySize) {
       frames.historySize = actor.history.length
       const update = last(actor.history)
@@ -101,15 +114,29 @@
       trackerElement.scrollTo(0, trackerElement.scrollHeight)
     }
   })
+
+  function onSelectFrame(frame: StateNodeFrame | EventFrame) {
+    log('clearing selected frame') // TODO remove
+    selectedFrame = frame
+    selectedSnapshot = JSON.parse(frame.snapshot)
+  }
 </script>
 
 {#if actor != null}
-  <div class="tracker" bind:this={trackerElement}>
+  <div class="tracker" bind:this={trackerElement} on:click={clearSelectedFrame}>
     {#each frames as frame, index}
       {#if frame.type === STATE_NODE}
-        <StateNodeFrameComponent data={frame} />
+        <StateNodeFrameComponent
+          data={frame}
+          {onSelectFrame}
+          isSelected={selectedFrame === frame}
+        />
       {:else if frame.type === EVENT}
-        <EventFrameComponent data={frame} />
+        <EventFrameComponent
+          data={frame}
+          {onSelectFrame}
+          isSelected={selectedFrame === frame}
+        />
         {#if frames[index + 1]?.type === STATE_NODE}
           <ArrowDown />
         {/if}
@@ -120,6 +147,7 @@
 
 <style>
   .tracker {
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

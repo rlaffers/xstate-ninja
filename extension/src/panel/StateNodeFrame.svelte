@@ -5,6 +5,7 @@
     type: 'stateNode'
     stateValue: StateValue
     changed: boolean
+    snapshot: string
   }
 </script>
 
@@ -13,9 +14,21 @@
   import { flattenState } from '../utils'
 
   export let data: StateNodeFrame
+  export let onSelectFrame: (frame: StateNodeFrame) => void
+  export let isSelected = false
+
+  function selectFrame(event: MouseEvent) {
+    onSelectFrame(data)
+    event.stopPropagation()
+  }
 </script>
 
-<article class="state-node-frame" in:fade>
+<article
+  class:selected={isSelected}
+  class="state-node-frame"
+  in:fade
+  on:click={selectFrame}
+>
   {flattenState(data.stateValue)}
 </article>
 
@@ -23,7 +36,6 @@
   .state-node-frame {
     border: 1px solid var(--magenta);
     padding: 0.5em 1em;
-    /* margin-bottom: 0.5em; */
     background-color: var(--base03);
     color: var(--magenta);
     min-width: 10em;
@@ -32,6 +44,10 @@
     text-align: center;
     cursor: pointer;
     z-index: 3;
+  }
+
+  .selected {
+    box-shadow: inset 0 0 10px;
   }
 
   article:last-of-type {
