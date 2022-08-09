@@ -41,6 +41,7 @@
       stateValue: snapshot.value,
       changed: snapshot.changed,
       snapshot: update.snapshot,
+      final: snapshot.done,
     }
   }
 

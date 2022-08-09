@@ -37,11 +37,15 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - add React integration
 - add Svelte integration
 - add Vue integration
-- mark the final state with double border
+- ~~mark the final state with double border~~
 - ~~mark events guarded, forbidden~~
-- display context
-- display actions
-- display invocations
+- ~~display context~~
+- highlight changes in the context (diff mode)
+- make context sidebar size adjustable
+- display actions for event frames
+- display invocations for state node frames
+- display entry/exit actions for state node frames
+- add more info on the ActorDetail bar: time started, time finished, time unsubscribed
 - add second tracker lane
 - add button for linking events in two trackers
 - add button to emit an event

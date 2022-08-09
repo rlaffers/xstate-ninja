@@ -6,6 +6,7 @@
     stateValue: StateValue
     changed: boolean
     snapshot: string
+    final: boolean
   }
 </script>
 
@@ -25,6 +26,7 @@
 
 <article
   class:selected={isSelected}
+  class:final={data?.final}
   class="state-node-frame"
   in:fade
   on:click={selectFrame}
@@ -48,6 +50,17 @@
 
   .selected {
     box-shadow: inset 0 0 10px;
+  }
+
+  .final {
+    position: relative;
+  }
+  .final::after {
+    content: ' ';
+    position: absolute;
+    z-index: -1;
+    inset: 4px;
+    border: 1px solid var(--magenta);
   }
 
   article:last-of-type {
