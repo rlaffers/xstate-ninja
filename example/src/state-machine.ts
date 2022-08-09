@@ -1,110 +1,271 @@
-import { actions, createMachine } from 'xstate'
+import { createMachine, actions } from 'xstate'
 import { spawn } from 'xstate-ninja'
-import { childMachine } from './child-machine'
+import { ignitionMachine } from './ignition-machine'
+import { batteryMachine } from './battery-machine'
+import { fuelMachine } from './fuel-machine'
 
-const { assign } = actions
-
-interface CustomEventWithMyFunc extends CustomEvent {
-  myFunc: () => void
-}
-
-function createCustomEvent(): CustomEventWithMyFunc {
-  const event: any = new CustomEvent('dummy-event', {
-    detail: { foo: 42 },
-  })
-  event.myFunc = () => true
-  return event
-}
+const { assign, forwardTo, stop } = actions
 
 export default createMachine(
   {
-    id: 'root',
+    id: 'vehicle',
     preserveActionOrder: true,
+    initial: 'EngineStopped',
+    entry: ['spawnFuelWatcher', 'spawnBatteryWatcher'],
     context: {
-      speed: 1,
-      info: "Don't panic",
-      results: [9, 8, 7],
-      // non-serializable
-      customEvent: (function () {
-        const event = createCustomEvent()
-        return event
-      })(),
-      spawnedRef: null,
-      // deep serializable object
-      deepObject: {
-        quick: {
-          brown: {
-            fox: 42,
+      fuel: 60,
+      battery: 100,
+      refs: {},
+      lowFuelWarning: false,
+      lowBatteryWarning: false,
+      shutdownInitiated: false,
+    },
+    states: {
+      EngineStopped: {
+        on: {
+          START_BUTTON_PRESSED: {
+            cond: 'isBatteryAboveMinimum',
+            target: 'Igniting',
+          },
+          FUEL_ADDED: {
+            actions: ['addFuel', 'sendToFuelWatcher'],
+          },
+          CHARGED_BATTERY: {
+            actions: ['increaseBattery', 'sendToBatteryWatcher'],
           },
         },
       },
-      myFunc: function () {
-        // empty fu
-      },
-      myMap: new Map([
-        ['foo', { enabled: true }],
-        ['bar', { enabled: false }],
-      ]),
-      thisIsUndefined: undefined,
-    },
-    initial: 'Ready',
-    states: {
-      Ready: {
+      Igniting: {
+        invoke: {
+          src: 'ignition',
+          id: 'ignition',
+          data: ({ battery }) => ({
+            battery,
+          }),
+          onDone: [
+            {
+              actions: ['setBatteryEmpty', 'sendToBatteryWatcher'],
+              target: 'EngineStopped',
+            },
+          ],
+        },
+        after: {
+          '4000': {
+            cond: 'hasFuel',
+            target: 'EngineRunning',
+          },
+        },
         on: {
-          START: 'Playing',
-          STOP: 'Stopped',
+          START_BUTTON_RELEASED: {
+            target: 'EngineStopped',
+          },
+          DISCHARGED_BATTERY: {
+            actions: ['decreaseBattery', 'sendToBatteryWatcher'],
+          },
         },
       },
-      Playing: {
-        initial: 'Cold',
+      EngineRunning: {
+        entry: 'startChargingBattery',
+        exit: 'stopChargingBattery',
+        initial: 'Idle',
         states: {
-          Cold: {
+          SlowSpeed: {
+            invoke: {
+              src: 'consumeFuelSlowly',
+            },
             on: {
-              FORBIDDEN: undefined,
+              SHIFT_DOWN: {
+                target: 'Idle',
+              },
+              SHIFT_UP: {
+                target: 'FastSpeed',
+              },
             },
           },
-          Hot: {},
+          FastSpeed: {
+            invoke: {
+              src: 'consumeFuelQuickly',
+            },
+            on: {
+              SHIFT_DOWN: {
+                target: 'SlowSpeed',
+              },
+            },
+          },
+          Reverse: {
+            invoke: {
+              src: 'consumeFuelIdly',
+            },
+            on: {
+              SHIFT_DOWN: {
+                target: 'Idle',
+              },
+            },
+          },
+          Idle: {
+            invoke: {
+              src: 'consumeFuelIdly',
+            },
+            on: {
+              SHIFT_UP: {
+                target: 'SlowSpeed',
+              },
+              SHIFT_REVERSE: {
+                target: 'Reverse',
+              },
+            },
+          },
         },
         on: {
-          PAUSE: 'Paused',
-          STOP: 'Stopped',
-          SPEED_INC: {
-            cond: 'isSpeedBelowMax',
-            actions: assign({
-              speed: ({ speed }) => speed + 1,
-            }),
+          START_BUTTON_PRESSED: {
+            actions: 'initiateShutdown',
           },
-          SPEED_DEC: {
-            actions: assign({
-              speed: ({ speed }) => speed - 1,
-            }),
+          START_BUTTON_RELEASED: {
+            cond: 'isShutdownInitiated',
+            target: 'EngineStopped',
+            actions: 'resetShutdown',
+          },
+          FUEL_CONSUMED: {
+            actions: ['removeFuel', 'sendToFuelWatcher'],
+          },
+          FUEL_TANK_EMPTY: {
+            actions: 'setFuelEmpty',
+            target: 'EngineStopped',
+          },
+          CHARGED_BATTERY: {
+            actions: ['increaseBattery', 'sendToBatteryWatcher'],
           },
         },
-      },
-      Paused: {
-        on: {
-          START: 'Playing',
-          STOP: 'Stopped',
-        },
-      },
-      Stopped: {
-        type: 'final',
       },
     },
     on: {
-      SET_SPEED: {
-        actions: assign({ speed: (_, { value }) => value }),
+      LOW_FUEL_WARNING: {
+        actions: 'showLowFuelWarning',
       },
-      SPAWN: {
-        actions: assign({
-          spawnedRef: () => spawn(childMachine, 'baby'),
-        }),
+      FUEL_OK: {
+        actions: 'hideLowFuelWarning',
+      },
+      LOW_BATTERY_WARNING: {
+        actions: 'showLowBatteryWarning',
+      },
+      BATTERY_OK: {
+        actions: 'hideLowBatteryWarning',
       },
     },
   },
   {
     guards: {
-      isSpeedBelowMax: ({ speed }) => speed < 5,
+      isBatteryAboveMinimum: ({ battery }) => battery >= 10,
+      hasFuel: ({ fuel }) => fuel > 0,
+      isShutdownInitiated: ({ shutdownInitiated }) => shutdownInitiated,
+    },
+    actions: {
+      initiateShutdown: assign({
+        shutdownInitiated: true,
+      }),
+      resetShutdown: assign({
+        shutdownInitiated: false,
+      }),
+      spawnBatteryWatcher: assign({
+        refs: ({ refs, battery }) => ({
+          ...refs,
+          batteryWatcher: spawn(
+            batteryMachine.withContext({ battery }),
+            'batteryWatcher',
+          ),
+        }),
+      }),
+
+      spawnFuelWatcher: assign({
+        refs: ({ refs, fuel }) => ({
+          ...refs,
+          fuelWatcher: spawn(fuelMachine.withContext({ fuel }), 'fuelWatcher'),
+        }),
+      }),
+
+      addFuel: assign({
+        fuel: ({ fuel }, { amount }) => fuel + amount,
+      }),
+
+      removeFuel: assign({
+        fuel: ({ fuel }, { amount }) => (fuel - amount < 0 ? 0 : fuel - amount),
+      }),
+
+      setFuelEmpty: assign({
+        fuel: 0,
+      }),
+
+      sendToFuelWatcher: forwardTo('fuelWatcher'),
+
+      sendToBatteryWatcher: forwardTo('batteryWatcher'),
+
+      increaseBattery: assign({
+        battery: ({ battery }, { amount }) =>
+          battery + amount > 100 ? 100 : battery + amount,
+      }),
+
+      decreaseBattery: assign({
+        battery: ({ battery }, { amount }) =>
+          battery - amount < 0 ? 0 : battery - amount,
+      }),
+
+      setBatteryEmpty: assign({
+        battery: 0,
+      }),
+
+      startChargingBattery: assign({
+        refs: ({ refs }) => ({
+          ...refs,
+          batteryCharger: spawn((sendBack) => {
+            const interval = setInterval(
+              () => sendBack({ type: 'CHARGED_BATTERY', amount: 2 }),
+              1000,
+            )
+            return () => clearInterval(interval)
+          }, 'batteryCharger'),
+        }),
+      }),
+
+      stopChargingBattery: stop('batteryCharger'),
+
+      showLowFuelWarning: assign({
+        lowFuelWarning: true,
+      }),
+
+      hideLowFuelWarning: assign({
+        lowFuelWarning: false,
+      }),
+
+      showLowBatteryWarning: assign({
+        lowBatteryWarning: true,
+      }),
+
+      hideLowBatteryWarning: assign({
+        lowBatteryWarning: false,
+      }),
+    },
+    services: {
+      ignition: ignitionMachine,
+      consumeFuelIdly: () => (sendBack) => {
+        const interval = setInterval(() => {
+          sendBack({ type: 'FUEL_CONSUMED', amount: 0.5 })
+        }, 1000)
+        return () => clearInterval(interval)
+      },
+
+      consumeFuelSlowly: () => (sendBack) => {
+        const interval = setInterval(() => {
+          sendBack({ type: 'FUEL_CONSUMED', amount: 2 })
+        }, 1000)
+        return () => clearInterval(interval)
+      },
+
+      consumeFuelQuickly: () => (sendBack) => {
+        const interval = setInterval(() => {
+          sendBack({ type: 'FUEL_CONSUMED', amount: 5 })
+        }, 1000)
+        return () => clearInterval(interval)
+      },
     },
   },
 )

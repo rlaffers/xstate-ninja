@@ -1,13 +1,16 @@
 <script lang="ts">
   import createXStateNinja, { interpret, LogLevels } from 'xstate-ninja'
   import { useSelector } from '@xstate/svelte'
+  import { tweened } from 'svelte/motion'
+  import { cubicOut } from 'svelte/easing'
   import { onDestroy } from 'svelte'
   import type { Readable } from 'svelte/store'
   import type { AnyInterpreter, State } from 'xstate'
   import logo from './assets/logo_512.png'
   import machine from './state-machine'
+  import Gauge from './Gauge.svelte'
 
-  const xstateNinja = createXStateNinja({ logLevel: LogLevels.debug })
+  const xstateNinja = createXStateNinja({ logLevel: LogLevels.warn })
 
   let service = interpret(machine).start()
   let state: Readable<State<any>>
@@ -40,7 +43,18 @@
     subscription = subscribe(service)
   }
 
-  let eventName = ''
+  const animatedFuelProgress = tweened(0, {
+    duration: 400,
+    easing: cubicOut,
+  })
+
+  const animatedBatteryProgress = tweened(0, {
+    duration: 400,
+    easing: cubicOut,
+  })
+
+  $: animatedFuelProgress.set($state.context.fuel)
+  $: animatedBatteryProgress.set($state.context.battery)
 </script>
 
 <!-- svelte-ignore a11y-autofocus -->
@@ -48,79 +62,102 @@
   <img src={logo} alt="XState Ninja" />
   <h1>XState Ninja Demo</h1>
 
-  <section class="state-machine">
-    <div class="machine-state">
-      <p>
-        Machine state: <strong>{JSON.stringify($state.value)}</strong>
-      </p>
-      <p>Context:</p>
-      <pre>{JSON.stringify($state.context, undefined, 2)}</pre>
-    </div>
-    <div class="controls">
-      <div class="send-controls">
-        <input
-          type="text"
-          name="eventName"
-          bind:value={eventName}
-          list="event-names"
-          autofocus
-          autocomplete="on"
-          placeholder="Enter an event"
-        />
-        <datalist id="event-names">
-          <option value="START" />
-          <option value="STOP" />
-          <option value="PAUSE" />
-          <option value="SPEED_INC" />
-          <option value="SPEED_DEC" />
-          <option value="SPAWN" />
-          <option value="FORBIDDEN" />
-          <option value="DUMMY" />
-        </datalist>
-        <button
-          type="button"
-          on:click={() => service.send(eventName)}
-          disabled={String(eventName).length < 1}>Send event</button
-        >
-      </div>
+  <section class="indicators">
+    <Gauge {state} />
+    <div class="battery-and-fuel">
+      <label class="battery-indicator"
+        >Battery: <meter
+          min="0"
+          max="100"
+          low="10"
+          high="25"
+          optimum="100"
+          value={$animatedBatteryProgress}>{$state.context.battery}</meter
+        ></label
+      >
 
-      <div class="predefined-events">
-        <button type="button" on:click={() => service.send('SPEED_INC')}
-          >➕</button
+      <label class="fuel-indicator"
+        >Fuel: <meter
+          min="0"
+          max="60"
+          low="10"
+          high="20"
+          optimum="60"
+          value={$animatedFuelProgress}>{$state.context.fuel}</meter
         >
-        <button type="button" on:click={() => service.send('SPEED_DEC')}
-          >➖</button
-        >
-        <button
-          type="button"
-          on:click={() => service.send({ type: 'SET_SPEED', value: 0 })}
-          >Reset speed</button
-        >
-      </div>
-
-      <button type="button" on:click={resetMachine} class="reset-btn">
-        💀 Reset the machine!
-      </button>
+      </label>
     </div>
+  </section>
+  <section class="car-controls">
+    <button
+      type="button"
+      class="start-stop-btn"
+      class:start={$service.matches('EngineStopped') ||
+        $service.matches('Igniting')}
+      class:stop={$service.matches('EngineRunning')}
+      on:mousedown={() => service.send('START_BUTTON_PRESSED')}
+      on:mouseup={() => service.send('START_BUTTON_RELEASED')}
+      >{$service.matches('EngineRunning') ? 'stop' : 'start'}</button
+    >
+
+    <div class="shifting-controls">
+      <button
+        type="button"
+        class="speed-shifting-btn"
+        on:click={() => service.send('SHIFT_UP')}>⬆</button
+      >
+      <button
+        type="button"
+        class="speed-shifting-btn"
+        on:click={() => service.send('SHIFT_DOWN')}>⬇</button
+      >
+      <button
+        type="button"
+        class="reverse-shifting-btn"
+        on:click={() => service.send('SHIFT_REVERSE')}>Ⓡ</button
+      >
+    </div>
+
+    <button type="button" on:click={resetMachine} class="reset-btn">
+      💀 Reset the car!
+    </button>
   </section>
 </main>
 
 <style>
   :root {
+    --base03: #002b36;
+    --base02: #073642;
+    --base01: #586e75;
+    --base00: #657b83;
+    --base0: #839496;
+    --base1: #93a1a1;
+    --base2: #eee8d5;
+    --base3: #fdf6e3;
+    --yellow: #b58900;
+    --orange: #cb4b16;
+    --red: #dc322f;
+    --magenta: #d33682;
+    --violet: #6c71c4;
+    --blue: #268bd2;
+    --cyan: #2aa198;
+    --green: #859900;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--base03);
+    color: var(--base1);
   }
 
   main {
     text-align: center;
     padding: 1em;
     margin: 0 auto;
-    color: #2c3e50;
+    color: var(--base1);
     width: 50vw;
   }
 
   h1 {
-    color: #ff3e00;
+    color: var(--red);
     text-transform: uppercase;
     font-size: 4rem;
     font-weight: 100;
@@ -135,14 +172,10 @@
   }
 
   button.reset-btn {
-    background-color: hsl(39, 100%, 50%);
-  }
-  button.reset-btn:hover {
-    background-color: hsl(39, 100%, 60%);
-  }
-
-  input {
-    padding: 0.3rem 0.6rem;
+    color: var(--base3);
+    background-color: var(--orange);
+    margin-left: 50px;
+    font-size: 2rem;
   }
 
   img {
@@ -150,28 +183,63 @@
     height: 16rem;
   }
 
-  .state-machine {
+  .indicators {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    height: 250px;
+  }
+
+  .indicators .battery-and-fuel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .car-controls {
+    display: flex;
+    justify-content: flex-start;
     align-items: flex-start;
     text-align: left;
   }
 
-  .machine-state {
-    margin-bottom: 1rem;
-    font-size: 150%;
+  .shifting-controls {
+    display: flex;
+    flex-direction: column;
+    margin-left: 50px;
   }
 
-  .machine-state > p:first-child {
-    margin-top: 0;
+  .shifting-controls button {
+    margin-bottom: 10px;
+    font-size: 3rem;
   }
 
-  .send-controls {
-    margin-bottom: 1rem;
+  button.start-stop-btn {
+    text-transform: uppercase;
+    color: var(--base3);
+    border: 5px solid var(--base2);
+    padding: 5px;
+    font-size: 28px;
+    height: 120px;
+    width: 120px;
+    border-radius: 60px;
+    box-shadow: 0 2px 4px darkslategray;
   }
 
-  .predefined-events {
-    margin-bottom: 1rem;
+  button.start-stop-btn.start {
+    background-color: var(--green);
+  }
+
+  button.start-stop-btn.start:active {
+    background: radial-gradient(var(--base3), var(--green));
+  }
+
+  button.start-stop-btn.stop {
+    background-color: var(--red);
+  }
+
+  button.start-stop-btn.stop:active {
+    background: radial-gradient(var(--base3), var(--red));
   }
 
   @media (min-width: 480px) {

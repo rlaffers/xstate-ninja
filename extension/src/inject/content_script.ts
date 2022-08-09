@@ -13,12 +13,12 @@ function connect() {
   port = chrome.runtime.connect({ name: 'xstate-ninja.page' })
   port.onDisconnect.addListener(connect)
   port.onMessage.addListener((msg: XStateInspectAnyEvent) => {
-    console.log(
-      '%c[content-script]',
-      'color: fuchsia',
-      '← received from bg',
-      msg,
-    ) // TODO remove
+    // console.log(
+    //   '%c[content-script]',
+    //   'color: fuchsia',
+    //   '← received from bg',
+    //   msg,
+    // )
     window.dispatchEvent(new CustomEvent(msg.type, { detail: msg }))
   })
 }
@@ -39,13 +39,13 @@ function forwardEvent(eventName: string) {
       if (event.target !== window) {
         return
       }
-      console.log(
-        '%c[content-script]',
-        'color: fuchsia',
-        '» fwd event to background.js',
-        event.type,
-        event,
-      ) // TODO remove
+      // console.log(
+      //   '%c[content-script]',
+      //   'color: fuchsia',
+      //   '» fwd event to background.js',
+      //   event.type,
+      //   event,
+      // )
       port.postMessage(event.detail)
     },
   )
