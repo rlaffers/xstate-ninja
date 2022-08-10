@@ -2,6 +2,7 @@
   import type { StateValue } from 'xstate'
 
   export interface StateNodeFrame {
+    id: string
     type: 'stateNode'
     stateValue: StateValue
     changed?: boolean

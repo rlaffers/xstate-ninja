@@ -5,6 +5,7 @@ import {
   ActionObject,
   InvokeDefinition,
   Guard,
+  type AnyEventObject,
 } from 'xstate'
 import {
   InspectedActorObject,
@@ -15,6 +16,10 @@ export function isInterpreterLike(
   entity: AnyActorRef | AnyInterpreter,
 ): entity is AnyInterpreter {
   return (entity as AnyInterpreter).machine !== undefined
+}
+
+export function isEventLike(entity: any): entity is AnyEventObject {
+  return typeof (entity as AnyEventObject).type === 'string'
 }
 
 // TODO import this from xstate when it becomes available

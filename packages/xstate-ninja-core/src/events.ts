@@ -149,7 +149,7 @@ export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
 export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
   type: EventTypes.update = EventTypes.update
 
-  constructor(actor: InspectedActorObject) {
+  constructor(actor: InspectedActorObject, rawEvent: AnyEventObject) {
     const snapshot = actor.actorRef.getSnapshot()
     super(EventTypes.update, {
       detail: {
@@ -160,18 +160,11 @@ export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
         createdAt: Date.now(),
         // TODO how to get status and event from actors which are not interpreters?
         status: isInterpreterLike(actor.actorRef) ? actor.actorRef.status : 0,
-        event: isInterpreterLike(actor.actorRef)
-          ? createInspectedEventObject(
-              actor.actorRef.state.event,
-              actor.sessionId,
-              actor.actorRef,
-            )
-          : createInspectedEventObject(
-              // TODO fill in the event
-              { type: '' },
-              actor.sessionId,
-              actor.actorRef,
-            ),
+        event: createInspectedEventObject(
+          rawEvent,
+          actor.sessionId,
+          actor.actorRef,
+        ),
       },
     })
   }

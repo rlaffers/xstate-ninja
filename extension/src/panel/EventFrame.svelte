@@ -3,6 +3,7 @@
   import type { InspectedEventObject } from 'xstate-ninja'
 
   export interface EventFrame {
+    id: string
     type: 'event'
     event: InspectedEventObject
     changed?: boolean

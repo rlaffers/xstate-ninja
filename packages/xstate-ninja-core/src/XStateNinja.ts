@@ -1,11 +1,16 @@
-import type { AnyInterpreter, AnyActorRef, Subscription } from 'xstate'
+import type {
+  AnyInterpreter,
+  AnyActorRef,
+  Subscription,
+  AnyEventObject,
+} from 'xstate'
 import type {
   XStateDevInterface,
   ActorRegistration,
   ActorUpdate,
   InspectedActorObject,
 } from './types'
-import { isInterpreterLike } from './utils'
+import { isInterpreterLike, isEventLike } from './utils'
 import {
   ActorEvent,
   ActorsEvent,
@@ -66,14 +71,28 @@ export class XStateNinja implements XStateDevInterface {
     this.log('sending actor event', actorEvent)
     globalThis.dispatchEvent(actorEvent)
 
-    inspectedActor.subscription = actor.subscribe((state) => {
-      // TODO for callbacks the state is event emitted from the actor. Try promises.
-      this.log('----- actor updated -----', state)
+    inspectedActor.subscription = actor.subscribe((stateOrValue: any) => {
+      this.log('----- actor updated -----', stateOrValue)
       inspectedActor.updatedAt = Date.now()
-      if (state.done) {
+      if (stateOrValue.done) {
         inspectedActor.dead = true
       }
-      const event = new UpdateEvent(inspectedActor)
+      // TODO for callbacks the state is the value emitted from the actor
+      // This is the resolved promise value for promises (this is implied to be a done.invoke.actorID event)
+      // or whatever is sent back from a callback (this is implied to be an event, so cast it to event)
+      let rawEvent: AnyEventObject
+      if (isInterpreterLike(inspectedActor.actorRef)) {
+        rawEvent = inspectedActor.actorRef.state.event
+      } else if (isEventLike(stateOrValue)) {
+        // callback-based actors are capable of emitting an event-like object
+        rawEvent = stateOrValue
+      } else {
+        // promise-based actors give us the resolved value. Also, we fall into this case when
+        // a callback-based actor sent a generic value (not an event-like object)
+        // TODO fix this
+        rawEvent = { type: 'synthetic-event', data: stateOrValue }
+      }
+      const event = new UpdateEvent(inspectedActor, rawEvent)
       this.log('update event', event)
 
       inspectedActor.history.push(event.detail)
@@ -81,7 +100,7 @@ export class XStateNinja implements XStateDevInterface {
 
       globalThis.dispatchEvent(event)
 
-      if (state.done) {
+      if (stateOrValue.done) {
         this.unregister(actor)
       }
 

@@ -25,6 +25,7 @@
     snapshot?: any,
   ): EventFrame {
     return {
+      id: `${EVENT}·${update.event.name}·${update.event.createdAt}·${update.sessionId}`,
       type: EVENT,
       event: update.event,
       changed: snapshot?.changed,
@@ -37,6 +38,7 @@
     snapshot?: any,
   ): StateNodeFrame {
     return {
+      id: `${STATE_NODE}·${update.event.name}·${update.event.createdAt}·${update.sessionId}`,
       type: STATE_NODE,
       stateValue: snapshot?.value,
       changed: snapshot?.changed,
@@ -49,7 +51,8 @@
     update: XStateInspectUpdateEvent,
   ): Array<EventFrame> {
     const frames = []
-    const snapshot = update.snapshot != null ? JSON.parse(update.snapshot) : undefined
+    const snapshot =
+      update.snapshot != null ? JSON.parse(update.snapshot) : undefined
     frames.push(createEventFrame(update, snapshot))
     if (snapshot?.changed) {
       frames.push(createStateNodeFrame(update, snapshot))
@@ -119,13 +122,14 @@
   function onSelectFrame(frame: StateNodeFrame | EventFrame) {
     log('clearing selected frame') // TODO remove
     selectedFrame = frame
-    selectedSnapshot = frame.snapshot != null ? JSON.parse(frame.snapshot) : null
+    selectedSnapshot =
+      frame.snapshot != null ? JSON.parse(frame.snapshot) : null
   }
 </script>
 
 {#if actor != null}
   <div class="tracker" bind:this={trackerElement} on:click={clearSelectedFrame}>
-    {#each frames as frame, index}
+    {#each frames as frame, index (frame.id)}
       {#if frame.type === STATE_NODE}
         <StateNodeFrameComponent
           data={frame}
