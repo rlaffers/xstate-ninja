@@ -25,7 +25,10 @@
   ): DeserializedExtendedInspectedActorObject {
     return {
       ...serializedActor,
-      snapshot: JSON.parse(serializedActor.snapshot),
+      snapshot:
+        serializedActor.snapshot != null
+          ? JSON.parse(serializedActor.snapshot)
+          : undefined,
       machine:
         serializedActor.machine != null
           ? JSON.parse(serializedActor.machine)
@@ -37,7 +40,8 @@
   function createActorFromUpdateEvent(
     event: XStateInspectUpdateEvent,
   ): DeserializedExtendedInspectedActorObject {
-    const snapshot = JSON.parse(event.snapshot)
+    const snapshot =
+      event.snapshot != null ? JSON.parse(event.snapshot) : undefined
     const actor = {
       sessionId: event.sessionId,
       parent: undefined,
@@ -49,7 +53,7 @@
       status: event.status,
       // xstate-ninja custom props
       history: [event],
-      dead: event.status === InterpreterStatus.Stopped || snapshot.done,
+      dead: event.status === InterpreterStatus.Stopped || snapshot?.done,
       actorId: event.actorId,
     }
     return actor
@@ -59,14 +63,15 @@
     actor: DeserializedExtendedInspectedActorObject,
     event: XStateInspectUpdateEvent,
   ): DeserializedExtendedInspectedActorObject {
-    const snapshot = JSON.parse(event.snapshot)
+    const snapshot =
+      event.snapshot != null ? JSON.parse(event.snapshot) : undefined
     actor.history.push(event)
     actor.events.push(event.event)
     const updatedActor = {
       ...actor,
       snapshot,
       status: event.status,
-      dead: event.status === InterpreterStatus.Stopped || snapshot.done,
+      dead: event.status === InterpreterStatus.Stopped || snapshot?.done,
       updatedAt: event.createdAt,
       history: actor.history,
     }

@@ -73,7 +73,7 @@
     height: 40px;
   }
   .gauge-inner .low-fuel-led {
-    display: none;
+    visibility: hidden;
     width: 30px;
     height: 30px;
     color: transparent;
@@ -82,10 +82,10 @@
     background-position: 1px 3px;
   }
   .gauge-inner .low-fuel-led.on {
-    display: block;
+    visibility: visible;
   }
   .gauge-inner .low-battery-led {
-    display: none;
+    visibility: hidden;
     width: 30px;
     height: 30px;
     color: transparent;
@@ -94,7 +94,7 @@
     background-position: 0 3px;
   }
   .gauge-inner .low-battery-led.on {
-    display: block;
+    visibility: visible;
   }
   .gauge-indicator {
     z-index: 2;

@@ -27,7 +27,8 @@ export interface InspectedActorObject {
   actorRef: AnyActorRef
   sessionId: string
   parent?: string // Session ID
-  snapshot: any
+  // snapshot is undefined for invoked/spawned callbacks, promises, observables
+  snapshot?: any
   machine?: StateMachineDefinition<any, any, AnyEventObject>
   events: InspectedEventObject[]
   createdAt: number // Timestamp
@@ -45,7 +46,7 @@ export type SerializedExtendedInspectedActorObject = Omit<
   InspectedActorObject,
   'actorRef' | 'subscription' | 'snapshot' | 'machine'
 > & {
-  snapshot: string // JSON-stringified
+  snapshot?: string // JSON-stringified
   actorId: string
   machine?: string // JSON-stringified
 }
@@ -56,7 +57,7 @@ export type DeserializedExtendedInspectedActorObject = Omit<
   SerializedExtendedInspectedActorObject,
   'snapshot' | 'machine'
 > & {
-  snapshot: any
+  snapshot?: any
   machine?: any
 }
 
@@ -65,14 +66,14 @@ export interface SerializedInspectedActorObject {
   sessionId: string
   parent?: string
   machine?: string // JSON-stringified
-  snapshot: string // JSON-stringified
+  snapshot?: string // JSON-stringified
   createdAt: number
 }
 
 export interface ActorUpdate {
   sessionId: string
   actorRef: AnyActorRef
-  snapshot: any
+  snapshot?: any
   event: InspectedEventObject
   status: 0 | 1 | 2 // 0 = not started, 1 = started, 2 = stopped
 }

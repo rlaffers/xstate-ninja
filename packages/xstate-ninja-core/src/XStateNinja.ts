@@ -63,11 +63,12 @@ export class XStateNinja implements XStateDevInterface {
     const inspectedActor = createInspectedActorObject(actor)
 
     const actorEvent = new ActorEvent(inspectedActor)
-    this.log('actor event', actorEvent)
+    this.log('sending actor event', actorEvent)
     globalThis.dispatchEvent(actorEvent)
 
     inspectedActor.subscription = actor.subscribe((state) => {
-      this.log('» actor updated', state)
+      // TODO for callbacks the state is event emitted from the actor. Try promises.
+      this.log('----- actor updated -----', state)
       inspectedActor.updatedAt = Date.now()
       if (state.done) {
         inspectedActor.dead = true

@@ -10,7 +10,7 @@
   import machine from './state-machine'
   import Gauge from './Gauge.svelte'
 
-  const xstateNinja = createXStateNinja({ logLevel: LogLevels.warn })
+  const xstateNinja = createXStateNinja({ logLevel: LogLevels.debug })
 
   let service = interpret(machine).start()
   let state: Readable<State<any>>

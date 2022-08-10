@@ -22,26 +22,26 @@
 
   function createEventFrame(
     update: XStateInspectUpdateEvent,
-    snapshot: any,
+    snapshot?: any,
   ): EventFrame {
     return {
       type: EVENT,
       event: update.event,
-      changed: snapshot.changed,
+      changed: snapshot?.changed,
       snapshot: update.snapshot,
     }
   }
 
   function createStateNodeFrame(
     update: XStateInspectUpdateEvent,
-    snapshot: any,
+    snapshot?: any,
   ): StateNodeFrame {
     return {
       type: STATE_NODE,
-      stateValue: snapshot.value,
-      changed: snapshot.changed,
+      stateValue: snapshot?.value,
+      changed: snapshot?.changed,
       snapshot: update.snapshot,
-      final: snapshot.done,
+      final: snapshot?.done,
     }
   }
 
@@ -49,9 +49,9 @@
     update: XStateInspectUpdateEvent,
   ): Array<EventFrame> {
     const frames = []
-    const snapshot = JSON.parse(update.snapshot)
+    const snapshot = update.snapshot != null ? JSON.parse(update.snapshot) : undefined
     frames.push(createEventFrame(update, snapshot))
-    if (snapshot.changed) {
+    if (snapshot?.changed) {
       frames.push(createStateNodeFrame(update, snapshot))
     }
     return frames
@@ -119,7 +119,7 @@
   function onSelectFrame(frame: StateNodeFrame | EventFrame) {
     log('clearing selected frame') // TODO remove
     selectedFrame = frame
-    selectedSnapshot = JSON.parse(frame.snapshot)
+    selectedSnapshot = frame.snapshot != null ? JSON.parse(frame.snapshot) : null
   }
 </script>
 

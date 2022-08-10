@@ -4,9 +4,9 @@
   export interface StateNodeFrame {
     type: 'stateNode'
     stateValue: StateValue
-    changed: boolean
-    snapshot: string
-    final: boolean
+    changed?: boolean
+    snapshot?: string
+    final?: boolean
   }
 </script>
 

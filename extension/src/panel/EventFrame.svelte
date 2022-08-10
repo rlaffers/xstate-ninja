@@ -5,8 +5,8 @@
   export interface EventFrame {
     type: 'event'
     event: InspectedEventObject
-    changed: boolean
-    snapshot: string
+    changed?: boolean
+    snapshot?: string
   }
 </script>
 

@@ -59,7 +59,7 @@ export interface XStateInspectActorsEvent {
 export interface XStateInspectUpdateEvent {
   type: '@xstate/inspect.update'
   sessionId: string
-  snapshot: string // JSON-stringified snapshot
+  snapshot?: string // JSON-stringified snapshot
   event: InspectedEventObject
   status: 0 | 1 | 2 // Actor status
   createdAt: number
@@ -97,7 +97,7 @@ export interface XStateInspectReadEvent {
 export interface XStateNinjaUnregisterEvent {
   type: '@xstate-ninja/unregister'
   sessionId: string
-  snapshot: string
+  snapshot?: string
   status: 0 | 1 | 2
   dead: boolean
   createdAt: number
@@ -150,12 +150,13 @@ export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
   type: EventTypes.update = EventTypes.update
 
   constructor(actor: InspectedActorObject) {
+    const snapshot = actor.actorRef.getSnapshot()
     super(EventTypes.update, {
       detail: {
         type: EventTypes.update,
         sessionId: actor.sessionId,
         actorId: actor.actorRef.id,
-        snapshot: JSON.stringify(actor.actorRef.getSnapshot()),
+        snapshot: snapshot != null ? JSON.stringify(snapshot) : undefined,
         createdAt: Date.now(),
         // TODO how to get status and event from actors which are not interpreters?
         status: isInterpreterLike(actor.actorRef) ? actor.actorRef.status : 0,
@@ -166,6 +167,7 @@ export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
               actor.actorRef,
             )
           : createInspectedEventObject(
+              // TODO fill in the event
               { type: '' },
               actor.sessionId,
               actor.actorRef,
@@ -179,11 +181,12 @@ export class UnregisterEvent extends CustomEvent<XStateNinjaUnregisterEvent> {
   type: EventTypes.unregister = EventTypes.unregister
 
   constructor(actor: InspectedActorObject) {
+    const snapshot = actor.actorRef.getSnapshot()
     super(EventTypes.actor, {
       detail: {
         type: EventTypes.unregister,
         sessionId: actor.sessionId,
-        snapshot: JSON.stringify(actor.actorRef.getSnapshot()),
+        snapshot: snapshot != null ? JSON.stringify(snapshot) : undefined,
         createdAt: Date.now(),
         // TODO how to get status and event from actors which are not interpreters?
         status: isInterpreterLike(actor.actorRef) ? actor.actorRef.status : 0,
@@ -257,7 +260,10 @@ export class ActorsEvent extends CustomEvent<XStateInspectActorsEvent> {
               sessionId: actor.sessionId,
               parent: actor.parent,
               machine: JSON.stringify(actor.machine),
-              snapshot: JSON.stringify(actor.snapshot),
+              snapshot:
+                actor.snapshot != null
+                  ? JSON.stringify(actor.snapshot)
+                  : undefined,
               createdAt: actor.createdAt,
             }
             return result
