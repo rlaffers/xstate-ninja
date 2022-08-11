@@ -132,3 +132,19 @@ export function serializeActor(
   }
   return serialized as SerializedExtendedInspectedActorObject
 }
+
+export function sanitizeEvent(event: AnyEventObject): AnyEventObject {
+  // some events from xstate may contain functions, which break their serialization
+  // for transport over window.dispatchEvent()
+  return Object.entries(event).reduce(
+    (result: { [key: string]: any }, [key, value]) => {
+      if (typeof value === 'function') {
+        result[key] = value.toString()
+      } else {
+        result[key] = value
+      }
+      return result
+    },
+    {},
+  ) as AnyEventObject
+}

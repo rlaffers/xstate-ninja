@@ -34,9 +34,12 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 
 - ~~typescript~~
 - ~~create the xstate integration~~
+- fix scrolling and sticky position in the tracker
 - add React integration
 - add Svelte integration
 - add Vue integration
+- track invoked actors
+- stopped spawned actgor is not marked as dead
 - ~~mark the final state with double border~~
 - ~~mark events guarded, forbidden~~
 - ~~display context~~

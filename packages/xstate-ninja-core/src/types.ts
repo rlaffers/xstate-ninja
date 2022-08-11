@@ -42,6 +42,7 @@ export interface InspectedActorObject {
 }
 
 // used for ActorsEvent.inspectedActors custom prop
+// and ActorEvent.inspectedActor
 export type SerializedExtendedInspectedActorObject = Omit<
   InspectedActorObject,
   'actorRef' | 'subscription' | 'snapshot' | 'machine'

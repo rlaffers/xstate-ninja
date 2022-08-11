@@ -8,7 +8,7 @@
     {#if actor.dead}
       <span title="This actor is dead">💀</span>
     {/if}
-    {#if actor.snapshot.done}
+    {#if actor.snapshot?.done}
       <span title="The final state has been reached">🏁</span>
     {/if}
   </p>

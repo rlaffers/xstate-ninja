@@ -68,7 +68,7 @@ export class XStateNinja implements XStateDevInterface {
     const inspectedActor = createInspectedActorObject(actor)
 
     const actorEvent = new ActorEvent(inspectedActor)
-    this.log('sending actor event', actorEvent)
+    this.log('🤖 actor event', actorEvent)
     globalThis.dispatchEvent(actorEvent)
 
     inspectedActor.subscription = actor.subscribe((stateOrValue: any) => {
@@ -77,9 +77,8 @@ export class XStateNinja implements XStateDevInterface {
       if (stateOrValue.done) {
         inspectedActor.dead = true
       }
-      // TODO for callbacks the state is the value emitted from the actor
-      // This is the resolved promise value for promises (this is implied to be a done.invoke.actorID event)
-      // or whatever is sent back from a callback (this is implied to be an event, so cast it to event)
+      // TODO snapshot on the inspectedActor should be updated so when it is transmitted in actors event it has
+      // the latest state
       let rawEvent: AnyEventObject
       if (isInterpreterLike(inspectedActor.actorRef)) {
         rawEvent = inspectedActor.actorRef.state.event
@@ -89,8 +88,10 @@ export class XStateNinja implements XStateDevInterface {
       } else {
         // promise-based actors give us the resolved value. Also, we fall into this case when
         // a callback-based actor sent a generic value (not an event-like object)
-        // TODO fix this
-        rawEvent = { type: 'synthetic-event', data: stateOrValue }
+        rawEvent = {
+          type: `xstate-ninja.emitted-value.${inspectedActor.actorRef.id}`,
+          data: stateOrValue,
+        }
       }
       const event = new UpdateEvent(inspectedActor, rawEvent)
       this.log('update event', event)

@@ -14,7 +14,7 @@ import {
   SerializedInspectedActorObject,
   TransitionTypes,
 } from './types'
-import { isInterpreterLike, serializeActor } from './utils'
+import { isInterpreterLike, serializeActor, sanitizeEvent } from './utils'
 
 // from xstate
 // TODO move to types
@@ -73,8 +73,7 @@ export interface XStateInspectActorEvent {
   sessionId: string
   machine?: string // JSON-stringified machine definition
   createdAt: number
-  // custom xstate-ninja events
-  history: XStateInspectUpdateEvent[]
+  // custom xstate-ninja props
   inspectedActor: SerializedExtendedInspectedActorObject
 }
 
@@ -135,7 +134,6 @@ export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
       detail: {
         type: EventTypes.actor,
         sessionId: actor.sessionId,
-        history: actor.history,
         createdAt: Date.now(),
         machine: isInterpreterLike(actor.actorRef)
           ? JSON.stringify(actor.actorRef.machine)
@@ -342,7 +340,7 @@ export function createInspectedEventObject(
   // TODO rationalize arguments
   return {
     name: event.type,
-    data: event,
+    data: sanitizeEvent(event),
     origin: originSessionId,
     createdAt: Date.now(),
     transitionType: getTransitionInfo(actor),

@@ -83,7 +83,7 @@
   }
 
   $: if (actor) {
-    log('actor changed', actor) // TODO
+    log('actor changed', actor) // TODO remove
     if (actor.sessionId !== frames.sessionId) {
       const newFrames: FrameList = createFrameList()
       newFrames.sessionId = actor?.sessionId
@@ -120,7 +120,6 @@
   })
 
   function onSelectFrame(frame: StateNodeFrame | EventFrame) {
-    log('clearing selected frame') // TODO remove
     selectedFrame = frame
     selectedSnapshot =
       frame.snapshot != null ? JSON.parse(frame.snapshot) : null
