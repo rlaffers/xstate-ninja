@@ -11,7 +11,13 @@ export default createMachine(
     id: 'vehicle',
     preserveActionOrder: true,
     initial: 'EngineStopped',
-    entry: ['spawnFuelWatcher', 'spawnBatteryWatcher'],
+    // TODO remove spawnCallback, spawnPromise
+    entry: [
+      'spawnFuelWatcher',
+      'spawnBatteryWatcher',
+      // 'spawnCallback',
+      // 'spawnPromise',
+    ],
     context: {
       fuel: 60,
       battery: 100,
@@ -174,6 +180,48 @@ export default createMachine(
             'batteryWatcher',
           ),
         }),
+      }),
+
+      spawnCallback: assign({
+        cbRef: () =>
+          spawn((sendBack) => {
+            console.log(
+              '%cspawned cb executed',
+              'background: deeppink; color: white; padding: 1px 5px',
+            )
+            sendBack({ type: 'SPAWNED_CB_STARTED' })
+            const t1 = setTimeout(() => {
+              console.log(
+                '%cfirst event',
+                'background: deeppink; color: white; padding: 1px 5px',
+              )
+              sendBack('FROM_SPAWNED_CB')
+            }, 100)
+            const t2 = setTimeout(() => {
+              console.log(
+                '%csecond event',
+                'background: deeppink; color: white; padding: 1px 5px',
+              )
+              sendBack({ type: 'FROM_SPAWNED_CB 2' })
+            }, 1000)
+            const t3 = setTimeout(() => {
+              console.log(
+                '%csecond event',
+                'background: deeppink; color: white; padding: 1px 5px',
+              )
+              sendBack('FROM_SPAWNED_CB 3')
+            }, 3000)
+            return () => {
+              clearTimeout(t1)
+              clearTimeout(t2)
+              clearTimeout(t3)
+            }
+          }, 'spawnedCallback'),
+      }),
+
+      spawnPromise: assign({
+        promiseRef: () =>
+          spawn(() => Promise.resolve('1980'), 'spawnedPromise'),
       }),
 
       spawnFuelWatcher: assign({

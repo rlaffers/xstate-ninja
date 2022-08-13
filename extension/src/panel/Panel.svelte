@@ -242,6 +242,7 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    overflow-y: auto;
     /* height: calc(100% - var(--actors-dropdown-height)); */
   }
   .trackers > .tracker-container {
@@ -249,5 +250,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 0.5rem;
   }
 </style>
