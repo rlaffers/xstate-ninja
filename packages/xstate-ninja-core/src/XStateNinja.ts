@@ -77,8 +77,8 @@ export class XStateNinja implements XStateDevInterface {
       if (stateOrValue.done) {
         inspectedActor.dead = true
       }
-      // TODO snapshot on the inspectedActor should be updated so when it is transmitted in actors event it has
-      // the latest state
+      inspectedActor.snapshot = inspectedActor.actorRef.getSnapshot()
+
       let rawEvent: AnyEventObject
       if (isInterpreterLike(inspectedActor.actorRef)) {
         rawEvent = inspectedActor.actorRef.state.event
