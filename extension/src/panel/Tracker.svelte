@@ -160,6 +160,7 @@
     overflow-y: auto;
     scrollbar-width: 5px;
     scrollbar-color: var(--base01) var(--base03);
+    padding-bottom: 5px;
   }
   .tracker::-webkit-scrollbar {
     width: 6px;

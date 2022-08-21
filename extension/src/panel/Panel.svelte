@@ -236,6 +236,7 @@
   }
   :global(.actors-dropdown) {
     height: var(--actors-dropdown-height);
+    max-width: 20rem;
   }
   .trackers {
     grid-area: trackers;
@@ -250,6 +251,5 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 0.5rem;
   }
 </style>

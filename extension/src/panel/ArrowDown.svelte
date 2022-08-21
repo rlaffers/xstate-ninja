@@ -12,7 +12,7 @@
     flex-direction: column;
     align-items: center;
     z-index: 1;
-    margin-bottom: -16px;
+    margin-bottom: -11px;
   }
 
   .arrow-down::after {

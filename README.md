@@ -34,7 +34,6 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 
 - ~~typescript~~
 - ~~create the xstate integration~~
-- fix scrolling and sticky position in the tracker
 - add React integration
 - add Svelte integration
 - add Vue integration
