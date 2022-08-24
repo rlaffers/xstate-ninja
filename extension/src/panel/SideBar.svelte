@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { DeserializedExtendedInspectedActorObject } from 'xstate-ninja'
   import JSONFormatter from 'json-formatter-js'
+  import FrameInfo from './FrameInfo.svelte'
 
   /* eslint-disable no-use-before-define */
   export let actor: DeserializedExtendedInspectedActorObject = null
@@ -28,6 +29,8 @@
 <aside class="sidebar">
   <h1>Context</h1>
   <p class="context-container" bind:this={contextContainer} />
+
+  <FrameInfo />
 </aside>
 
 <style>
@@ -40,9 +43,9 @@
     background-color: var(--base01);
     color: var(--base03);
     margin: 0;
-    padding: 0 0.5rem;
+    padding: 0 8px;
   }
   .sidebar p {
-    margin: 0.5rem;
+    margin: 8px;
   }
 </style>

@@ -38,7 +38,7 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - add Svelte integration
 - add Vue integration
 - track invoked actors
-- stopped spawned actgor is not marked as dead
+- stopped spawned actor is not marked as dead
 - ~~mark the final state with double border~~
 - ~~mark events guarded, forbidden~~
 - ~~display context~~

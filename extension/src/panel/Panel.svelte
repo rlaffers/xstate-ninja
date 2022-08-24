@@ -152,31 +152,6 @@
         actors.set(event.sessionId, updateActorFromUpdateEvent(actor, event))
       }
       actors = actors
-
-      // ========================
-      // Read extended actor state info from the page window. The serialization mechanism for inspectedWindow.eval() is
-      // more robust than the mechanism for serializing CustomEvent.detail which is therefore kept purposefully bare and simple.
-      // With eval() we are able to get state.context reasonably safely (serializing functions and object instances will
-      // not throw exceptions).
-      // At worst (with circular dependencies within serialized objects) we will get an exception here, but since we have already
-      // received the update message, we can at least render some minimal information.
-      // sanitize
-
-      // const sessionId = String(message.data.sessionId).replaceAll(
-      //   /[^a-z0-9:]/gi,
-      //   '',
-      // )
-      // chrome.devtools.inspectedWindow.eval(
-      //   `console.log('♥ devtools requests actor state', '${sessionId}') || window.__XSTATE_NINJA__?.getSerializableActorState('${sessionId}')`,
-      //   (result, error) => {
-      //     if (error) {
-      //       log('💀 Eval error:', { error })
-      //     } else {
-      //       log('✅ Eval result:', { result })
-      //       print(result)
-      //     }
-      //   },
-      // )
     }
     return false
   }
