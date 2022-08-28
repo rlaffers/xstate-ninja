@@ -45,6 +45,7 @@ body {
   margin: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 select,
@@ -59,4 +60,19 @@ input[type='number'] {
 
 option {
   padding: 0.1rem 0.3rem;
+}
+
+.nice-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.nice-scroll::-webkit-scrollbar-track {
+  background: var(--base03);
+  border: 1px solid var(--base01);
+}
+
+.nice-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--base01);
+  border-radius: 5px;
+  border: 1px solid var(--base01);
 }

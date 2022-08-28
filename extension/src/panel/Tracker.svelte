@@ -127,7 +127,11 @@
 </script>
 
 {#if actor != null}
-  <div class="tracker" bind:this={trackerElement} on:click={clearSelectedFrame}>
+  <div
+    class="tracker nice-scroll"
+    bind:this={trackerElement}
+    on:click={clearSelectedFrame}
+  >
     {#each frames as frame, index (frame.id)}
       {#if frame.type === STATE_NODE}
         <StateNodeFrameComponent
@@ -158,22 +162,8 @@
     align-items: center;
     height: 100%;
     overflow-y: auto;
-    scrollbar-width: 5px;
+    scrollbar-width: 8px;
     scrollbar-color: var(--base01) var(--base03);
     padding-bottom: 5px;
-  }
-  .tracker::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .tracker::-webkit-scrollbar-track {
-    background: var(--base03);
-    border: 1px solid var(--base01);
-  }
-
-  .tracker::-webkit-scrollbar-thumb {
-    background-color: var(--base01);
-    border-radius: 20px;
-    border: 1px solid var(--base01);
   }
 </style>

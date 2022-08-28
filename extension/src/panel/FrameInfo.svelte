@@ -1,13 +1,23 @@
 <script lang="ts">
+  import JSONFormatter from 'json-formatter-js'
+  import { omit } from '../utils'
+
+  // TODO for non-machine actors snapshot can be whatever
+  export let snapshot: any = null
+
   let selectedTab = 'actions-tab'
-  function selectTab(event) {
-    console.log(
-      '%cclicked',
-      'background: lime; color: black; padding: 1px 5px',
-      event.target,
-    )
-    selectedTab = event.target.id
+  function selectTab(
+    event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement },
+  ) {
+    selectedTab = event.currentTarget.id
   }
+
+  function insertActionDetail(node: HTMLElement, action: any) {
+    const formatter = new JSONFormatter(omit('type', action))
+    node.appendChild(formatter.render())
+  }
+  // TODO missing assign actions
+  // TODO display invocations in a separate section
 </script>
 
 <section class="frame-info">
@@ -26,7 +36,7 @@
       role="tab"
       on:click={selectTab}
       aria-selected={selectedTab === 'invoked-tab'}
-      aria-controls="invoked-panel">Invoked actors</button
+      aria-controls="invoked-panel">Invoked services</button
     >
   </div>
   <section
@@ -36,8 +46,15 @@
     aria-hidden={selectedTab !== 'actions-tab'}
     aria-labelledby="actions-tab"
   >
-    Actions come here
+    {#if snapshot?.actions}
+      {#each snapshot.actions as action (action)}
+        <details class="action" use:insertActionDetail={action}>
+          <summary>{action.type}</summary>
+        </details>
+      {/each}
+    {/if}
   </section>
+
   <section
     role="tabpanel"
     id="invoked-panel"
@@ -75,5 +92,30 @@
   }
   .tabpanel[aria-hidden='true'] {
     display: none;
+  }
+
+  .tabpanel .action {
+    padding-left: 1rem;
+  }
+
+  .tabpanel .action > summary {
+    display: list-item;
+    cursor: pointer;
+    margin-left: -1rem;
+  }
+
+  .tabpanel
+    .action
+    > :global(.json-formatter-row)
+    > :global(.json-formatter-toggler-link) {
+    display: none;
+  }
+
+  .tabpanel
+    .action
+    > :global(.json-formatter-row)
+    > :global(.json-formatter-children)
+    > :global(.json-formatter-row) {
+    margin-left: 0;
   }
 </style>

@@ -47,7 +47,7 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - display actions for event frames
 - display invocations for state node frames
 - display entry/exit actions for state node frames
-- add more info on the ActorDetail bar: time started, time finished, time unsubscribed
+- add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children
 - add second tracker lane
 - add button for linking events in two trackers
 - add button to emit an event
@@ -58,6 +58,8 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - support parallel states
 - highlight transitions guarded by "in" state guards
 - add a light theme
+- mark points when children were spawned/invoked
+- display parent-children hierarchy in the dropdown
 
 ## Attribution
 

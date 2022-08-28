@@ -174,7 +174,7 @@
 {:else}
   <main class="actors-view">
     <header>This is the header</header>
-    <section class="trackers">
+    <section class="trackers nice-scroll">
       <section class="tracker-container">
         <ActorsDropdown
           class="actors-dropdown"

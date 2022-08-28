@@ -30,7 +30,7 @@
   <h1>Context</h1>
   <p class="context-container" bind:this={contextContainer} />
 
-  <FrameInfo />
+  <FrameInfo snapshot={selectedSnapshot ?? actor?.snapshot} />
 </aside>
 
 <style>
