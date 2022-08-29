@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { ActivityActionObject } from 'xstate'
   import JSONFormatter from 'json-formatter-js'
   import { omit } from '../utils'
 
-  // TODO for non-machine actors snapshot can be whatever
   export let snapshot: any = null
 
   let selectedTab = 'actions-tab'
@@ -16,8 +16,43 @@
     const formatter = new JSONFormatter(omit('type', action))
     node.appendChild(formatter.render())
   }
-  // TODO missing assign actions
-  // TODO display invocations in a separate section
+  interface ActivityActionObjectMap {
+    [activityKey: string]: ActivityActionObject<any, any> | false
+  }
+
+  function isActivityActionObjectMap(
+    activities: any,
+  ): activities is ActivityActionObjectMap {
+    if (activities != null && typeof activities === 'object') {
+      const activity = Object.values(activities)[0]
+      if (!activity || typeof activity !== 'object') {
+        return false
+      }
+      const type = (activity as ActivityActionObject<any, any>).activity?.type
+      return typeof type === 'string' && type !== ''
+    }
+    return false
+  }
+
+  function getActivitySourceType(
+    activity: ActivityActionObject<any, any>,
+  ): string {
+    const { activity: activityDefinition } = activity
+    if (!activityDefinition) {
+      return '<unknown>'
+    }
+    if (activityDefinition.type === 'xstate.invoke') {
+      if (
+        typeof activityDefinition.src?.type === 'string' &&
+        activityDefinition.src.type.match(/:invocation\[\d+\]$/)
+      ) {
+        return '<inlined>'
+      }
+      return activityDefinition.src?.type ?? '<unknown>'
+    } else {
+      return activityDefinition.type ?? '<unknown>'
+    }
+  }
 </script>
 
 <section class="frame-info">
@@ -36,7 +71,7 @@
       role="tab"
       on:click={selectTab}
       aria-selected={selectedTab === 'invoked-tab'}
-      aria-controls="invoked-panel">Invoked services</button
+      aria-controls="invoked-panel">Services</button
     >
   </div>
   <section
@@ -62,7 +97,26 @@
     aria-hidden={selectedTab !== 'invoked-tab'}
     aria-labelledby="invoked-tab"
   >
-    Invocations come here
+    {#if snapshot?.activities && isActivityActionObjectMap(snapshot.activities)}
+      {#each Object.values(snapshot.activities) as activity (activity)}
+        {#if activity}
+          <details class="activity">
+            <summary>{getActivitySourceType(activity)}</summary>
+            <dl>
+              <dt>id:</dt>
+              <dd>"{activity.activity?.id}"</dd>
+
+              <dt>type:</dt>
+              <dd>
+                "{activity.activity?.type === 'xstate.invoke'
+                  ? 'invoked'
+                  : 'activity'}"
+              </dd>
+            </dl>
+          </details>
+        {/if}
+      {/each}
+    {/if}
   </section>
 </section>
 
@@ -94,11 +148,13 @@
     display: none;
   }
 
-  .tabpanel .action {
+  .tabpanel .action,
+  .tabpanel .activity {
     padding-left: 1rem;
   }
 
-  .tabpanel .action > summary {
+  .tabpanel .action > summary,
+  .tabpanel .activity > summary {
     display: list-item;
     cursor: pointer;
     margin-left: -1rem;
@@ -117,5 +173,22 @@
     > :global(.json-formatter-children)
     > :global(.json-formatter-row) {
     margin-left: 0;
+  }
+
+  .tabpanel .activity > dl {
+    margin: 0;
+  }
+  .tabpanel .activity > dl {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    grid-template-rows: repeat(auto-fill, 1.3rem);
+  }
+
+  .tabpanel .activity > dl > dt {
+    color: var(--green);
+  }
+  .tabpanel .activity > dl > dd {
+    margin: 0;
+    color: var(--orange);
   }
 </style>

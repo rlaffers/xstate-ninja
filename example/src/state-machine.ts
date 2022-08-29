@@ -28,8 +28,6 @@ export default createMachine(
     },
     states: {
       EngineStopped: {
-        // TODO remove
-        // entry: ['spawnPromise'],
         on: {
           START_BUTTON_PRESSED: {
             cond: 'isBatteryAboveMinimum',
@@ -46,7 +44,7 @@ export default createMachine(
       Igniting: {
         invoke: {
           src: 'ignition',
-          id: 'ignition',
+          id: 'car-ignition',
           data: ({ battery }) => ({
             battery,
           }),

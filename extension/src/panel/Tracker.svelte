@@ -162,8 +162,6 @@
     align-items: center;
     height: 100%;
     overflow-y: auto;
-    scrollbar-width: 8px;
-    scrollbar-color: var(--base01) var(--base03);
     padding-bottom: 5px;
   }
 </style>

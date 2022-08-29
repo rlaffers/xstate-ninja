@@ -74,7 +74,14 @@ export class XStateNinja implements XStateDevInterface {
     globalThis.dispatchEvent(actorEvent)
 
     inspectedActor.subscription = actor.subscribe((stateOrValue: any) => {
-      this.log('----- actor updated -----', stateOrValue)
+      // TODO missing assign actions.
+      // TODO test how pure/choose/sendParent/raise/log actions are displayed
+      // TODO ✓ spawned actors are not among activities, only invoked services are
+      // TODO test how v4 activities are displayed
+      this.log(
+        `----- actor updated (${inspectedActor.actorRef.id}) -----`,
+        stateOrValue,
+      )
       inspectedActor.updatedAt = Date.now()
       if (stateOrValue.done) {
         inspectedActor.dead = true
@@ -97,13 +104,6 @@ export class XStateNinja implements XStateDevInterface {
         // callback-based actors are capable of emitting an event-like object
         scxmlEvent = toSCXMLEvent(stateOrValue)
       } else {
-        // TODO remove these Q/A
-        // ✓ does xstate cast numbers from cb into events as well? -> No, it throws an error if cb sent
-        //   anything other than a string or event
-        // ✓ xstate does not prevent collisions between actor IDs and session IDs.
-        // ✓ if we spawn 2 actors with the same id in a single state? -> xstate does not care, events from both
-        //   will have origin === that duplicate id. The "children" map will contain only the latest actor of that id.
-        //
         // promise-based actors give us the resolved value. Also, we fall into this case when
         // a callback-based actor sent a string value (implied to be a name of event)
         scxmlEvent = toSCXMLEvent({
