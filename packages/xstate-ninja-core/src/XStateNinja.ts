@@ -1,8 +1,10 @@
+import { toSCXMLEvent } from 'xstate'
 import type {
   AnyInterpreter,
   AnyActorRef,
   Subscription,
   AnyEventObject,
+  SCXML,
 } from 'xstate'
 import type {
   XStateDevInterface,
@@ -10,7 +12,7 @@ import type {
   ActorUpdate,
   InspectedActorObject,
 } from './types'
-import { isInterpreterLike, isEventLike } from './utils'
+import { isInterpreterLike, isEventLike, findChildBySessionId } from './utils'
 import {
   ActorEvent,
   ActorsEvent,
@@ -79,21 +81,37 @@ export class XStateNinja implements XStateDevInterface {
       }
       inspectedActor.snapshot = inspectedActor.actorRef.getSnapshot()
 
-      let rawEvent: AnyEventObject
+      let scxmlEvent: SCXML.Event<AnyEventObject>
       if (isInterpreterLike(inspectedActor.actorRef)) {
-        rawEvent = inspectedActor.actorRef.state.event
+        scxmlEvent = inspectedActor.actorRef.state._event
+        if (scxmlEvent.origin != null && scxmlEvent.origin.match(/^x:\d/)) {
+          const originId = findChildBySessionId(
+            inspectedActor.actorRef,
+            scxmlEvent.origin,
+          )?.id
+          if (originId != null) {
+            scxmlEvent.origin = `${originId} (${scxmlEvent.origin})`
+          }
+        }
       } else if (isEventLike(stateOrValue)) {
         // callback-based actors are capable of emitting an event-like object
-        rawEvent = stateOrValue
+        scxmlEvent = toSCXMLEvent(stateOrValue)
       } else {
+        // TODO remove these Q/A
+        // ✓ does xstate cast numbers from cb into events as well? -> No, it throws an error if cb sent
+        //   anything other than a string or event
+        // ✓ xstate does not prevent collisions between actor IDs and session IDs.
+        // ✓ if we spawn 2 actors with the same id in a single state? -> xstate does not care, events from both
+        //   will have origin === that duplicate id. The "children" map will contain only the latest actor of that id.
+        //
         // promise-based actors give us the resolved value. Also, we fall into this case when
-        // a callback-based actor sent a generic value (not an event-like object)
-        rawEvent = {
+        // a callback-based actor sent a string value (implied to be a name of event)
+        scxmlEvent = toSCXMLEvent({
           type: `xstate-ninja.emitted-value.${inspectedActor.actorRef.id}`,
           data: stateOrValue,
-        }
+        })
       }
-      const event = new UpdateEvent(inspectedActor, rawEvent)
+      const event = new UpdateEvent(inspectedActor, scxmlEvent)
       this.log('update event', event)
 
       inspectedActor.history.push(event.detail)

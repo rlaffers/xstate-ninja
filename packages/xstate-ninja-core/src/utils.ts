@@ -148,3 +148,15 @@ export function sanitizeEvent(event: AnyEventObject): AnyEventObject {
     {},
   ) as AnyEventObject
 }
+
+export function findChildBySessionId(
+  actor: AnyInterpreter,
+  sessionId: string,
+): AnyActorRef | undefined {
+  for (const child of actor.children.values()) {
+    if ((child as AnyInterpreter).sessionId === sessionId) {
+      return child
+    }
+  }
+  return undefined
+}

@@ -6,6 +6,7 @@ import type {
   EventObject,
   TransitionConfig,
   TransitionsConfig,
+  SCXML,
 } from 'xstate'
 import {
   InspectedEventObject,
@@ -147,7 +148,10 @@ export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
 export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
   type: EventTypes.update = EventTypes.update
 
-  constructor(actor: InspectedActorObject, rawEvent: AnyEventObject) {
+  constructor(
+    actor: InspectedActorObject,
+    scxmlEvent: SCXML.Event<AnyEventObject>,
+  ) {
     const snapshot = actor.actorRef.getSnapshot()
     super(EventTypes.update, {
       detail: {
@@ -156,13 +160,8 @@ export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
         actorId: actor.actorRef.id,
         snapshot: snapshot != null ? JSON.stringify(snapshot) : undefined,
         createdAt: Date.now(),
-        // TODO how to get status and event from actors which are not interpreters?
         status: isInterpreterLike(actor.actorRef) ? actor.actorRef.status : 0,
-        event: createInspectedEventObject(
-          rawEvent,
-          actor.sessionId,
-          actor.actorRef,
-        ),
+        event: createInspectedEventObject(scxmlEvent, actor.actorRef),
       },
     })
   }
@@ -316,7 +315,8 @@ export function createInspectedActorObject(
     status: 0,
     history: [],
     dead: isInterpreterLike(actor)
-      ? actor.state?.done || actor.status === InterpreterStatus.Stopped
+      ? actor.initialized &&
+        (actor.state?.done || actor.status === InterpreterStatus.Stopped)
       : false,
   }
 
@@ -333,15 +333,13 @@ export function createInspectedActorObject(
 }
 
 export function createInspectedEventObject(
-  event: AnyEventObject,
-  originSessionId: string,
+  event: SCXML.Event<AnyEventObject>,
   actor: AnyInterpreter | AnyActorRef,
 ): InspectedEventObject {
-  // TODO rationalize arguments
   return {
-    name: event.type,
-    data: sanitizeEvent(event),
-    origin: originSessionId,
+    name: event.name,
+    data: sanitizeEvent(event.data),
+    origin: event.origin,
     createdAt: Date.now(),
     transitionType: getTransitionInfo(actor),
   }

@@ -11,10 +11,10 @@ export default createMachine(
     id: 'vehicle',
     preserveActionOrder: true,
     initial: 'EngineStopped',
-    // TODO remove spawnCallback, spawnPromise
     entry: [
       'spawnFuelWatcher',
       'spawnBatteryWatcher',
+      // TODO remove
       // 'spawnCallback',
       // 'spawnPromise',
     ],
@@ -28,6 +28,8 @@ export default createMachine(
     },
     states: {
       EngineStopped: {
+        // TODO remove
+        // entry: ['spawnPromise'],
         on: {
           START_BUTTON_PRESSED: {
             cond: 'isBatteryAboveMinimum',
@@ -111,6 +113,7 @@ export default createMachine(
           Idle: {
             invoke: {
               src: 'consumeFuelIdly',
+              id: 'consumeFuelIdly',
             },
             on: {
               SHIFT_UP: {
@@ -195,33 +198,29 @@ export default createMachine(
                 '%cfirst event',
                 'background: deeppink; color: white; padding: 1px 5px',
               )
-              sendBack('FROM_SPAWNED_CB')
+              sendBack('PLAIN_STRING_FROM_SPAWNED_CB')
             }, 100)
             const t2 = setTimeout(() => {
               console.log(
                 '%csecond event',
                 'background: deeppink; color: white; padding: 1px 5px',
               )
-              sendBack({ type: 'FROM_SPAWNED_CB 2' })
+              sendBack({ type: 'EVENT_OBJ_FROM_SPAWNED_CB 2' })
             }, 1000)
-            const t3 = setTimeout(() => {
-              console.log(
-                '%csecond event',
-                'background: deeppink; color: white; padding: 1px 5px',
-              )
-              sendBack('FROM_SPAWNED_CB 3')
-            }, 3000)
             return () => {
               clearTimeout(t1)
               clearTimeout(t2)
-              clearTimeout(t3)
             }
           }, 'spawnedCallback'),
       }),
 
       spawnPromise: assign({
         promiseRef: () =>
-          spawn(() => Promise.resolve('1980'), 'spawnedPromise'),
+          spawn(
+            () =>
+              new Promise((resolve) => setTimeout(() => resolve(1980), 1000)),
+            'spawnedPromise',
+          ),
       }),
 
       spawnFuelWatcher: assign({

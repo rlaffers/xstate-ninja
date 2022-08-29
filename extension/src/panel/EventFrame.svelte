@@ -56,6 +56,9 @@
   on:click={selectFrame}
 >
   {data.event.data.type}
+  {#if data.event.origin}
+    <div class="origin">from:&nbsp;{data.event.origin}</div>
+  {/if}
 </div>
 
 <style>
@@ -67,7 +70,7 @@
     border-radius: 1rem;
     padding: 0.5rem 1rem;
     margin-top: 0.5rem;
-    height: 1rem;
+    /*height: 1rem;*/
     line-height: 1rem;
     text-align: center;
     cursor: pointer;
@@ -93,5 +96,8 @@
     border-color: var(--red);
     background-color: var(--base03);
     color: var(--red);
+  }
+  .origin {
+    font-size: 80%;
   }
 </style>
