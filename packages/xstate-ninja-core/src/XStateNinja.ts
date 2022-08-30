@@ -76,8 +76,6 @@ export class XStateNinja implements XStateDevInterface {
     inspectedActor.subscription = actor.subscribe((stateOrValue: any) => {
       // TODO missing assign actions.
       // TODO test how pure/choose/sendParent/raise/log actions are displayed
-      // TODO ✓ spawned actors are not among activities, only invoked services are
-      // TODO test how v4 activities are displayed
       this.log(
         `----- actor updated (${inspectedActor.actorRef.id}) -----`,
         stateOrValue,

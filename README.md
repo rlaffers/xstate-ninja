@@ -34,32 +34,38 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 
 - ~~typescript~~
 - ~~create the xstate integration~~
+- ~~display parent-children hierarchy in the dropdown~~
+- track invoked actors
+- add event panel for event frames with event info (events: actions + event; state nodes: actions (entry,exit) + services)
+- display assign actions (they are not reported by the xstate interpreter)
+- add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children
 - add React integration
 - add Svelte integration
+- add parent onto spawned actors (better hierarchy in the dropdown)
+- add option to disable logging (in the production mode)
+- mark state nodes with invoked services with icons in the tracker
+- add icons to frames for marking spawned children
 - add Vue integration
-- track invoked actors
+- ~~track invoked actors~~
 - stopped spawned actor is not marked as dead
 - ~~mark the final state with double border~~
 - ~~mark events guarded, forbidden~~
 - ~~display context~~
-- highlight changes in the context (diff mode)
-- make context sidebar size adjustable
-- display actions for event frames
-- display invocations for state node frames
-- display entry/exit actions for state node frames
-- add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children
+- ~~display actions for event frames~~
+- ~~display invocations for state node frames~~
+- ~~display entry/exit actions for state node frames~~
 - add second tracker lane
-- add button for linking events in two trackers
-- add button to emit an event
-- user annotations tool
+- hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
+- make context sidebar width adjustable
+- make context, actions, services panels resizable and collapsible
+- highlight changes in the context (diff mode)
 - optimize memory usage by dead actors
-- add option to disable logging (in the production mode)
 - display the initial state right before xstate.init
 - support parallel states
 - highlight transitions guarded by "in" state guards
 - add a light theme
-- mark points when children were spawned/invoked
-- display parent-children hierarchy in the dropdown
+- add button to emit an event
+- user annotations tool
 
 ## Attribution
 
