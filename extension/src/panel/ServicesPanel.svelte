@@ -36,26 +36,28 @@
 
 <h1>Services</h1>
 <p class="services-panel">
-  {#if snapshot?.activities && typeof snapshot.activities === 'object'}
-    {#each Object.values(snapshot.activities) as activity (activity)}
-      {#if isActivityActionObject(activity)}
-        <details class="activity">
-          <summary>{getActivitySourceType(activity)}</summary>
-          <dl>
-            <dt>id:</dt>
-            <dd>"{activity.activity?.id}"</dd>
+  {#key snapshot}
+    {#if snapshot?.activities && typeof snapshot.activities === 'object'}
+      {#each Object.values(snapshot.activities) as activity (activity)}
+        {#if isActivityActionObject(activity)}
+          <details class="activity">
+            <summary>{getActivitySourceType(activity)}</summary>
+            <dl>
+              <dt>id:</dt>
+              <dd>"{activity.activity?.id}"</dd>
 
-            <dt>type:</dt>
-            <dd>
-              "{activity.activity?.type === 'xstate.invoke'
-                ? 'invoked'
-                : 'activity'}"
-            </dd>
-          </dl>
-        </details>
-      {/if}
-    {/each}
-  {/if}
+              <dt>type:</dt>
+              <dd>
+                "{activity.activity?.type === 'xstate.invoke'
+                  ? 'invoked'
+                  : 'activity'}"
+              </dd>
+            </dl>
+          </details>
+        {/if}
+      {/each}
+    {/if}
+  {/key}
 </p>
 
 <style>
