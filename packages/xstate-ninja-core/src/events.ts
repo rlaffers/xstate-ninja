@@ -14,6 +14,7 @@ import {
   SerializedExtendedInspectedActorObject,
   SerializedInspectedActorObject,
   TransitionTypes,
+  AnyActorRefWithParent,
 } from './types'
 import { isInterpreterLike, serializeActor, sanitizeEvent } from './utils'
 
@@ -301,9 +302,7 @@ export function isXStateInspectUpdateEvent(
 
 // TODO move them to utils
 export function createInspectedActorObject(
-  actor: (AnyActorRef | AnyInterpreter) & {
-    parent?: { id: string | number; sessionId: string }
-  },
+  actor: AnyActorRefWithParent | AnyInterpreter,
 ): InspectedActorObject {
   const inspectedActor: InspectedActorObject = {
     actorRef: actor,

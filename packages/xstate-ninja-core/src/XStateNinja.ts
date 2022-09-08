@@ -12,6 +12,7 @@ import type {
   ActorRegistration,
   ActorUpdate,
   InspectedActorObject,
+  AnyActorRefWithParent,
 } from './types'
 import { isInterpreterLike, isEventLike, findChildBySessionId } from './utils'
 import {
@@ -75,16 +76,27 @@ export class XStateNinja implements XStateDevInterface {
     this.log('🤖 actor event', actorEvent)
     globalThis.dispatchEvent(actorEvent)
 
-    // TODO we could auto-register spawned actors inside the subscribe listener instead
-    // of relying on our overloaded spawn function. This would allow us to correctly
-    // fill in parent for non-machine actors (callbacks, promises).
+    const notSubscribed = (
+      childActor: AnyActorRef | AnyInterpreter,
+    ): boolean => {
+      if (isInterpreterLike(childActor)) {
+        return this.actors[childActor.sessionId] === undefined
+      }
+      // no session id
+      return Object.values(this.actors).every(
+        (subscribedActor: InspectedActorObject) =>
+          subscribedActor.actorRef.id !== childActor.id ||
+          subscribedActor.parent !== inspectedActor.sessionId ||
+          isInterpreterLike(subscribedActor.actorRef),
+      )
+    }
+
     inspectedActor.subscription = actor.subscribe((stateOrValue: any) => {
       // TODO missing assign actions.
       // TODO test how pure/choose/sendParent/raise/log actions are displayed
       this.log(
         `----- actor updated (${inspectedActor.actorRef.id}) -----`,
         stateOrValue,
-        Object.values(this.actors), // TODO
       )
 
       inspectedActor.updatedAt = Date.now()
@@ -108,6 +120,7 @@ export class XStateNinja implements XStateDevInterface {
 
         // register/unregister invoked actors
         if (stateOrValue.actions) {
+          // register newly invoked actors
           stateOrValue.actions
             .filter((x: ActionObject<any, any>) => x.type === 'xstate.start')
             .forEach((startAction: ActionObject<any, any>) => {
@@ -131,11 +144,10 @@ export class XStateNinja implements XStateDevInterface {
                 this.register(startedChildActor)
               }
             })
+          // unregister stopped actors
           stateOrValue.actions
             .filter((x: ActionObject<any, any>) => x.type === 'xstate.stop')
             .forEach((stopAction: ActionObject<any, any>) => {
-              // TODO batteryCharger is not marked dead and unsubbed. This will start working once
-              // it has correct parent
               const stoppedActorId = stopAction.activity.id
               const stoppedChildActor = Object.values(this.actors).find(
                 (x) =>
@@ -143,17 +155,24 @@ export class XStateNinja implements XStateDevInterface {
                   x.parent === inspectedActor.sessionId &&
                   !x.dead,
               )
-              // TODO
-              console.log(
-                '%cstopped actor',
-                'background: crimson; color: black; padding: 1px 5px',
-                stoppedChildActor,
-              )
               if (stoppedChildActor) {
                 this.unregister(stoppedChildActor.actorRef)
               }
             })
         }
+
+        // register newly spawned actors
+        Object.values(stateOrValue.children as (AnyActorRef | AnyInterpreter)[])
+          .filter(notSubscribed)
+          .forEach((childActor: AnyActorRefWithParent | AnyInterpreter) => {
+            if (childActor.parent === undefined) {
+              childActor.parent = {
+                id: inspectedActor.actorRef.id,
+                sessionId: inspectedActor.sessionId,
+              }
+            }
+            this.register(childActor)
+          })
       } else if (isEventLike(stateOrValue)) {
         // callback-based actors are capable of emitting an event-like object
         scxmlEvent = toSCXMLEvent(stateOrValue)

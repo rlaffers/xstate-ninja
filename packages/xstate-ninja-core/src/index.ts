@@ -44,18 +44,4 @@ export function interpret(
   return service
 }
 
-// SpawnOptions are not exported from xstate, so here's a copy
-interface SpawnOptions {
-  name?: string
-  autoForward?: boolean
-  sync?: boolean
-}
-
-export function spawn(
-  entity: Spawnable,
-  nameOrOptions?: string | SpawnOptions,
-): ActorRef<any> {
-  const service = xstateSpawn(entity, nameOrOptions)
-  createXStateNinjaSingleton().register(service)
-  return service
-}
+export { xstateSpawn as spawn }
