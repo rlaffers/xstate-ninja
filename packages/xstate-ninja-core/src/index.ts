@@ -1,8 +1,6 @@
 import { interpret as xstateInterpret, spawn as xstateSpawn } from 'xstate'
 import type {
   InterpreterOptions,
-  ActorRef,
-  Spawnable,
   AnyStateMachine,
 } from 'xstate'
 import { XStateNinja, XStateNinjaOptions } from './XStateNinja'
