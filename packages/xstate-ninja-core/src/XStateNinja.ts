@@ -5,6 +5,7 @@ import type {
   Subscription,
   AnyEventObject,
   SCXML,
+  ActionObject,
 } from 'xstate'
 import type {
   XStateDevInterface,
@@ -52,6 +53,7 @@ export class XStateNinja implements XStateDevInterface {
     this.onConnect = this.onConnect.bind(this)
     this.onRead = this.onRead.bind(this)
     this.onSend = this.onSend.bind(this)
+    this.forgetAllChildren = this.forgetAllChildren.bind(this)
 
     if (logLevel !== undefined) {
       this.logLevel = logLevel
@@ -73,13 +75,18 @@ export class XStateNinja implements XStateDevInterface {
     this.log('🤖 actor event', actorEvent)
     globalThis.dispatchEvent(actorEvent)
 
+    // TODO we could auto-register spawned actors inside the subscribe listener instead
+    // of relying on our overloaded spawn function. This would allow us to correctly
+    // fill in parent for non-machine actors (callbacks, promises).
     inspectedActor.subscription = actor.subscribe((stateOrValue: any) => {
       // TODO missing assign actions.
       // TODO test how pure/choose/sendParent/raise/log actions are displayed
       this.log(
         `----- actor updated (${inspectedActor.actorRef.id}) -----`,
         stateOrValue,
+        Object.values(this.actors), // TODO
       )
+
       inspectedActor.updatedAt = Date.now()
       if (stateOrValue.done) {
         inspectedActor.dead = true
@@ -97,6 +104,55 @@ export class XStateNinja implements XStateDevInterface {
           if (originId != null) {
             scxmlEvent.origin = `${originId} (${scxmlEvent.origin})`
           }
+        }
+
+        // register/unregister invoked actors
+        if (stateOrValue.actions) {
+          stateOrValue.actions
+            .filter((x: ActionObject<any, any>) => x.type === 'xstate.start')
+            .forEach((startAction: ActionObject<any, any>) => {
+              const startedChildActor =
+                stateOrValue.children[startAction.activity.id]
+              if (startedChildActor) {
+                // check that we are not listening to it yet
+                if (
+                  startedChildActor.sessionId != null &&
+                  this.actors[startedChildActor.sessionId]?.actorRef?.id ===
+                    startedChildActor.id
+                ) {
+                  return
+                }
+                if (startedChildActor.parent === undefined) {
+                  startedChildActor.parent = {
+                    id: inspectedActor.actorRef.id,
+                    sessionId: inspectedActor.sessionId,
+                  }
+                }
+                this.register(startedChildActor)
+              }
+            })
+          stateOrValue.actions
+            .filter((x: ActionObject<any, any>) => x.type === 'xstate.stop')
+            .forEach((stopAction: ActionObject<any, any>) => {
+              // TODO batteryCharger is not marked dead and unsubbed. This will start working once
+              // it has correct parent
+              const stoppedActorId = stopAction.activity.id
+              const stoppedChildActor = Object.values(this.actors).find(
+                (x) =>
+                  x.actorRef.id === stoppedActorId &&
+                  x.parent === inspectedActor.sessionId &&
+                  !x.dead,
+              )
+              // TODO
+              console.log(
+                '%cstopped actor',
+                'background: crimson; color: black; padding: 1px 5px',
+                stoppedChildActor,
+              )
+              if (stoppedChildActor) {
+                this.unregister(stoppedChildActor.actorRef)
+              }
+            })
         }
       } else if (isEventLike(stateOrValue)) {
         // callback-based actors are capable of emitting an event-like object
@@ -130,6 +186,9 @@ export class XStateNinja implements XStateDevInterface {
         inspectedActor.status = actor.status
         inspectedActor.dead = true
         this.unregister(actor)
+        if (actor.children?.size > 0) {
+          this.forgetAllChildren(inspectedActor.sessionId)
+        }
       })
     }
 
@@ -152,6 +211,24 @@ export class XStateNinja implements XStateDevInterface {
 
     globalThis.dispatchEvent(new UnregisterEvent(inspectedActor))
     delete this.actors[sessionId]
+  }
+
+  /**
+   * Marks all child actors of the given actor (session ID) as dead and
+   * unsubscribe from their updates.
+   */
+  forgetAllChildren(sessionId: string) {
+    Object.values(this.actors).forEach((x) => {
+      if (x.parent === sessionId) {
+        x.dead = true
+        this.unregister(x.actorRef)
+        if (isInterpreterLike(x.actorRef)) {
+          if (x.actorRef.children?.size > 0) {
+            this.forgetAllChildren(x.sessionId)
+          }
+        }
+      }
+    })
   }
 
   // TODO implement onRegister

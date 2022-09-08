@@ -10,16 +10,23 @@
 </script>
 
 <aside class="sidebar">
-  <ContextPanel
-    context={selectedSnapshot?.context ?? actor?.snapshot?.context}
-  />
-  <ActionsPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
-  <ServicesPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
+  {#if actor?.machine !== undefined}
+    <ContextPanel
+      context={selectedSnapshot?.context ?? actor?.snapshot?.context}
+    />
+    <ActionsPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
+    <ServicesPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
+  {:else}
+    <p>This actor is not a state machine.</p>
+  {/if}
 </aside>
 
 <style>
   .sidebar {
     grid-area: sidebar;
     border-left: 1px solid var(--base01);
+  }
+  .sidebar > p {
+    margin: 1rem;
   }
 </style>

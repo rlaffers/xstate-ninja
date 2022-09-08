@@ -301,7 +301,9 @@ export function isXStateInspectUpdateEvent(
 
 // TODO move them to utils
 export function createInspectedActorObject(
-  actor: AnyActorRef | AnyInterpreter,
+  actor: (AnyActorRef | AnyInterpreter) & {
+    parent?: { id: string | number; sessionId: string }
+  },
 ): InspectedActorObject {
   const inspectedActor: InspectedActorObject = {
     actorRef: actor,
@@ -320,9 +322,9 @@ export function createInspectedActorObject(
       : false,
   }
 
+  inspectedActor.parent = actor.parent?.sessionId
   if (isInterpreterLike(actor)) {
     inspectedActor.sessionId = actor.sessionId
-    inspectedActor.parent = actor.parent?.sessionId
     inspectedActor.status = actor.status
     inspectedActor.machine = actor.machine.definition
   } else {
