@@ -3,10 +3,18 @@
   import ContextPanel from './ContextPanel.svelte'
   import ActionsPanel from './ActionsPanel.svelte'
   import ServicesPanel from './ServicesPanel.svelte'
+  import EventPanel from './EventPanel.svelte'
+  import type { EventFrame } from './EventFrame.svelte'
+  import type { StateNodeFrame } from './StateNodeFrame.svelte'
+  import { isEventFrame } from './EventFrame.svelte'
 
   /* eslint-disable no-use-before-define */
   export let actor: DeserializedExtendedInspectedActorObject = null
-  export let selectedSnapshot: any = null
+  export let selectedFrame: EventFrame | StateNodeFrame = null
+
+  let selectedSnapshot: any = null
+  $: selectedSnapshot =
+    selectedFrame?.snapshot != null ? JSON.parse(selectedFrame.snapshot) : null
 </script>
 
 <aside class="sidebar">
@@ -14,6 +22,9 @@
     <ContextPanel
       context={selectedSnapshot?.context ?? actor?.snapshot?.context}
     />
+    {#if isEventFrame(selectedFrame)}
+      <EventPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
+    {/if}
     <ActionsPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
     <ServicesPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
   {:else}

@@ -1,6 +1,7 @@
 <script context="module" lang="ts">
   import { TransitionTypes } from 'xstate-ninja'
   import type { InspectedEventObject } from 'xstate-ninja'
+  import type { StateNodeFrame } from './StateNodeFrame.svelte'
 
   export interface EventFrame {
     id: string
@@ -8,6 +9,12 @@
     event: InspectedEventObject
     changed?: boolean
     snapshot?: string
+  }
+
+  export function isEventFrame(
+    frame: StateNodeFrame | EventFrame,
+  ): frame is EventFrame {
+    return frame == null ? false : frame.type === 'event'
   }
 </script>
 

@@ -35,13 +35,13 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - ~~typescript~~
 - ~~create the xstate integration~~
 - ~~display parent-children hierarchy in the dropdown~~
-- track invoked actors
-- add event panel for event frames with event info (events: actions + event; state nodes: actions (entry,exit) + services)
+- ~~track invoked actors~~
+- ~~add event panel for event frames with event info~~
 - display assign actions (they are not reported by the xstate interpreter)
 - add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children
 - add React integration
 - add Svelte integration
-- add parent onto spawned actors (better hierarchy in the dropdown)
+- ~~add parent onto spawned actors (better hierarchy in the dropdown)~~
 - add option to disable logging (in the production mode)
 - mark state nodes with invoked services with icons in the tracker
 - add icons to frames for marking spawned children
@@ -60,7 +60,6 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - make context, actions, services panels resizable and collapsible
 - highlight changes in the context (diff mode)
 - optimize memory usage by dead actors
-- display the initial state right before xstate.init
 - support parallel states
 - highlight transitions guarded by "in" state guards
 - add a light theme

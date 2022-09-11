@@ -1,5 +1,6 @@
 <script context="module" lang="ts">
   import type { StateValue } from 'xstate'
+  import type { EventFrame } from './EventFrame.svelte'
 
   export interface StateNodeFrame {
     id: string
@@ -8,6 +9,12 @@
     changed?: boolean
     snapshot?: string
     final?: boolean
+  }
+
+  export function isStateNodeFrame(
+    frame: StateNodeFrame | EventFrame,
+  ): frame is StateNodeFrame {
+    return frame == null ? false : frame.type === 'stateNode'
   }
 </script>
 

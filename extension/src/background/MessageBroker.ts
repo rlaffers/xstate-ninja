@@ -37,7 +37,7 @@ export class MessageBroker {
         port.name !== 'xstate-ninja.panel' &&
         port.name !== 'xstate-ninja.page'
       ) {
-        return
+        return false
       }
       log('connecting port:', port.name)
 

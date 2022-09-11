@@ -12,7 +12,7 @@
   import { last } from '../utils'
 
   export let actor: DeserializedExtendedInspectedActorObject = null
-  export let selectedSnapshot: any = null
+  export let selectedFrame: EventFrame | StateNodeFrame
 
   const STATE_NODE = 'stateNode'
   const EVENT = 'event'
@@ -75,11 +75,9 @@
   }
 
   let frames: FrameList = createFrameList()
-  let selectedFrame: StateNodeFrame | EventFrame
 
   function clearSelectedFrame() {
     selectedFrame = null
-    selectedSnapshot = null
   }
 
   $: if (actor) {
@@ -121,8 +119,6 @@
 
   function onSelectFrame(frame: StateNodeFrame | EventFrame) {
     selectedFrame = frame
-    selectedSnapshot =
-      frame.snapshot != null ? JSON.parse(frame.snapshot) : null
   }
 </script>
 

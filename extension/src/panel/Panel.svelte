@@ -19,6 +19,8 @@
   import { connectBackgroundPage } from './connectBackgroundPage'
   import Intro from './Intro.svelte'
   import Tracker from './Tracker.svelte'
+  import type { EventFrame } from './EventFrame.svelte'
+  import type { StateNodeFrame } from './StateNodeFrame.svelte'
 
   function deserializeInspectedActor(
     serializedActor: SerializedExtendedInspectedActorObject,
@@ -121,7 +123,7 @@
         deserializeInspectedActor(event.inspectedActor),
       )
       actors = actors
-      return
+      return false
     }
 
     if (isXStateNinjaUnregisterEvent(event)) {
@@ -131,14 +133,14 @@
         console.error(
           `The stopped actor ${event.sessionId} is not in the list of actors.`,
         )
-        return
+        return false
       }
       actors.set(actor.sessionId, {
         ...actor,
         dead: true,
       })
       actors = actors
-      return
+      return false
     }
 
     if (isXStateInspectUpdateEvent(event)) {
@@ -158,8 +160,8 @@
 
   // -----------------------------
   let selectedActor: DeserializedExtendedInspectedActorObject
-  // if selectedSnapshot=null, then the latest actor's snapshot is implied
-  let selectedSnapshot: any = null
+  // if selectedFrame=null, then the latest actor's snapshot is implied
+  let selectedFrame: EventFrame | StateNodeFrame = null
 
   chrome.devtools.network.onNavigated.addListener(() => {
     actors = new Map()
@@ -182,10 +184,10 @@
           bind:selected={selectedActor}
         />
         <ActorDetail actor={selectedActor} />
-        <Tracker actor={selectedActor} bind:selectedSnapshot />
+        <Tracker actor={selectedActor} bind:selectedFrame />
       </section>
     </section>
-    <SideBar actor={selectedActor} {selectedSnapshot} />
+    <SideBar actor={selectedActor} {selectedFrame} />
   </main>
 {/if}
 
