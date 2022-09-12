@@ -7,6 +7,7 @@
   import type { EventFrame } from './EventFrame.svelte'
   import type { StateNodeFrame } from './StateNodeFrame.svelte'
   import { isEventFrame } from './EventFrame.svelte'
+  import Resizer from './Resizer.svelte'
 
   /* eslint-disable no-use-before-define */
   export let actor: DeserializedExtendedInspectedActorObject = null
@@ -15,9 +16,12 @@
   let selectedSnapshot: any = null
   $: selectedSnapshot =
     selectedFrame?.snapshot != null ? JSON.parse(selectedFrame.snapshot) : null
+
+  let node: HTMLElement
 </script>
 
-<aside class="sidebar">
+<aside class="sidebar" bind:this={node}>
+  <Resizer direction="horizontal" target={node} />
   {#if actor?.machine !== undefined}
     <ContextPanel
       context={selectedSnapshot?.context ?? actor?.snapshot?.context}
@@ -36,6 +40,7 @@
   .sidebar {
     grid-area: sidebar;
     border-left: 1px solid var(--base01);
+    position: relative;
   }
   .sidebar > p {
     margin: 1rem;

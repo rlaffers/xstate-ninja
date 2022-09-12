@@ -1,8 +1,11 @@
 <script lang="ts">
+  import Resizer from './Resizer.svelte'
   import JSONFormatter from 'json-formatter-js'
   import { omit } from '../utils'
 
   export let snapshot: any = null
+
+  let container: HTMLElement
 
   function insertActionDetail(node: HTMLElement, action: any) {
     const formatter = new JSONFormatter(omit('type', action))
@@ -11,7 +14,8 @@
 </script>
 
 <h1>Actions</h1>
-<p class="actions-panel">
+<p class="actions-panel" bind:this={container}>
+  <Resizer target={container} direction="vertical" />
   {#if snapshot?.actions}
     {#each snapshot.actions as action (action)}
       <details class="action" use:insertActionDetail={action}>
@@ -31,8 +35,10 @@
   }
 
   .actions-panel {
-    padding: 8px;
-    margin: 0;
+    position: relative;
+    margin: 8px 8px 0 8px;
+    padding-bottom: 8px;
+    overflow: auto;
   }
 
   .actions-panel .action {

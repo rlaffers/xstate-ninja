@@ -57,7 +57,7 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - add second tracker lane
 - hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
 - make context sidebar width adjustable
-- make context, actions, services panels resizable and collapsible
+- ~~make context, actions, services panels resizable and collapsible~~
 - highlight changes in the context (diff mode)
 - optimize memory usage by dead actors
 - support parallel states

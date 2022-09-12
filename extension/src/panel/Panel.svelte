@@ -197,7 +197,7 @@
     /* height: calc(100vh - 2em); */
     height: 100%;
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 2fr auto;
     grid-template-rows: 42px 1fr;
     grid-template-areas:
       'header sidebar'
