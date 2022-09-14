@@ -1,33 +1,100 @@
-import { useState } from 'react'
+import { useInterpret, useSelector } from '@xstate/react'
+import classNames from 'classnames'
+import logo from './assets/logo_512.png'
 import reactLogo from './assets/react.svg'
 import './App.css'
+import Gauge from './Gauge'
+import machine from '../../example/src/state-machine'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const service = useInterpret(machine, { devTools: true })
+
+  const battery = useSelector(service, (state) => state.context.battery)
+  const fuel = useSelector(service, (state) => state.context.fuel)
+
+  const showStart = useSelector(service, (state) => state.matches('EngineStopped') || state.matches('Igniting'))
+  const isRunning = useSelector(service, (state) => state.matches('EngineRunning'))
+
+  // TODO
+  function resetMachine() {}
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <main>
+      <div className="logos">
+        <img src={logo} alt="XState Ninja" /> <span style={{fontSize: "10rem"}}>+</span> <img src={reactLogo} alt="Reactlogo" />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <h1>XState Ninja React Demo</h1>
+
+      <section className="indicators">
+        <Gauge state={service.getSnapshot()} />
+        <div className="battery-and-fuel">
+          <label className="battery-indicator"
+            >Battery: <meter
+              min="0"
+              max="100"
+              low="10"
+              high="25"
+              optimum="100"
+              value={battery}>{battery}</meter
+            ></label
+          >
+
+          <label className="fuel-indicator"
+            >Fuel: <meter
+              min="0"
+              max="60"
+              low="10"
+              high="20"
+              optimum="60"
+              value={fuel}>{fuel}</meter
+            >
+          </label>
+        </div>
+      </section>
+      <section className="car-controls">
+        <button
+          type="button"
+          className={classNames('start-stop-btn', { start: showStart, stop: isRunning })}
+          onMouseDown={() => service.send('START_BUTTON_PRESSED')}
+          onMouseUp={() => service.send('START_BUTTON_RELEASED')}
+          >{isRunning ? 'stop' : 'start'}</button
+        >
+
+        <div className="shifting-controls">
+          <button
+            type="button"
+            className="speed-shifting-btn"
+            onClick={() => service.send('SHIFT_UP')}>⬆</button
+          >
+          <button
+            type="button"
+            className="speed-shifting-btn"
+            onClick={() => service.send('SHIFT_DOWN')}>⬇</button
+          >
+          <button
+            type="button"
+            className="reverse-shifting-btn"
+            onClick={() => service.send('SHIFT_REVERSE')}>Ⓡ</button
+          >
+        </div>
+
+        <button
+          className="fuel-btn"
+          onClick={() => service.send({ type: 'FUEL_ADDED', amount: 15 })}
+          >Add fuel</button
+        >
+
+        <button
+          className="battery-btn"
+          onClick={() => service.send({ type: 'CHARGED_BATTERY', amount: 15 })}
+          >Charge battery</button
+        >
+
+        <button type="button" onClick={resetMachine} className="reset-btn">
+          💀 Reset
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+      </section>
+    </main>
   )
 }
 

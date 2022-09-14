@@ -1,41 +1,134 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+:root {
+  --base03: #002b36;
+  --base02: #073642;
+  --base01: #586e75;
+  --base00: #657b83;
+  --base0: #839496;
+  --base1: #93a1a1;
+  --base2: #eee8d5;
+  --base3: #fdf6e3;
+  --yellow: #b58900;
+  --orange: #cb4b16;
+  --red: #dc322f;
+  --magenta: #d33682;
+  --violet: #6c71c4;
+  --blue: #268bd2;
+  --cyan: #2aa198;
+  --green: #859900;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--base03);
+  color: var(--base1);
+}
+
+.logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logos > span {
+  margin: 0 1rem;
+}
+
+main {
   text-align: center;
+  padding: 1em;
+  margin: 0 auto;
+  color: var(--base1);
+  width: 50vw;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+h1 {
+  color: var(--red);
+  text-transform: uppercase;
+  font-size: 4rem;
+  font-weight: 100;
+  line-height: 1.1;
+  margin: 2rem auto;
+  max-width: 14rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+button {
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+button.reset-btn {
+  margin-left: 50px;
+}
+
+img {
+  width: 16rem;
+  height: 16rem;
+}
+
+.indicators {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 250px;
+}
+
+.indicators .battery-and-fuel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.car-controls {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.shifting-controls {
+  display: flex;
+  flex-direction: column;
+  margin-left: 50px;
+}
+
+.shifting-controls button {
+  margin-bottom: 10px;
+  font-size: 3rem;
+}
+
+button.start-stop-btn {
+  text-transform: uppercase;
+  color: var(--base3);
+  border: 5px solid var(--base2);
+  padding: 5px;
+  font-size: 28px;
+  height: 120px;
+  width: 120px;
+  border-radius: 60px;
+  box-shadow: 0 2px 4px darkslategray;
+}
+
+button.start-stop-btn.start {
+  background-color: var(--green);
+}
+
+button.start-stop-btn.start:active {
+  background: radial-gradient(var(--base3), var(--green));
+}
+
+button.start-stop-btn.stop {
+  background-color: var(--red);
+}
+
+button.start-stop-btn.stop:active {
+  background: radial-gradient(var(--base3), var(--red));
+}
+
+button.fuel-btn,
+button.battery-btn {
+  margin-left: 50px;
+}
+
+@media (min-width: 480px) {
+  h1 {
+    max-width: none;
   }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

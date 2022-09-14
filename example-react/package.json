@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@xstate/react": "^3.0.1",
+    "classnames": "^2.3.2",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "xstate": "^4.32.1",
+    "xstate": "^4.33.6",
     "xstate-ninja": "workspace:^1.0.0"
   },
   "devDependencies": {
