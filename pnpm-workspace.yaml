@@ -2,4 +2,5 @@ packages:
   - 'extension'
   - 'packages/*'
   - 'example'
+  - 'example-react'
   - '!**/src/test'
