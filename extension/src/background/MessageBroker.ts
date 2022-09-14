@@ -145,10 +145,17 @@ export class MessageBroker {
     const { type, ...rest } = message
     if (isLogMessage(message)) {
       bkg = 'fuchsia'
-      const { text, data } = rest as { text: string; data?: any }
+      const { text, data, color } = rest as {
+        text: string
+        data?: any
+        color?: string
+      }
       args = [text]
       if (data !== undefined) {
         args.push(data)
+      }
+      if (color) {
+        bkg = color
       }
     } else if (isInitMessage(message)) {
       bkg = 'lime'

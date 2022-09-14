@@ -47,7 +47,7 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - add icons to frames for marking spawned children
 - add Vue integration
 - ~~track invoked actors~~
-- stopped spawned actor is not marked as dead
+- ~~stopped spawned actor is not marked as dead~~
 - ~~mark the final state with double border~~
 - ~~mark events guarded, forbidden~~
 - ~~display context~~
@@ -56,7 +56,7 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - ~~display entry/exit actions for state node frames~~
 - add second tracker lane
 - hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
-- make context sidebar width adjustable
+- ~~make context sidebar width adjustable~~
 - ~~make context, actions, services panels resizable and collapsible~~
 - highlight changes in the context (diff mode)
 - optimize memory usage by dead actors

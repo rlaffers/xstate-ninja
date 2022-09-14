@@ -87,11 +87,12 @@
     bkgPort.onMessage.removeListener(messageListener)
   })
 
-  function log(text: string, data: any) {
+  function log(text: string, data: any, color = 'cornflowerblue') {
     const msg: any = {
       type: 'log',
       text,
       data,
+      color,
     }
     bkgPort.postMessage(msg)
   }
@@ -169,9 +170,7 @@
   })
 </script>
 
-{#if actors == null}
-  Loading...
-{:else if actors.size < 1}
+{#if actors == null || actors.size < 1}
   <Intro />
 {:else}
   <main class="actors-view">

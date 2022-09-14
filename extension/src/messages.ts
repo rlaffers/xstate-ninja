@@ -15,6 +15,7 @@ export interface LogMessage {
   type: 'log'
   text: string
   data: any
+  color?: string
 }
 
 export type AnyMessage =

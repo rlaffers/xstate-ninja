@@ -9,8 +9,8 @@
 <h2>Vanilla JS</h2>
 <p>
   <!-- prettier-ignore -->
-  <code>const service = interpret(machine);
-window.__XSTATE_NINJA__?.register(service);</code>
+  <code>{`import { interpret } from 'xstate-ninja';
+const service = interpret(machine);`}</code>
 </p>
 
 <h2>React</h2>
