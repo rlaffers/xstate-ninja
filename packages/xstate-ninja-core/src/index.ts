@@ -1,8 +1,5 @@
 import { interpret as xstateInterpret, spawn as xstateSpawn } from 'xstate'
-import type {
-  InterpreterOptions,
-  AnyStateMachine,
-} from 'xstate'
+import type { InterpreterOptions, AnyStateMachine } from 'xstate'
 import { XStateNinja, XStateNinjaOptions } from './XStateNinja'
 
 export * from './events'
@@ -29,6 +26,9 @@ export default function createXStateNinjaSingleton(
 ): XStateNinja {
   if (xstateNinja === undefined) {
     xstateNinja = new XStateNinja(options)
+  }
+  if (options.logLevel != null) {
+    xstateNinja.setLogLevel(options.logLevel)
   }
   return xstateNinja
 }

@@ -57,7 +57,7 @@ export class XStateNinja implements XStateDevInterface {
     this.forgetAllChildren = this.forgetAllChildren.bind(this)
 
     if (logLevel !== undefined) {
-      this.logLevel = logLevel
+      this.setLogLevel(logLevel)
     }
 
     globalThis.addEventListener(
@@ -66,6 +66,10 @@ export class XStateNinja implements XStateDevInterface {
     )
     globalThis.addEventListener(EventTypes.read, this.onRead as EventListener)
     globalThis.addEventListener(EventTypes.send, this.onSend as EventListener)
+  }
+
+  setLogLevel(level: LogLevels) {
+    this.logLevel = level
   }
 
   register(actor: AnyInterpreter | AnyActorRef) {

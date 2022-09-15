@@ -1,5 +1,5 @@
-// import { useInterpret, useSelector } from '@xstate/react'
 import { useSelector } from '@xstate/react'
+import createXStateNinja, { LogLevels } from 'xstate-ninja'
 import { useInterpret } from '@xstate-ninja/react'
 import classNames from 'classnames'
 import logo from './assets/logo_512.png'
@@ -7,6 +7,8 @@ import reactLogo from './assets/react.svg'
 import './App.css'
 import Gauge from './Gauge'
 import machine from '../../example/src/state-machine'
+
+createXStateNinja({ logLevel: LogLevels.debug })
 
 function App() {
   const service = useInterpret(machine, { devTools: true })

@@ -64,6 +64,7 @@
   interface FrameList extends Array<EventFrame | StateNodeFrame> {
     sessionId?: string
     historySize: number
+    createdAt?: number
   }
 
   function createFrameList(): FrameList {
@@ -71,6 +72,7 @@
     // these props serve for tracking when the reactive statements below need to run
     frames.sessionId = actor?.sessionId
     frames.historySize = actor?.history?.length ?? 0
+    frames.createdAt = actor?.createdAt
     return frames
   }
 
@@ -82,7 +84,10 @@
 
   $: if (actor) {
     log('actor changed', actor) // TODO remove
-    if (actor.sessionId !== frames.sessionId) {
+    if (
+      actor.sessionId !== frames.sessionId ||
+      actor.createdAt !== frames.createdAt
+    ) {
       const newFrames: FrameList = createFrameList()
       newFrames.sessionId = actor?.sessionId
       newFrames.historySize = actor.history.length
@@ -97,7 +102,9 @@
     } else if (actor.history.length !== frames.historySize) {
       frames.historySize = actor.history.length
       const update = last(actor.history)
-      frames.push(...updateIntoFrames(update))
+      if (update != null) {
+        frames.push(...updateIntoFrames(update))
+      }
       frames = frames
     }
   }
