@@ -1,15 +1,22 @@
 {
   "name": "xstate-ninja",
   "version": "1.0.0",
-  "description": "XState Ninja hooks for vanilla JS in browsers",
-  "keywords": ["xstate", "fsm", "state machine"],
+  "description": "XState Ninja core library for vanilla JS in browsers",
+  "keywords": [
+    "xstate",
+    "fsm",
+    "state machine"
+  ],
   "author": "Richard Laffers",
   "license": "ISC",
   "type": "module",
   "main": "./dist/xstate-ninja.umd.js",
   "module": "./dist/xstate-ninja.js",
   "types": "dist/index.d.ts",
-  "files": ["dist/*.js", "dist/*.d.ts"],
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts"
+  ],
   "exports": {
     ".": {
       "import": "./dist/xstate-ninja.js",
@@ -27,10 +34,10 @@
     "tslib": "^2.4.0",
     "typescript": "^4.6.4",
     "vite": "^3.0.0",
-    "xstate": "^4.32.1"
+    "xstate": "^4.33.6"
   },
   "peerDependencies": {
-    "xstate": "^4.32.1"
+    "xstate": "^4.33.6"
   },
   "repository": {
     "type": "git",

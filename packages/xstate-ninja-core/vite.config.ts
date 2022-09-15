@@ -9,7 +9,14 @@ export default defineConfig({
       name: 'XStateNinja',
       fileName: 'xstate-ninja',
     },
-    rollupOptions: {},
+    rollupOptions: {
+      external: ['xstate'],
+      output: {
+        globals: {
+          xstate: 'XState',
+        },
+      },
+    },
   },
   define: {
     'process.env': {},
