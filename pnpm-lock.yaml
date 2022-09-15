@@ -88,6 +88,7 @@ importers:
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.6
       '@vitejs/plugin-react': ^2.1.0
+      '@xstate-ninja/react': workspace:^1.0.0
       '@xstate/react': ^3.0.1
       classnames: ^2.3.2
       prop-types: ^15.8.1
@@ -98,6 +99,7 @@ importers:
       xstate: ^4.33.6
       xstate-ninja: workspace:^1.0.0
     dependencies:
+      '@xstate-ninja/react': link:../packages/xstate-ninja-react
       '@xstate/react': 3.0.1_csov6svwxizbqjpbal6caks7le
       classnames: 2.3.2
       prop-types: 15.8.1
@@ -162,7 +164,22 @@ importers:
       xstate: 4.33.6
 
   packages/xstate-ninja-react:
-    specifiers: {}
+    specifiers:
+      '@xstate/react': ^3.0.1
+      concurrently: ^7.3.0
+      tslib: ^2.4.0
+      typescript: ^4.6.4
+      vite: ^3.0.0
+      xstate: ^4.33.6
+      xstate-ninja: workspace:^1.0.0
+    devDependencies:
+      '@xstate/react': 3.0.1_react@18.2.0+xstate@4.33.6
+      concurrently: 7.3.0
+      tslib: 2.4.0
+      typescript: 4.8.3
+      vite: 3.1.0
+      xstate: 4.33.6
+      xstate-ninja: link:../xstate-ninja-core
 
   packages/xstate-ninja-svelte:
     specifiers: {}
@@ -1372,7 +1389,7 @@ packages:
   /@types/keyv/3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 18.0.3
+      '@types/node': 18.7.18
     dev: true
 
   /@types/minimatch/3.0.5:
@@ -1427,7 +1444,7 @@ packages:
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 18.0.3
+      '@types/node': 18.7.18
     dev: true
 
   /@types/retry/0.12.0:
@@ -1742,6 +1759,26 @@ packages:
     transitivePeerDependencies:
       - '@types/react'
     dev: false
+
+  /@xstate/react/3.0.1_react@18.2.0+xstate@4.33.6:
+    resolution: {integrity: sha512-/tq/gg92P9ke8J+yDNDBv5/PAxBvXJf2cYyGDByzgtl5wKaxKxzDT82Gj3eWlCJXkrBg4J5/V47//gRJuVH2fA==}
+    peerDependencies:
+      '@xstate/fsm': ^2.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      xstate: ^4.33.0
+    peerDependenciesMeta:
+      '@xstate/fsm':
+        optional: true
+      xstate:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      use-isomorphic-layout-effect: 1.1.2_react@18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
+      xstate: 4.33.6
+    transitivePeerDependencies:
+      - '@types/react'
+    dev: true
 
   /@xstate/svelte/2.0.0_peluway3ipi4crl7u5vgpkx3y4:
     resolution: {integrity: sha512-051btq174/fc0lsFUsl5xLbpzEGF4lg6unV1uimjQwKxYTwF2GZXKlcQx2dW7WYpqeH0CWoKvKtb2qIBsnxq5A==}
@@ -5830,7 +5867,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
-    dev: false
 
   /lowercase-keys/1.0.0:
     resolution: {integrity: sha512-RPlX0+PHuvxVDZ7xX+EBVAp4RsVxP/TdDSN2mJYdiq1Lc4Hz7EUSjUI7RZrKKlmrIzVhf6Jo2stj7++gVarS0A==}
@@ -6973,7 +7009,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /read-pkg-up/7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
@@ -8471,6 +8506,18 @@ packages:
     engines: {node: '>= 4'}
     dev: true
 
+  /use-isomorphic-layout-effect/1.1.2_react@18.2.0:
+    resolution: {integrity: sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==}
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      react: 18.2.0
+    dev: true
+
   /use-isomorphic-layout-effect/1.1.2_w5j4k42lgipnm43s3brx6h3c34:
     resolution: {integrity: sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==}
     peerDependencies:
@@ -8490,7 +8537,6 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.2.0
-    dev: false
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}

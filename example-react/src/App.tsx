@@ -1,4 +1,6 @@
-import { useInterpret, useSelector } from '@xstate/react'
+// import { useInterpret, useSelector } from '@xstate/react'
+import { useSelector } from '@xstate/react'
+import { useInterpret } from '@xstate-ninja/react'
 import classNames from 'classnames'
 import logo from './assets/logo_512.png'
 import reactLogo from './assets/react.svg'

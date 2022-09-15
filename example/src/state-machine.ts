@@ -1,5 +1,4 @@
-import { createMachine, actions } from 'xstate'
-import { spawn } from 'xstate-ninja'
+import { createMachine, actions, spawn } from 'xstate'
 import { ignitionMachine } from './ignition-machine'
 import { batteryMachine } from './battery-machine'
 import { fuelMachine } from './fuel-machine'
