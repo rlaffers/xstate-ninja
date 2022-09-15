@@ -39,7 +39,7 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - ~~add event panel for event frames with event info~~
 - display assign actions (they are not reported by the xstate interpreter)
 - add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children
-- add React integration
+- ~~add React integration~~
 - add Svelte integration
 - ~~add parent onto spawned actors (better hierarchy in the dropdown)~~
 - add option to disable logging (in the production mode)

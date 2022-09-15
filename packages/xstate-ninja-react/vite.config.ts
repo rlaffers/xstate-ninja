@@ -20,8 +20,6 @@ export default defineConfig({
         },
       },
     },
-    // TODO remove
-    sourcemap: true,
   },
   define: {
     'process.env': {},
