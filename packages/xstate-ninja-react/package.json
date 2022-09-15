@@ -23,8 +23,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/react": "^18.0.17",
     "@xstate/react": "^3.0.1",
     "concurrently": "^7.3.0",
+    "react": "^18.2.0",
     "tslib": "^2.4.0",
     "typescript": "^4.6.4",
     "vite": "^3.0.0",
@@ -33,6 +35,7 @@
   },
   "peerDependencies": {
     "@xstate/react": "^3.0.1",
+    "react": "^18.2.0",
     "xstate": "^4.33.6",
     "xstate-ninja": "^1.0.0"
   },

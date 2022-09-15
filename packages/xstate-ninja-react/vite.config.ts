@@ -10,9 +10,10 @@ export default defineConfig({
       fileName: 'xstate-ninja-react',
     },
     rollupOptions: {
-      external: ['@xstate/react', 'xstate', 'xstate-ninja'],
+      external: ['@xstate/react', 'xstate', 'xstate-ninja', 'react'],
       output: {
         globals: {
+          react: 'React',
           xstate: 'XState',
           '@xstate/react': 'XStateReact',
           'xstate-ninja': 'XStateNinja',
