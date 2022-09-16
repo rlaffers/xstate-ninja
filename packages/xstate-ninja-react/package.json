@@ -1,15 +1,12 @@
 {
   "name": "@xstate-ninja/react",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "XState Ninja integration for React",
   "type": "module",
   "main": "./dist/xstate-ninja-react.umd.js",
   "module": "./dist/xstate-ninja-react.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "dist/*.js",
-    "dist/*.d.ts"
-  ],
+  "files": ["dist/*.js", "dist/*.d.ts", "dist/*.cjs"],
   "exports": {
     ".": {
       "import": "./dist/xstate-ninja-react.js",
@@ -39,11 +36,7 @@
     "xstate": "^4.33.6",
     "xstate-ninja": "^1.0.0"
   },
-  "keywords": [
-    "xstate",
-    "fsm",
-    "state machine"
-  ],
+  "keywords": ["xstate", "fsm", "state machine"],
   "author": "Richard Laffers",
   "license": "ISC",
   "homepage": "https://github.com/rlaffers/xstate-ninja",
