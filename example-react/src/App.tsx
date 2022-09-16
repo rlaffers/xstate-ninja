@@ -8,7 +8,7 @@ import './App.css'
 import Gauge from './Gauge'
 import machine from '../../example/src/state-machine'
 
-createXStateNinja({ logLevel: LogLevels.debug })
+createXStateNinja({ logLevel: LogLevels.debug, enabled: import.meta.env.DEV })
 
 function App() {
   const service = useInterpret(machine, { devTools: true })

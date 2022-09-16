@@ -8,6 +8,15 @@ import {
   type XStateInspectAnyEvent,
 } from 'xstate-ninja'
 
+// let the host window know that the extension is installed
+const s = document.createElement('script')
+s.type = 'text/javascript'
+s.src = chrome.runtime.getURL('inject/xstate_ninja.js')
+s.onload = function () {
+  this.parentNode.removeChild(this)
+}
+;(document.head || document.documentElement).appendChild(s)
+
 let port: chrome.runtime.Port
 function connect() {
   port = chrome.runtime.connect({ name: 'xstate-ninja.page' })

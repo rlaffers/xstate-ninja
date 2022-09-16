@@ -6,20 +6,6 @@ export * from './events'
 export * from './types'
 export { LogLevels } from './XStateNinja'
 
-// Usage:
-// import { interpret } from 'xstate-ninja'
-// const service = interpret(machine)
-//
-// OR
-// import { interpret } from 'xstate'
-// import createXStateNinja, { LogLevels } from 'xstate-ninja'
-// const xstateNinja = createXStateNinja({ logLevel: LogLevels.debug })
-// const service = interpret(machine)
-// xstateNinja.register(service)
-//
-// xstateNinja.onUpdate(() => {}) // subscribe to updates
-//
-//
 let xstateNinja: XStateNinja
 export default function createXStateNinjaSingleton(
   options: XStateNinjaOptions = {},
@@ -29,6 +15,9 @@ export default function createXStateNinjaSingleton(
   }
   if (options.logLevel != null) {
     xstateNinja.setLogLevel(options.logLevel)
+  }
+  if (options.enabled != null) {
+    xstateNinja.setEnabled(options.enabled)
   }
   return xstateNinja
 }

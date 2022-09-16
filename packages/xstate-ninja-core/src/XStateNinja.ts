@@ -13,6 +13,7 @@ import type {
   ActorUpdate,
   InspectedActorObject,
   AnyActorRefWithParent,
+  WindowWithXStateNinja,
 } from './types'
 import { isInterpreterLike, isEventLike, findChildBySessionId } from './utils'
 import {
@@ -37,15 +38,15 @@ export enum LogLevels {
 
 export interface XStateNinjaOptions {
   logLevel?: LogLevels
+  enabled?: boolean
 }
 
-// TODO make option `enabled` and disable everything in the production mode by default
-// TODO bypass everything if the web extension is not installed (check globalThis.__xstate_ninja__)
 export class XStateNinja implements XStateDevInterface {
   actors: Record<string, InspectedActorObject>
   logLevel: LogLevels = LogLevels.error
+  enabled = true
 
-  constructor({ logLevel }: XStateNinjaOptions = {}) {
+  constructor({ logLevel, enabled }: XStateNinjaOptions = {}) {
     this.actors = {}
     this.register = this.register.bind(this)
     this.unregister = this.unregister.bind(this)
@@ -60,6 +61,10 @@ export class XStateNinja implements XStateDevInterface {
       this.setLogLevel(logLevel)
     }
 
+    if (enabled === undefined) {
+      this.enabled = !!(globalThis as WindowWithXStateNinja).__xstate_ninja__
+    }
+
     globalThis.addEventListener(
       EventTypes.connect,
       this.onConnect as EventListener,
@@ -72,7 +77,15 @@ export class XStateNinja implements XStateDevInterface {
     this.logLevel = level
   }
 
+  setEnabled(enabled: boolean) {
+    this.enabled =
+      !!(globalThis as WindowWithXStateNinja).__xstate_ninja__ && enabled
+  }
+
   register(actor: AnyInterpreter | AnyActorRef) {
+    if (!this.enabled) {
+      return
+    }
     this.log('register actor', actor)
     const inspectedActor = createInspectedActorObject(actor)
 
@@ -220,6 +233,9 @@ export class XStateNinja implements XStateDevInterface {
   }
 
   unregister(actor: AnyInterpreter | AnyActorRef) {
+    if (!this.enabled) {
+      return
+    }
     this.log('unregister actor', actor)
     const [sessionId, inspectedActor] =
       Object.entries(this.actors).find(
@@ -241,6 +257,9 @@ export class XStateNinja implements XStateDevInterface {
    * unsubscribe from their updates.
    */
   forgetAllChildren(sessionId: string) {
+    if (!this.enabled) {
+      return
+    }
     Object.values(this.actors).forEach((x) => {
       if (x.parent === sessionId) {
         x.dead = true
@@ -257,18 +276,24 @@ export class XStateNinja implements XStateDevInterface {
   // TODO implement onRegister
   onRegister(
     listener: (actorRegistration: ActorRegistration) => void,
-  ): Subscription {
+  ): Subscription | void {
+    if (!this.enabled) {
+      return
+    }
     listener({} as ActorRegistration)
     return {} as Subscription
   }
 
   // TODO implement onUpdate
-  onUpdate(listener: (update: ActorUpdate) => void): Subscription {
+  onUpdate(listener: (update: ActorUpdate) => void): Subscription | void {
     listener({} as ActorUpdate)
     return {} as Subscription
   }
 
   onConnect(event: ConnectEvent) {
+    if (!this.enabled) {
+      return
+    }
     this.log('received', event)
     globalThis.dispatchEvent(new ConnectedEvent())
     globalThis.dispatchEvent(new ActorsEvent(Object.values(this.actors)))
@@ -276,12 +301,18 @@ export class XStateNinja implements XStateDevInterface {
 
   // TODO implement onRead
   onRead(event: ReadEvent) {
+    if (!this.enabled) {
+      return
+    }
     this.log('received', event)
     console.log('onSend not implemented', event)
   }
 
   // TODO implement onSend
   onSend(event: SendEvent) {
+    if (!this.enabled) {
+      return
+    }
     this.log('received', event)
     console.log('onSend not implemented', event)
   }

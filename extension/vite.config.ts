@@ -27,6 +27,7 @@ export default defineConfig({
         'panel/panel.html',
         'panel/panel.ts',
         'inject/content_script.ts',
+        'inject/xstate_ninja.ts',
       ],
       webExtConfig: {
         // URL from which the example page is served

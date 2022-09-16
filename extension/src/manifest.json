@@ -14,6 +14,12 @@
     "48": "assets/icon_48x48.png",
     "128": "assets/icon_128x128.png"
   },
+  "web_accessible_resources": [
+    {
+      "resources": ["inject/xstate_ninja.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

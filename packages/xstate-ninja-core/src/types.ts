@@ -91,11 +91,11 @@ export interface XStateDevInterface {
   unregister: (actorRef: AnyActorRef) => void
   onRegister: (
     listener: (actorRegistration: ActorRegistration) => void,
-  ) => Subscription
+  ) => Subscription | void
   actors: {
     [sessionId: string]: InspectedActorObject
   }
-  onUpdate: (listener: (update: ActorUpdate) => void) => Subscription
+  onUpdate: (listener: (update: ActorUpdate) => void) => Subscription | void
 }
 
 export interface WindowWithXStateNinja {

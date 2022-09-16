@@ -42,7 +42,7 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - ~~add React integration~~
 - add Svelte integration
 - ~~add parent onto spawned actors (better hierarchy in the dropdown)~~
-- add option to disable logging (in the production mode)
+- ~~add option to disable logging (in the production mode)~~
 - mark state nodes with invoked services with icons in the tracker
 - add icons to frames for marking spawned children
 - add Vue integration
