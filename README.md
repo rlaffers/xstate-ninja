@@ -16,10 +16,10 @@
   <img src="https://user-images.githubusercontent.com/489018/190674192-d7e84c96-3a55-48e3-be7d-829943de3639.png" alt="screenshot" />
 </div>
 
-## Installation
+## Quick Start
 
 1. Install the browser extension from the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/).
-2. Install the npm package in your project:
+2. Install the xstate-ninja package in your project:
 
 ```bash
 npm install --save xstate-ninja xstate
@@ -34,7 +34,37 @@ const service = interpret(machine)
 
 ## How it works
 
-The **interpret** function is just a thin wrapper around the [core interpreter](https://xstate.js.org/docs/guides/interpretation.html#interpreter) provided by the XState library. It observes your state machines and sends updates to the XState Ninja browser extension.
+The **interpret** function is just a thin wrapper around the [core interpreter](https://xstate.js.org/docs/guides/interpretation.html#interpreter) provided by the XState library. It accepts the same argument as the XState's `interpret` function. It observes your state machines and sends updates to the XState Ninja browser extension.
+
+## Configuration
+
+To change default settings, import the XState Ninja instance in your project's index file:
+
+```javascript
+// in your index.ts
+import xstateNinja, { LogLevels } from 'xstate-ninja'
+
+xstateNinja({
+  enabled: process.env.NODE_ENV !== 'production',
+  logLevel: LogLevels.debug,
+})
+```
+
+XState Ninja is a singleton, so wherever you change these settings, they will be applied throughout your application.
+
+### `enabled`
+
+**Type: boolean**
+**Default: `true`**
+
+Turns XState Ninja on or off. By default, tracking is always on. You may want to disable tracking in the **production** mode to improve performance.
+
+### `logLevel`
+
+**Type: LogLevels enum**
+**Default: `LogLevels.error`**
+
+Controls how much stuff is logged into console by XState Ninja.
 
 ## TODO
 
@@ -43,6 +73,7 @@ The **interpret** function is just a thin wrapper around the [core interpreter](
 - ~~display parent-children hierarchy in the dropdown~~
 - ~~track invoked actors~~
 - ~~add event panel for event frames with event info~~
+- inspect the `devTools` option in useInterpret and useMachine hooks to include/exclude machine from tracking
 - display assign actions (they are not reported by the xstate interpreter)
 - add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children
 - ~~add React integration~~
