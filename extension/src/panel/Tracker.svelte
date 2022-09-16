@@ -83,7 +83,7 @@
   }
 
   $: if (actor) {
-    log('actor changed', actor) // TODO remove
+    log('actor changed', actor, 'goldenrod') // TODO remove
     if (
       actor.sessionId !== frames.sessionId ||
       actor.createdAt !== frames.createdAt
