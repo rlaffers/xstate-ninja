@@ -1,4 +1,4 @@
-# xstate-ninja-core
+# xstate-ninja
 
 This is the core library for vanilla JS projects.
 
@@ -9,6 +9,7 @@ npm install --save xstate-ninja xstate
 ```
 
 To track state machines in you project, do this:
+
 ```javascript
 import { interpret } from 'xstate-ninja'
 const service = interpret(machine)

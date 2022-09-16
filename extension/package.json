@@ -26,8 +26,8 @@
   },
   "dependencies": {
     "json-formatter-js": "^2.3.4",
-    "xstate": "^4.32.1",
-    "xstate-ninja": "workspace:^1.0.0"
+    "xstate": "^4.33.6",
+    "xstate-ninja": "workspace:^1.0.1"
   },
   "keywords": [
     "xstate"

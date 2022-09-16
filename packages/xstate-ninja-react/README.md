@@ -8,7 +8,7 @@ This is XState Ninja for React.
 npm install --save xstate-ninja @xstate-ninja/react
 ```
 
-To track state machines in you project, do this:
+To track state machines in your project, do this:
 
 ```javascript
 import { useInterpret } from '@xstate-ninja/react'
