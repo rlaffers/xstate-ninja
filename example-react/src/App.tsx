@@ -19,8 +19,9 @@ function App() {
   const showStart = useSelector(service, (state) => state.matches('EngineStopped') || state.matches('Igniting'))
   const isRunning = useSelector(service, (state) => state.matches('EngineRunning'))
 
-  // TODO
-  function resetMachine() {}
+  function resetMachine() {
+    // TODO
+  }
 
   return (
     <main>
