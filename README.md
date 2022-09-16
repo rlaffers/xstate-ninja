@@ -10,6 +10,12 @@
   <hr/>
 </div>
 
+## Screenshots
+
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/489018/190674192-d7e84c96-3a55-48e3-be7d-829943de3639.png" alt="screenshot" />
+</div>
+
 ## Installation
 
 1. Install the browser extension from the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/).
