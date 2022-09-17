@@ -55,13 +55,15 @@ XState Ninja is a singleton, so wherever you change these settings, they will be
 ### `enabled`
 
 **Type: boolean**
+
 **Default: `true`**
 
-Turns XState Ninja on or off. By default, tracking is always on. You may want to disable tracking in the **production** mode to improve performance.
+Turns XState Ninja on or off. By default, tracking is always on. You may want to disable tracking in the production mode to improve performance.
 
 ### `logLevel`
 
 **Type: LogLevels enum**
+
 **Default: `LogLevels.error`**
 
 Controls how much stuff is logged into console by XState Ninja.
@@ -73,7 +75,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~display parent-children hierarchy in the dropdown~~
 - ~~track invoked actors~~
 - ~~add event panel for event frames with event info~~
-- inspect the `devTools` option in useInterpret and useMachine hooks to include/exclude machine from tracking
+- ~~inspect the `devTools` option in useInterpret and useMachine hooks to include/exclude machine from tracking~~
 - display assign actions (they are not reported by the xstate interpreter)
 - add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children
 - ~~add React integration~~

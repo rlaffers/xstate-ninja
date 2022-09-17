@@ -27,7 +27,9 @@ export function interpret(
   options?: Partial<InterpreterOptions>,
 ) {
   const service = xstateInterpret(machine, options)
-  createXStateNinjaSingleton().register(service)
+  if (options?.devTools) {
+    createXStateNinjaSingleton().register(service)
+  }
   return service
 }
 

@@ -12,7 +12,7 @@
 
   const xNinja = xstateNinja({ logLevel: LogLevels.debug })
 
-  let service = interpret(machine).start()
+  let service = interpret(machine, { devTools: true }).start()
   let state: Readable<State<any>>
 
   function subscribe(actor: AnyInterpreter) {

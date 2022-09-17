@@ -30,9 +30,12 @@ export function useInterpret<TMachine extends AnyStateMachine>(
 ) {
   const service = useInterpretXState(getMachine, options, observerOrListener)
   useEffect(() => {
-    ninja.register(service)
-    return () => ninja.unregister(service)
-  }, [])
+    if (options?.devTools) {
+      ninja.register(service)
+      return () => ninja.unregister(service)
+    }
+    return undefined
+  }, [options?.devTools])
   return service
 }
 
@@ -48,9 +51,12 @@ export function useMachine<TMachine extends AnyStateMachine>(
 ) {
   const result = useMachineXState(getMachine, options)
   useEffect(() => {
-    const [, , service] = result
-    ninja.register(service)
-    return () => ninja.unregister(service)
-  }, [])
+    if (options?.devTools) {
+      const [, , service] = result
+      ninja.register(service)
+      return () => ninja.unregister(service)
+    }
+    return undefined
+  }, [options?.devTools])
   return result
 }
