@@ -33,7 +33,7 @@ export interface InspectedActorObject {
   events: InspectedEventObject[]
   createdAt: number // Timestamp
   updatedAt: number // Timestamp
-  status: 0 | 1 | 2 // 0 = not started, 1 = started, 2 = stopped
+  status?: 0 | 1 | 2 // 0 = not started, 1 = started, 2 = stopped
   // xstate-ninja custom props
   subscription?: Subscription
   history: XStateInspectUpdateEvent[]

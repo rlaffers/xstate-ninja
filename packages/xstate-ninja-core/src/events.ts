@@ -313,11 +313,12 @@ export function createInspectedActorObject(
     events: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
-    status: 0,
+    status: undefined,
     history: [],
     dead: isInterpreterLike(actor)
       ? actor.initialized &&
-        (actor.state?.done || actor.status === InterpreterStatus.Stopped)
+        (actor.getSnapshot?.().done ||
+          actor.status === InterpreterStatus.Stopped)
       : false,
   }
 

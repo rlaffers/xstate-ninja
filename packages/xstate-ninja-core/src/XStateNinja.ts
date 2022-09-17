@@ -90,7 +90,6 @@ export class XStateNinja implements XStateDevInterface {
     const inspectedActor = createInspectedActorObject(actor)
 
     const actorEvent = new ActorEvent(inspectedActor)
-    this.log('🤖 actor event', actorEvent)
     globalThis.dispatchEvent(actorEvent)
 
     const notSubscribed = (
@@ -202,7 +201,6 @@ export class XStateNinja implements XStateDevInterface {
         })
       }
       const event = new UpdateEvent(inspectedActor, scxmlEvent)
-      this.log('update event', event)
 
       inspectedActor.history.push(event.detail)
       inspectedActor.events.push(event.detail.event)

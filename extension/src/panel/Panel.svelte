@@ -174,14 +174,15 @@
   <Intro />
 {:else}
   <main class="actors-view">
-    <header>This is the header</header>
+    <header>
+      <ActorsDropdown
+        class="actors-dropdown"
+        {actors}
+        bind:selected={selectedActor}
+      />
+    </header>
     <section class="trackers nice-scroll">
       <section class="tracker-container">
-        <ActorsDropdown
-          class="actors-dropdown"
-          {actors}
-          bind:selected={selectedActor}
-        />
         <ActorDetail actor={selectedActor} />
         <Tracker actor={selectedActor} bind:selectedFrame />
       </section>
