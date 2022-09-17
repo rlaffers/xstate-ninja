@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { DeserializedExtendedInspectedActorObject } from 'xstate-ninja'
+  import { ActorTypes } from 'xstate-ninja'
 
   /* eslint-disable no-use-before-define */
   export let actor: DeserializedExtendedInspectedActorObject = null
@@ -27,15 +28,24 @@
       case 2:
         return 'Stopped'
       default:
-        return 'N/A'
+        return actor.dead ? 'Unsubscribed' : 'N/A'
     }
   }
   function getActorType(
     actor?: DeserializedExtendedInspectedActorObject,
   ): string {
-    if (actor?.machine != null) return 'machine'
-    // TODO
-    return 'p/c/o'
+    switch (actor.type) {
+      case ActorTypes.machine:
+        return 'machine'
+      case ActorTypes.callback:
+        return 'callback'
+      case ActorTypes.promise:
+        return 'promise'
+      case ActorTypes.observable:
+        return 'observable'
+      default:
+        return 'unknown'
+    }
   }
 </script>
 
@@ -47,11 +57,11 @@
     {#if actor?.snapshot?.done}
       <div class="icon" title="The final state has been reached">🏁</div>
     {/if}
-    <dl title="Type" class="type">
+    <dl class="type">
       <dt>Type:</dt>
       <dd>{getActorType(actor)}</dd>
     </dl>
-    <dl title="Status" class="status">
+    <dl class="status">
       <dt>Status:</dt>
       <dd>{getStatus(actor)}</dd>
     </dl>
@@ -82,6 +92,7 @@
     padding: 0.4rem;
     border-bottom: 1px solid var(--base01);
     background-color: var(--base02);
+    flex-wrap: wrap;
   }
 
   .actor-detail dl {
@@ -90,6 +101,8 @@
     margin-right: 0.8rem;
     margin-block-start: 0;
     margin-block-end: 0;
+  }
+  .actor-detail dl:not(.type, .status) {
     cursor: help;
   }
   .actor-detail dt {

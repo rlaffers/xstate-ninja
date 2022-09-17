@@ -4,7 +4,7 @@ import { XStateNinja, XStateNinjaOptions } from './XStateNinja'
 
 export * from './events'
 export * from './types'
-export { LogLevels } from './XStateNinja'
+export { LogLevels, ActorTypes } from './XStateNinja'
 
 let xstateNinja: XStateNinja
 export default function createXStateNinjaSingleton(

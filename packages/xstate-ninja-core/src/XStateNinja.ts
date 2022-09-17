@@ -15,6 +15,7 @@ import type {
   AnyActorRefWithParent,
   WindowWithXStateNinja,
 } from './types'
+import { ActorTypes } from './types'
 import { isInterpreterLike, isEventLike, findChildBySessionId } from './utils'
 import {
   ActorEvent,
@@ -28,6 +29,8 @@ import {
   EventTypes,
   createInspectedActorObject,
 } from './events'
+
+export { ActorTypes }
 
 export enum LogLevels {
   error,

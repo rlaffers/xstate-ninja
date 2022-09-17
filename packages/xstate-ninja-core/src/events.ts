@@ -16,7 +16,13 @@ import {
   TransitionTypes,
   AnyActorRefWithParent,
 } from './types'
-import { isInterpreterLike, serializeActor, sanitizeEvent } from './utils'
+import {
+  isInterpreterLike,
+  serializeActor,
+  sanitizeEvent,
+  getActorType,
+} from './utils'
+import { ActorTypes } from './XStateNinja'
 
 // from xstate
 // TODO move to types
@@ -179,7 +185,6 @@ export class UnregisterEvent extends CustomEvent<XStateNinjaUnregisterEvent> {
         sessionId: actor.sessionId,
         snapshot: snapshot != null ? JSON.stringify(snapshot) : undefined,
         createdAt: Date.now(),
-        // TODO how to get status and event from actors which are not interpreters?
         status: isInterpreterLike(actor.actorRef) ? actor.actorRef.status : 0,
         dead: actor.dead,
       },
@@ -315,6 +320,7 @@ export function createInspectedActorObject(
     updatedAt: Date.now(),
     status: undefined,
     history: [],
+    type: ActorTypes.unknown,
     dead: isInterpreterLike(actor)
       ? actor.initialized &&
         (actor.getSnapshot?.().done ||
@@ -327,9 +333,11 @@ export function createInspectedActorObject(
     inspectedActor.sessionId = actor.sessionId
     inspectedActor.status = actor.status
     inspectedActor.machine = actor.machine.definition
+    inspectedActor.type = ActorTypes.machine
   } else {
     inspectedActor.sessionId =
       globalThis.crypto?.randomUUID() ?? String(Math.round(Math.random() * 1e6))
+    inspectedActor.type = getActorType(actor)
   }
   return inspectedActor
 }

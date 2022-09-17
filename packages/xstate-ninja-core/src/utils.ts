@@ -10,6 +10,8 @@ import {
 import {
   InspectedActorObject,
   SerializedExtendedInspectedActorObject,
+  AnyActorRefWithParent,
+  ActorTypes,
 } from './types'
 
 export function isInterpreterLike(
@@ -159,4 +161,45 @@ export function findChildBySessionId(
     }
   }
   return undefined
+}
+
+const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm
+const ARGUMENT_NAMES = /([^\s,]+)/g
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+function getParamNames(func: Function) {
+  const fnStr = func.toString().replace(STRIP_COMMENTS, '')
+  return (
+    fnStr
+      .slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')'))
+      .match(ARGUMENT_NAMES) ?? []
+  )
+}
+
+export function getActorType(actor: AnyActorRefWithParent): ActorTypes {
+  // sneakily introspect the subscribe function to distinguish between promises, callbacks and observables
+  try {
+    const params = getParamNames(actor.subscribe)
+    if (params.length === 1 && params[0] === 'next') {
+      return ActorTypes.callback
+    }
+    if (
+      params.length === 3 &&
+      params[0] === 'next' &&
+      params[1] === 'handleError' &&
+      params[2] === 'complete'
+    ) {
+      if (actor.subscribe.toString().length > 150) {
+        return ActorTypes.promise
+      }
+      return ActorTypes.observable
+    }
+    return ActorTypes.unknown
+  } catch (e) {
+    console.error(
+      'Failed to introspect the subscribe method on an actor',
+      actor,
+    )
+    return ActorTypes.unknown
+  }
 }

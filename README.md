@@ -77,7 +77,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~add event panel for event frames with event info~~
 - ~~inspect the `devTools` option in useInterpret and useMachine hooks to include/exclude machine from tracking~~
 - display assign actions (they are not reported by the xstate interpreter)
-- add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children
+- ~~add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children~~
 - ~~add React integration~~
 - add Svelte integration
 - ~~add parent onto spawned actors (better hierarchy in the dropdown)~~

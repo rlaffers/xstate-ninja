@@ -6,6 +6,14 @@ import type {
 } from 'xstate'
 import type { XStateInspectUpdateEvent } from './events'
 
+export enum ActorTypes {
+  unknown,
+  machine,
+  callback,
+  promise,
+  observable,
+}
+
 export enum TransitionTypes {
   unknown,
   missing, // empty
@@ -39,6 +47,7 @@ export interface InspectedActorObject {
   history: XStateInspectUpdateEvent[]
   // dead actor is unsubscribed, done or stopped
   dead: boolean
+  type: ActorTypes
 }
 
 // used for ActorsEvent.inspectedActors custom prop
