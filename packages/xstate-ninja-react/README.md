@@ -31,5 +31,5 @@ function App() {
 Open browser devtools (F12) and select the XState panel.
 
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/489018/190674192-d7e84c96-3a55-48e3-be7d-829943de3639.png" alt="screenshot" />
+  <img src="https://user-images.githubusercontent.com/489018/190877530-9ab334bf-a220-4ad6-9977-3f5000f01c66.png" alt="screenshot" />
 </div>
