@@ -5,7 +5,7 @@ This is XState Ninja for React.
 ## Quick Start
 
 ```bash
-npm install --save xstate-ninja @xstate-ninja/react
+npm install --save @xstate-ninja/react xstate-ninja @xstate/react xstate
 ```
 
 To track state machines in your project, do this:
