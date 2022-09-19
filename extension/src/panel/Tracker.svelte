@@ -120,7 +120,7 @@
 
   afterUpdate(() => {
     if (autoscroll) {
-      trackerElement.scrollTo(0, trackerElement.scrollHeight)
+      trackerElement?.scrollTo(0, trackerElement.scrollHeight)
     }
   })
 

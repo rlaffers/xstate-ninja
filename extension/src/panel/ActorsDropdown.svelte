@@ -51,17 +51,30 @@
   let className = ''
   export { className as class }
 
+  export let selected: DeserializedExtendedInspectedActorObject
+
   let selectedSessionId: string = null
   $: {
     if (selectedSessionId == null) {
-      selectedSessionId = sortedActors[0]?.sessionId
+      const firstActor = sortedActors[0]
+      if (firstActor) {
+        selectedSessionId = firstActor.sessionId
+        selected = firstActor
+      }
     }
   }
 
-  export let selected: DeserializedExtendedInspectedActorObject
   $: {
+    // when the parent component passed a changed actor, select it
+    if (selected && selectedSessionId !== selected.sessionId) {
+      selectedSessionId = selected.sessionId
+    }
+  }
+
+  function onSelectActor(event: Event) {
+    const selectedSessionId = (event.currentTarget as HTMLSelectElement).value
     const selectedActor = actors.get(selectedSessionId)
-    if (selectedActor !== selected) {
+    if (selectedActor && selectedActor !== selected) {
       selected = selectedActor
     }
   }
@@ -77,7 +90,8 @@
 
 <select
   name="activeActor"
-  bind:value={selectedSessionId}
+  on:change={onSelectActor}
+  value={selectedSessionId}
   class={`actor-dropdown ${className}`}
 >
   {#each sortedActors as actor}

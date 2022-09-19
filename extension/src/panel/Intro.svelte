@@ -19,7 +19,7 @@ const service = interpret(machine);`}</code>
   <code>{`import { useInterpret } from '@xstate-ninja/react';
 
 // in your React component
-const service = useInterpret(machine);
+const service = useInterpret(machine, { devTools: true });
 `}</code>
 </p>
 

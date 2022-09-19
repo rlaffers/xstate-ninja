@@ -91,7 +91,7 @@
     margin: 0;
     padding: 0.4rem;
     border-bottom: 1px solid var(--base01);
-    background-color: var(--base02);
+    /* background-color: var(--base02); */
     flex-wrap: wrap;
   }
 

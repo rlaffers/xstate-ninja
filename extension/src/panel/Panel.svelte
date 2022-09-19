@@ -6,6 +6,7 @@
     isXStateInspectActorEvent,
     isXStateInspectUpdateEvent,
     isXStateNinjaUnregisterEvent,
+    ActorTypes,
   } from 'xstate-ninja'
   import type {
     XStateInspectAnyEvent,
@@ -21,6 +22,7 @@
   import Tracker from './Tracker.svelte'
   import type { EventFrame } from './EventFrame.svelte'
   import type { StateNodeFrame } from './StateNodeFrame.svelte'
+  import MainHeader from './MainHeader.svelte'
 
   function deserializeInspectedActor(
     serializedActor: SerializedExtendedInspectedActorObject,
@@ -57,6 +59,7 @@
       history: [event],
       dead: event.status === InterpreterStatus.Stopped || snapshot?.done,
       actorId: event.actorId,
+      type: ActorTypes.unknown,
     }
     return actor
   }
@@ -168,13 +171,33 @@
     actors = new Map()
     selectedActor = null
   })
+
+  function clearDeadActors() {
+    if (actors == null) {
+      return
+    }
+    for (const [key, actor] of actors.entries()) {
+      if (actor.dead) {
+        actors.delete(key)
+        actors = actors
+      }
+    }
+    // TODO also send event to the page so it can free memory
+    // if a dead actor was selected, select something else
+    if (selectedActor && (!actors || actors.size === 0)) {
+      selectedActor = null
+    } else if (selectedActor && !actors.has(selectedActor.sessionId)) {
+      selectedActor = actors.values().next()?.value
+    }
+  }
 </script>
 
 {#if actors == null || actors.size < 1}
   <Intro />
 {:else}
   <main class="actors-view">
-    <header>
+    <MainHeader {clearDeadActors} />
+    <header class="tracker-header">
       <ActorsDropdown
         class="actors-dropdown"
         {actors}
@@ -194,26 +217,28 @@
 <style>
   main.actors-view {
     --actors-dropdown-height: 1.8rem;
-    /* height: calc(100vh - 2em); */
     height: 100%;
     display: grid;
     grid-template-columns: 2fr auto;
-    grid-template-rows: 42px 1fr;
+    grid-template-rows: 2.1rem 3rem 1fr;
     grid-template-areas:
-      'header sidebar'
+      'main-header main-header'
+      'tracker-header sidebar'
       'trackers sidebar';
   }
-  header {
-    grid-area: header;
+  .tracker-header {
+    grid-area: tracker-header;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    background-color: var(--base02);
-    padding: 0.5rem;
+    padding: 0.2rem;
   }
+
   :global(.actors-dropdown) {
     height: var(--actors-dropdown-height);
     max-width: 15rem;
+    align-self: center;
+    margin: 0.5rem 0;
   }
   .trackers {
     grid-area: trackers;
