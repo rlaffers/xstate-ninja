@@ -1,10 +1,10 @@
 {
   "name": "@xstate-ninja/react",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "XState Ninja integration for React",
   "type": "module",
   "main": "./dist/xstate-ninja-react.umd.js",
-  "module": "./dist/xstate-ninja-react.js",
+  "module": "./dist/xstate-ninja-react.cjs",
   "types": "dist/index.d.ts",
   "files": ["dist/*.js", "dist/*.d.ts", "dist/*.cjs"],
   "exports": {
