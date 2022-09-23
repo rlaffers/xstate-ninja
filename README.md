@@ -76,7 +76,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~track invoked actors~~
 - ~~add event panel for event frames with event info~~
 - ~~inspect the `devTools` option in useInterpret and useMachine hooks to include/exclude machine from tracking~~
-- BUG: missing spawned children in the example
+- BUG: initial status in actor detail is Stopped
 - add options to hide promise or callback actors from the extension
 - optimize memory usage by dead actors (config option to limit how many dead actors are retained: N of each kind; max N total; none)
 - ~~add button to clear all dead actors~~

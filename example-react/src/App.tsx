@@ -6,7 +6,7 @@ import logo from './assets/logo_512.png'
 import reactLogo from './assets/react.svg'
 import './App.css'
 import Gauge from './Gauge'
-import machine from '../../example/src/state-machine'
+import machine from '../../example/src/state-machine/state-machine'
 
 xstateNinja({ logLevel: LogLevels.debug, enabled: import.meta.env.DEV })
 

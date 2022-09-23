@@ -4,7 +4,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 
 export default defineConfig({
   server: {
-    port: 4000,
+    port: 4002,
   },
   plugins: [svelte()],
 })

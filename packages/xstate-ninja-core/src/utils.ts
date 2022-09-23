@@ -213,11 +213,16 @@ export function getActorType(actor: AnyActorRefWithParent): ActorTypes {
 export function createInspectedActorObject(
   actor: AnyActorRefWithParent | AnyInterpreter,
 ): InspectedActorObject {
+  const isInterpreter = isInterpreterLike(actor)
+
   const inspectedActor: InspectedActorObject = {
     actorRef: actor,
     sessionId: '',
     parent: undefined,
-    snapshot: actor.getSnapshot(),
+    snapshot:
+      (isInterpreter && actor.initialized) || !isInterpreter
+        ? actor.getSnapshot()
+        : null,
     machine: undefined,
     events: [],
     createdAt: Date.now(),

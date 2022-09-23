@@ -7,7 +7,7 @@
   import type { Readable } from 'svelte/store'
   import type { AnyInterpreter, State } from 'xstate'
   import logo from './assets/logo_512.png'
-  import machine from './state-machine'
+  import machine from '../../example/src/state-machine/state-machine'
   import Gauge from './Gauge.svelte'
 
   const xNinja = xstateNinja({ logLevel: LogLevels.debug })

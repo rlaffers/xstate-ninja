@@ -6,11 +6,11 @@
   "scripts": {
     "build": "pnpm -r run build",
     "dev": "pnpm -r --parallel --filter=./packages/* --filter=./example --filter=./extension run dev",
-    "lint": "eslint --no-error-on-unmatched-pattern --cache packages/ example-svelte/ extension/ example-react/",
-    "lint:all": "eslint --no-error-on-unmatched-pattern packages/ example-svelte/ extension/ example-react/",
-    "lint:fix": "eslint --fix --no-error-on-unmatched-pattern packages/ example/ extension/ example-react/",
+    "lint": "eslint --no-error-on-unmatched-pattern --cache packages/ example/ example-svelte/ extension/ example-react/",
+    "lint:all": "eslint --no-error-on-unmatched-pattern packages/ example/ example-svelte/ extension/ example-react/",
+    "lint:fix": "eslint --fix --no-error-on-unmatched-pattern packages/ example/ example-svelte/ extension/ example-react/",
     "test": "pnpm test -r",
-    "format": "prettier --write README.md packages/**/*.{js,svelte} extension/**/*.{js,svelte} example-svelte/**/*.{js,svelte}",
+    "format": "prettier --write README.md packages/**/*.{js,ts,svelte} extension/**/*.{js,ts,svelte} example/**/*.{ts,js} example-svelte/**/*.{js,ts,svelte}",
     "format:check": "prettier --check README.md packages/**/*.{js,svelte} extension/**/*.{js,svelte} example-svelte/**/*.{js,svelte}",
     "prepare": "husky install",
     "semantic-release": "semantic-release"

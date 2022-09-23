@@ -1,4 +1,4 @@
-import { interpret as xstateInterpret, spawn as xstateSpawn } from 'xstate'
+import { interpret as xstateInterpret } from 'xstate'
 import type { InterpreterOptions, AnyStateMachine } from 'xstate'
 import { XStateNinja, XStateNinjaOptions } from './XStateNinja'
 
@@ -32,5 +32,3 @@ export function interpret(
   }
   return service
 }
-
-export { xstateSpawn as spawn }
