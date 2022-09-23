@@ -1,8 +1,11 @@
 import type {
   AnyActorRef,
   StateNodeDefinition as StateMachineDefinition,
+  EventObject,
   AnyEventObject,
   Subscription,
+  TransitionConfig,
+  TransitionsConfig,
 } from 'xstate'
 import type { XStateInspectUpdateEvent } from './events'
 
@@ -113,4 +116,34 @@ export interface WindowWithXStateNinja {
 
 export type AnyActorRefWithParent = AnyActorRef & {
   parent?: { id: string | number; sessionId: string }
+}
+
+// from xstate
+type TransitionsConfigArray<TContext, TEvent extends EventObject> = Array<
+  | (TEvent extends EventObject
+      ? TransitionConfig<TContext, TEvent> & {
+          event: TEvent['type']
+        }
+      : never)
+  | (TransitionConfig<TContext, TEvent> & {
+      event: ''
+    })
+  | (TransitionConfig<TContext, TEvent> & {
+      event: '*'
+    })
+>
+
+export function isTransitionConfig(
+  entity: any,
+): entity is TransitionConfig<any, EventObject> {
+  return (
+    (entity as TransitionConfig<any, EventObject>).target != null ||
+    (entity as TransitionConfig<any, EventObject>).actions != null
+  )
+}
+
+export function isTransitionsConfigArray(
+  transitionsConfig: TransitionsConfig<any, EventObject>,
+): transitionsConfig is TransitionsConfigArray<any, EventObject> {
+  return Array.isArray(transitionsConfig)
 }

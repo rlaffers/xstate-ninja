@@ -16,7 +16,12 @@ import type {
   WindowWithXStateNinja,
 } from './types'
 import { ActorTypes } from './types'
-import { isInterpreterLike, isEventLike, findChildBySessionId } from './utils'
+import {
+  isInterpreterLike,
+  isEventLike,
+  findChildBySessionId,
+  createInspectedActorObject,
+} from './utils'
 import {
   ActorEvent,
   ActorsEvent,
@@ -27,8 +32,6 @@ import {
   ReadEvent,
   SendEvent,
   EventTypes,
-  DeadActorsClearedEvent,
-  createInspectedActorObject,
 } from './events'
 
 export { ActorTypes }

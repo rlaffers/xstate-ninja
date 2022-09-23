@@ -5,13 +5,19 @@ import {
   ActionObject,
   InvokeDefinition,
   Guard,
+  InterpreterStatus,
+  type SCXML,
   type AnyEventObject,
 } from 'xstate'
 import {
   InspectedActorObject,
+  InspectedEventObject,
   SerializedExtendedInspectedActorObject,
   AnyActorRefWithParent,
   ActorTypes,
+  TransitionTypes,
+  isTransitionConfig,
+  isTransitionsConfigArray,
 } from './types'
 
 export function isInterpreterLike(
@@ -202,4 +208,141 @@ export function getActorType(actor: AnyActorRefWithParent): ActorTypes {
     )
     return ActorTypes.unknown
   }
+}
+
+export function createInspectedActorObject(
+  actor: AnyActorRefWithParent | AnyInterpreter,
+): InspectedActorObject {
+  const inspectedActor: InspectedActorObject = {
+    actorRef: actor,
+    sessionId: '',
+    parent: undefined,
+    snapshot: actor.getSnapshot(),
+    machine: undefined,
+    events: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    status: undefined,
+    history: [],
+    type: ActorTypes.unknown,
+    dead: isInterpreterLike(actor)
+      ? actor.initialized &&
+        (actor.getSnapshot?.().done ||
+          actor.status === InterpreterStatus.Stopped)
+      : false,
+  }
+
+  inspectedActor.parent = actor.parent?.sessionId
+  if (isInterpreterLike(actor)) {
+    inspectedActor.sessionId = actor.sessionId
+    inspectedActor.status = actor.status
+    inspectedActor.machine = actor.machine.definition
+    inspectedActor.type = ActorTypes.machine
+  } else {
+    inspectedActor.sessionId =
+      globalThis.crypto?.randomUUID() ?? String(Math.round(Math.random() * 1e6))
+    inspectedActor.type = getActorType(actor)
+  }
+  return inspectedActor
+}
+
+export function createInspectedEventObject(
+  event: SCXML.Event<AnyEventObject>,
+  actor: AnyInterpreter | AnyActorRef,
+): InspectedEventObject {
+  return {
+    name: event.name,
+    data: sanitizeEvent(event.data),
+    origin: event.origin,
+    createdAt: Date.now(),
+    transitionType: getTransitionInfo(actor),
+  }
+}
+
+function getTransitionInfo(
+  actor: AnyInterpreter | AnyActorRef,
+): TransitionTypes {
+  if (isInterpreterLike(actor)) {
+    // TODO how does configuration look for parallel states?
+    const { configuration, event } = actor.state
+    const sortedStateNodes = sortStateNodes(configuration)
+    switch (true) {
+      case actor.state.changed:
+        return TransitionTypes.taken
+      case isTransitionGuarded(event.type, sortedStateNodes):
+        return TransitionTypes.guardedAndNoChange
+      case isTransitionForbidden(event.type, sortedStateNodes):
+        return TransitionTypes.forbidden
+      default:
+        return TransitionTypes.missing
+    }
+  }
+  return TransitionTypes.unknown
+}
+
+// Sorts state nodes. The lowest one (the highest order) comes first.
+function sortStateNodes(stateNodes: StateNode[]): StateNode[] {
+  return stateNodes.slice().sort((a, b) => (a.order < b.order ? -1 : 1))
+}
+
+function isTransitionGuarded(eventType: string, sortedStateNodes: StateNode[]) {
+  for (const stateNode of sortedStateNodes) {
+    if (stateNode.config.on === undefined) {
+      continue
+    }
+    const transitionsConfig = stateNode.config.on
+    if (isTransitionsConfigArray(transitionsConfig)) {
+      const transitions = transitionsConfig.filter((x) => x.event === eventType)
+      return (
+        transitions.length > 0 && transitions.every((x) => x.cond !== undefined)
+      )
+    } else if (transitionsConfig[eventType] !== undefined) {
+      const transition = transitionsConfig[eventType]
+      if (typeof transition === 'string') {
+        return false
+      } else if (Array.isArray(transition)) {
+        return transition.every(
+          (x) => isTransitionConfig(x) && x.cond !== undefined,
+        )
+      } else if (isTransitionConfig(transition)) {
+        return transition.cond !== undefined
+      }
+    } else if (
+      transitionsConfig[eventType] === undefined &&
+      Object.prototype.hasOwnProperty.call(transitionsConfig, eventType)
+    ) {
+      // forbidden transition
+      return false
+    }
+  }
+  return false
+}
+
+function isTransitionForbidden(
+  eventType: string,
+  sortedStateNodes: StateNode[],
+) {
+  for (const stateNode of sortedStateNodes) {
+    const transitionsConfig = stateNode.config.on
+    if (transitionsConfig === undefined) {
+      continue
+    }
+    if (isTransitionsConfigArray(transitionsConfig)) {
+      if (transitionsConfig.some((x) => x.event === eventType)) {
+        return false
+      }
+      continue
+    }
+
+    if (
+      Object.prototype.hasOwnProperty.call(transitionsConfig, eventType) &&
+      transitionsConfig[eventType] === undefined
+    ) {
+      return true
+    }
+    if (transitionsConfig[eventType] !== undefined) {
+      return false
+    }
+  }
+  return false
 }
