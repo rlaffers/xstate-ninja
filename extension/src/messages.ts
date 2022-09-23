@@ -1,9 +1,11 @@
 import type {
   XStateInspectReadEvent,
   XStateInspectSendEvent,
+  XStateNinjaDeadActorsClearedEvent,
 } from 'xstate-ninja'
 export enum MessageTypes {
   init = '@xstate-ninja/init',
+  log = '@xstate-ninja/log',
 }
 
 export interface InitMessage {
@@ -12,7 +14,7 @@ export interface InitMessage {
 }
 
 export interface LogMessage {
-  type: 'log'
+  type: MessageTypes.log
   text: string
   data: any
   color?: string
@@ -23,11 +25,12 @@ export type AnyMessage =
   | LogMessage
   | XStateInspectSendEvent
   | XStateInspectReadEvent
+  | XStateNinjaDeadActorsClearedEvent
 
 export function isInitMessage(message: AnyMessage): message is InitMessage {
   return message.type === MessageTypes.init
 }
 
 export function isLogMessage(message: AnyMessage): message is LogMessage {
-  return message.type === 'log'
+  return message.type === MessageTypes.log
 }

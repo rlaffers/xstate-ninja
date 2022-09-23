@@ -110,6 +110,11 @@ export interface XStateNinjaUnregisterEvent {
   createdAt: number
 }
 
+// Client -> Inspector Client may notify when dead actors have been cleared.
+export interface XStateNinjaDeadActorsClearedEvent {
+  type: '@xstate-ninja/deadActorsCleared'
+}
+
 export type XStateInspectAnyEvent =
   | XStateInspectReadEvent
   | XStateInspectSendEvent
@@ -119,6 +124,7 @@ export type XStateInspectAnyEvent =
   | XStateInspectConnectEvent
   | XStateInspectConnectedEvent
   | XStateNinjaUnregisterEvent
+  | XStateNinjaDeadActorsClearedEvent
 
 // -----------------------------
 export enum EventTypes {
@@ -132,6 +138,7 @@ export enum EventTypes {
 
   // custom xstate-ninja events
   unregister = '@xstate-ninja/unregister',
+  deadActorsCleared = '@xstate-ninja/deadActorsCleared',
 }
 
 export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
@@ -179,7 +186,7 @@ export class UnregisterEvent extends CustomEvent<XStateNinjaUnregisterEvent> {
 
   constructor(actor: InspectedActorObject) {
     const snapshot = actor.actorRef.getSnapshot()
-    super(EventTypes.actor, {
+    super(EventTypes.unregister, {
       detail: {
         type: EventTypes.unregister,
         sessionId: actor.sessionId,
@@ -238,6 +245,18 @@ export class SendEvent extends CustomEvent<XStateInspectSendEvent> {
         sessionId: sessionId,
         event: event,
         createdAt: Date.now(),
+      },
+    })
+  }
+}
+
+export class DeadActorsClearedEvent extends CustomEvent<XStateNinjaDeadActorsClearedEvent> {
+  type: EventTypes.deadActorsCleared = EventTypes.deadActorsCleared
+
+  constructor() {
+    super(EventTypes.deadActorsCleared, {
+      detail: {
+        type: EventTypes.deadActorsCleared,
       },
     })
   }
@@ -303,6 +322,12 @@ export function isXStateInspectUpdateEvent(
   event: XStateInspectAnyEvent,
 ): event is XStateInspectUpdateEvent {
   return event.type === EventTypes.update
+}
+
+export function isXStateNinjaDeadActorsClearedEvent(
+  event: XStateInspectAnyEvent,
+): event is XStateNinjaDeadActorsClearedEvent {
+  return event.type === EventTypes.deadActorsCleared
 }
 
 // TODO move them to utils

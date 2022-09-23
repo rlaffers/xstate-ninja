@@ -7,6 +7,7 @@
     isXStateInspectUpdateEvent,
     isXStateNinjaUnregisterEvent,
     ActorTypes,
+    DeadActorsClearedEvent,
   } from 'xstate-ninja'
   import type {
     XStateInspectAnyEvent,
@@ -23,6 +24,7 @@
   import type { EventFrame } from './EventFrame.svelte'
   import type { StateNodeFrame } from './StateNodeFrame.svelte'
   import MainHeader from './MainHeader.svelte'
+  import { MessageTypes } from '../messages'
 
   function deserializeInspectedActor(
     serializedActor: SerializedExtendedInspectedActorObject,
@@ -92,7 +94,7 @@
 
   function log(text: string, data: any, color = 'cornflowerblue') {
     const msg: any = {
-      type: 'log',
+      type: MessageTypes.log,
       text,
       data,
       color,
@@ -182,13 +184,14 @@
         actors = actors
       }
     }
-    // TODO also send event to the page so it can free memory
     // if a dead actor was selected, select something else
     if (selectedActor && (!actors || actors.size === 0)) {
       selectedActor = null
     } else if (selectedActor && !actors.has(selectedActor.sessionId)) {
       selectedActor = actors.values().next()?.value
     }
+
+    bkgPort.postMessage(new DeadActorsClearedEvent().detail)
   }
 </script>
 

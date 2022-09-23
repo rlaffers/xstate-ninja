@@ -27,6 +27,7 @@ import {
   ReadEvent,
   SendEvent,
   EventTypes,
+  DeadActorsClearedEvent,
   createInspectedActorObject,
 } from './events'
 
@@ -58,6 +59,7 @@ export class XStateNinja implements XStateDevInterface {
     this.onConnect = this.onConnect.bind(this)
     this.onRead = this.onRead.bind(this)
     this.onSend = this.onSend.bind(this)
+    this.onDeadActorsCleared = this.onDeadActorsCleared.bind(this)
     this.forgetAllChildren = this.forgetAllChildren.bind(this)
 
     if (logLevel !== undefined) {
@@ -74,6 +76,11 @@ export class XStateNinja implements XStateDevInterface {
     )
     globalThis.addEventListener(EventTypes.read, this.onRead as EventListener)
     globalThis.addEventListener(EventTypes.send, this.onSend as EventListener)
+
+    globalThis.addEventListener(
+      EventTypes.deadActorsCleared,
+      this.onDeadActorsCleared as EventListener,
+    )
   }
 
   setLogLevel(level: LogLevels) {
@@ -316,6 +323,14 @@ export class XStateNinja implements XStateDevInterface {
     }
     this.log('received', event)
     console.log('onSend not implemented', event)
+  }
+
+  onDeadActorsCleared() {
+    Object.entries(this.actors).forEach(([sessionId, inspectedActor]) => {
+      if (inspectedActor.dead) {
+        delete this.actors[sessionId]
+      }
+    })
   }
 
   log(...args: any[]) {

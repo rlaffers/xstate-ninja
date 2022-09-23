@@ -1,4 +1,4 @@
-import { ConnectEvent } from 'xstate-ninja'
+import { ConnectEvent, isXStateNinjaDeadActorsClearedEvent } from 'xstate-ninja'
 import { Tab } from './Tab'
 import { log, error } from '../utils'
 import { isInitMessage, isLogMessage, type AnyMessage } from '../messages'
@@ -28,6 +28,8 @@ export class MessageBroker {
     this.removeTab = this.removeTab.bind(this)
     this.keepAlive = this.keepAlive.bind(this)
     this.forceReconnect = this.forceReconnect.bind(this)
+    this.forwardDeadActorsClearedMessage =
+      this.forwardDeadActorsClearedMessage.bind(this)
   }
 
   start() {
@@ -54,10 +56,12 @@ export class MessageBroker {
       if (port.name === 'xstate-ninja.panel') {
         port.onMessage.addListener(this.logDevtoolsMessage)
         port.onMessage.addListener(this.onInitMessageFromDevtoolsPanel)
+        port.onMessage.addListener(this.forwardDeadActorsClearedMessage)
         port.onDisconnect.addListener((port) => {
           this.removeDevPort(port)
           port.onMessage.removeListener(this.logDevtoolsMessage)
           port.onMessage.removeListener(this.onInitMessageFromDevtoolsPanel)
+          port.onMessage.removeListener(this.forwardDeadActorsClearedMessage)
         })
       }
 
@@ -87,6 +91,30 @@ export class MessageBroker {
         tab.port.postMessage(new ConnectEvent().detail)
       }
     }
+  }
+
+  forwardDeadActorsClearedMessage(
+    message: AnyMessage,
+    devPort: chrome.runtime.Port,
+  ) {
+    if (isXStateNinjaDeadActorsClearedEvent(message)) {
+      const tab = this.getTab(devPort)
+      if (tab) {
+        tab.port.postMessage(message)
+      }
+    }
+  }
+
+  /**
+   * Returns tab corresponding to the given devPort.
+   */
+  getTab(devPort: chrome.runtime.Port): Tab | null {
+    for (const [tabId, value] of this.devPorts.entries()) {
+      if (value === devPort) {
+        return this.tabs.get(tabId)
+      }
+    }
+    return null
   }
 
   removeDevPort(port: chrome.runtime.Port) {
@@ -141,7 +169,7 @@ export class MessageBroker {
 
   logDevtoolsMessage(message: AnyMessage, port: chrome.runtime.Port) {
     let bkg = 'gray'
-    let args: any[]
+    let args: any[] = []
     const { type, ...rest } = message
     if (isLogMessage(message)) {
       bkg = 'fuchsia'
