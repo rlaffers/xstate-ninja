@@ -1,5 +1,12 @@
 <script lang="ts">
   import logo from '../assets/logo_256.png'
+
+  function openHomePage(event) {
+    event.preventDefault()
+    chrome.tabs.create({
+      url: 'https://github.com/rlaffers/xstate-ninja',
+    })
+  }
 </script>
 
 <img src={logo} class="logo" alt="XState Ninja" />
@@ -25,7 +32,8 @@ const service = useInterpret(machine, { devTools: true });
 
 <p>
   For more information and code examples visit the <a
-    href="https://github/rlaffers/xstate-ninja">XState Ninja home page</a
+    on:click={openHomePage}
+    href="https://github.com/rlaffers/xstate-ninja">XState Ninja home page</a
   >.
 </p>
 
