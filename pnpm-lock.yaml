@@ -46,7 +46,7 @@ importers:
       semantic-release: 19.0.3
       svelte: 3.49.0
       vite: 2.9.14
-      vite-plugin-web-extension: 1.4.0_rjrdh4pbjvmxxkjn6ocb6nungy
+      vite-plugin-web-extension: 1.4.0_vite@2.9.14
 
   example:
     specifiers:
@@ -130,7 +130,7 @@ importers:
       vite-plugin-web-extension: ^1.4.0
       wait-on: ^6.0.1
       xstate: ^4.33.6
-      xstate-ninja: workspace:^1.0.1
+      xstate-ninja: workspace:^1.1.0
     dependencies:
       json-formatter-js: 2.3.4
       xstate: 4.33.6
@@ -1913,6 +1913,51 @@ packages:
     hasBin: true
     dev: true
 
+  /addons-linter/4.14.0:
+    resolution: {integrity: sha512-TH3/PMS4Dd0Jf3kXW7DLXseHZcD7ZbnfnQAztkrP4YC0HQKQVZJ+lGOuDOGUtVQDMwC/eEdvHvZoRnHDer5qkg==}
+    engines: {node: '>=12.21.0'}
+    hasBin: true
+    dependencies:
+      '@mdn/browser-compat-data': 4.1.12
+      addons-moz-compare: 1.2.0
+      addons-scanner-utils: 6.3.0
+      ajv: 6.12.6
+      ajv-merge-patch: 4.1.0_ajv@6.12.6
+      chalk: 4.1.2
+      cheerio: 1.0.0-rc.10
+      columnify: 1.6.0
+      common-tags: 1.8.2
+      deepmerge: 4.2.2
+      eslint: 8.11.0
+      eslint-plugin-no-unsanitized: 4.0.1_eslint@8.11.0
+      eslint-visitor-keys: 3.3.0
+      espree: 9.3.1
+      esprima: 4.0.1
+      fluent-syntax: 0.13.0
+      glob: 7.2.0
+      image-size: 1.0.1
+      is-mergeable-object: 1.1.1
+      jed: 1.1.1
+      os-locale: 5.0.0
+      pino: 7.9.1
+      postcss: 8.4.12
+      relaxed-json: 1.0.3
+      semver: 7.3.5
+      sha.js: 2.4.11
+      source-map-support: 0.5.21
+      tosource: 1.0.0
+      upath: 2.0.1
+      yargs: 17.4.0
+      yauzl: 2.10.0
+    transitivePeerDependencies:
+      - '@types/download'
+      - body-parser
+      - download
+      - express
+      - safe-compare
+      - supports-color
+    dev: true
+
   /addons-linter/4.14.0_eixhi2udx54yx37fd342swkgcy:
     resolution: {integrity: sha512-TH3/PMS4Dd0Jf3kXW7DLXseHZcD7ZbnfnQAztkrP4YC0HQKQVZJ+lGOuDOGUtVQDMwC/eEdvHvZoRnHDer5qkg==}
     engines: {node: '>=12.21.0'}
@@ -1960,6 +2005,23 @@ packages:
 
   /addons-moz-compare/1.2.0:
     resolution: {integrity: sha512-COG8qk2/dubPqabfcoJW4E7pm2EQDI43iMrHnhlobvq/uRMEzx/PYJ1KaUZ97Vgg44R3QdRG5CvDsTRbMUHcDw==}
+    dev: true
+
+  /addons-scanner-utils/6.3.0:
+    resolution: {integrity: sha512-sD4U7TX/NFDUYVheydrcpHH9xG3E0eVBFDn1RuUkGpqRyay3SsOU75Pl2lWAbCmeE0Mh9inU1Fwl7Mm1VRWkZw==}
+    peerDependencies:
+      '@types/download': 8.0.1
+      body-parser: 1.19.1
+      download: 8.0.0
+      express: 4.17.2
+      safe-compare: 1.1.4
+    dependencies:
+      '@types/yauzl': 2.9.2
+      common-tags: 1.8.2
+      first-chunk-stream: 3.0.0
+      strip-bom-stream: 4.0.0
+      upath: 2.0.1
+      yauzl: 2.10.0
     dev: true
 
   /addons-scanner-utils/6.3.0_eixhi2udx54yx37fd342swkgcy:
@@ -8670,14 +8732,14 @@ packages:
       extsprintf: 1.3.0
     dev: true
 
-  /vite-plugin-web-extension/1.4.0_rjrdh4pbjvmxxkjn6ocb6nungy:
+  /vite-plugin-web-extension/1.4.0_uleh6niq423ercnyajx4fwuqs4:
     resolution: {integrity: sha512-OfFDtukfTcA2dI+35ZtjCNdSHoBoxT8abULCeQIZ0X1oXverDhnxbMaUqnyjp4E4yFju+xQ3BpxSRQoSR4q4Cg==}
     peerDependencies:
       vite: ^2.6
     dependencies:
       ajv: 8.11.0
       md5: 2.3.0
-      vite: 2.9.14
+      vite: 3.0.2
       web-ext: 6.8.0_eixhi2udx54yx37fd342swkgcy
     transitivePeerDependencies:
       - '@types/download'
@@ -8690,15 +8752,15 @@ packages:
       - utf-8-validate
     dev: true
 
-  /vite-plugin-web-extension/1.4.0_uleh6niq423ercnyajx4fwuqs4:
+  /vite-plugin-web-extension/1.4.0_vite@2.9.14:
     resolution: {integrity: sha512-OfFDtukfTcA2dI+35ZtjCNdSHoBoxT8abULCeQIZ0X1oXverDhnxbMaUqnyjp4E4yFju+xQ3BpxSRQoSR4q4Cg==}
     peerDependencies:
       vite: ^2.6
     dependencies:
       ajv: 8.11.0
       md5: 2.3.0
-      vite: 3.0.2
-      web-ext: 6.8.0_eixhi2udx54yx37fd342swkgcy
+      vite: 2.9.14
+      web-ext: 6.8.0
     transitivePeerDependencies:
       - '@types/download'
       - body-parser
@@ -8814,6 +8876,52 @@ packages:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
     dependencies:
       defaults: 1.0.3
+    dev: true
+
+  /web-ext/6.8.0:
+    resolution: {integrity: sha512-qZ3a4YVs0Vdqet44QRZEcNUQznkrfhsAkSOnZp57O4T4A9Bo3pamePSBeRqdPdJv9GF8ntKG84o3eV0MrEvLbw==}
+    engines: {node: '>=12.0.0', npm: '>=6.9.0'}
+    hasBin: true
+    dependencies:
+      '@babel/runtime': 7.13.9
+      '@devicefarmer/adbkit': 2.11.3
+      addons-linter: 4.14.0
+      bunyan: 1.8.15
+      camelcase: 6.2.0
+      chrome-launcher: 0.15.0
+      debounce: 1.2.0
+      decamelize: 5.0.0
+      es6-error: 4.1.1
+      firefox-profile: 4.2.2
+      fs-extra: 9.1.0
+      fx-runner: 1.2.0
+      import-fresh: 3.3.0
+      mkdirp: 1.0.4
+      multimatch: 5.0.0
+      mz: 2.7.0
+      node-notifier: 9.0.0
+      open: 7.4.2
+      parse-json: 5.2.0
+      promise-toolbox: 0.20.0
+      sign-addon: 3.11.0
+      source-map-support: 0.5.20
+      strip-bom: 4.0.0
+      strip-json-comments: 3.1.1
+      tmp: 0.2.1
+      update-notifier: 5.1.0
+      watchpack: 2.1.1
+      ws: 7.4.6
+      yargs: 16.2.0
+      zip-dir: 2.0.0
+    transitivePeerDependencies:
+      - '@types/download'
+      - body-parser
+      - bufferutil
+      - download
+      - express
+      - safe-compare
+      - supports-color
+      - utf-8-validate
     dev: true
 
   /web-ext/6.8.0_eixhi2udx54yx37fd342swkgcy:
