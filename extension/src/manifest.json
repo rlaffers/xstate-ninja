@@ -1,7 +1,7 @@
 {
   "name": "XState Ninja",
   "description": "A powerful devtool for XState state machines",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "manifest_version": 3,
   "background": {
     "service_worker": "background/background.ts"
