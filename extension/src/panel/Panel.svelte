@@ -109,7 +109,7 @@
   let actors: Map<string, DeserializedExtendedInspectedActorObject> = null
 
   function messageListener(event: XStateInspectAnyEvent) {
-    log('received', { event, bkgPort }) // TODO remove
+    log(event.type, { event, bkgPort }) // TODO remove
 
     if (isXStateInspectActorsEvent(event)) {
       actors = new Map(
@@ -166,6 +166,14 @@
 
   // -----------------------------
   let selectedActor: DeserializedExtendedInspectedActorObject
+  let selectedActorSessionId: string = null
+
+  $: {
+    if (selectedActorSessionId != null && actors) {
+      selectedActor = actors.get(selectedActorSessionId)
+    }
+  }
+
   // if selectedFrame=null, then the latest actor's snapshot is implied
   let selectedFrame: EventFrame | StateNodeFrame = null
 
@@ -187,8 +195,10 @@
     // if a dead actor was selected, select something else
     if (selectedActor && (!actors || actors.size === 0)) {
       selectedActor = null
+      selectedActorSessionId = null
     } else if (selectedActor && !actors.has(selectedActor.sessionId)) {
       selectedActor = actors.values().next()?.value
+      selectedActorSessionId = selectedActor.sessionId
     }
 
     bkgPort.postMessage(new DeadActorsClearedEvent().detail)
@@ -204,7 +214,7 @@
       <ActorsDropdown
         class="actors-dropdown"
         {actors}
-        bind:selected={selectedActor}
+        bind:selectedActorSessionId
       />
     </header>
     <section class="trackers nice-scroll">

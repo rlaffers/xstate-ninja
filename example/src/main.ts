@@ -39,21 +39,17 @@ if (rootElement) {
         Press F12 and check the XState devtools.
       </p>
       <button id="start-btn">Start</button>
+      <button id="add-fuel-btn">Add fuel</button>
     </div>
   `
 }
 
 document.querySelector('#start-btn')?.addEventListener('mousedown', () => {
-  console.log(
-    '%cclick',
-    'background: orangered; color: black; padding: 1px 5px',
-  )
   service.send('START_BUTTON_PRESSED')
 })
 document.querySelector('#start-btn')?.addEventListener('mouseup', () => {
-  console.log(
-    '%cclick',
-    'background: orangered; color: black; padding: 1px 5px',
-  )
   service.send('START_BUTTON_RELEASED')
+})
+document.querySelector('#add-fuel-btn')?.addEventListener('mousedown', () => {
+  service.send({ type: 'FUEL_ADDED', amount: 1 })
 })
