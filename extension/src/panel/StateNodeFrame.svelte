@@ -9,6 +9,8 @@
     changed?: boolean
     snapshot?: string
     final?: boolean
+    startedInvocation: boolean
+    stoppedInvocation: boolean
   }
 
   export function isStateNodeFrame(
@@ -40,6 +42,14 @@
   on:click={selectFrame}
 >
   {flattenState(data.stateValue)}
+  <div class="info-icons">
+    {#if data.startedInvocation}
+      <div class="icon-started-invocation">⊕</div>
+    {/if}
+    {#if data.stoppedInvocation}
+      <div class="icon-stopped-invocation">⊖</div>
+    {/if}
+  </div>
 </article>
 
 <style>
@@ -54,6 +64,17 @@
     text-align: center;
     cursor: pointer;
     z-index: 3;
+    position: relative;
+  }
+
+  .info-icons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    line-height: 1rem;
+    height: 1rem;
+    padding-top: 1px;
+    padding-right: 4px;
   }
 
   .selected {

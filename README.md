@@ -76,7 +76,11 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~track invoked actors~~
 - ~~add event panel for event frames with event info~~
 - ~~inspect the `devTools` option in useInterpret and useMachine hooks to include/exclude machine from tracking~~
-- BUG: initial status in actor detail is Stopped
+- support parallel states
+- add second tracker lane
+- ~~mark state nodes with invoked services with icons in the tracker~~
+- add icons to frames for marking spawned children
+- hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
 - add options to hide promise or callback actors from the extension
 - optimize memory usage by dead actors (config option to limit how many dead actors are retained: N of each kind; max N total; none)
 - ~~add button to clear all dead actors~~
@@ -86,8 +90,6 @@ Controls how much stuff is logged into console by XState Ninja.
 - add Svelte integration
 - ~~add parent onto spawned actors (better hierarchy in the dropdown)~~
 - ~~add option to disable logging (in the production mode)~~
-- mark state nodes with invoked services with icons in the tracker
-- add icons to frames for marking spawned children
 - add Vue integration
 - ~~track invoked actors~~
 - ~~stopped spawned actor is not marked as dead~~
@@ -97,12 +99,9 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~display actions for event frames~~
 - ~~display invocations for state node frames~~
 - ~~display entry/exit actions for state node frames~~
-- add second tracker lane
-- hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
 - ~~make context sidebar width adjustable~~
 - ~~make context, actions, services panels resizable and collapsible~~
 - highlight changes in the context (diff mode)
-- support parallel states
 - highlight transitions guarded by "in" state guards
 - add a light theme
 - add button to emit an event

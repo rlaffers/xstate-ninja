@@ -44,7 +44,23 @@
       changed: snapshot?.changed,
       snapshot: update.snapshot,
       final: snapshot?.done,
+      startedInvocation: didStartInvocation(snapshot),
+      stoppedInvocation: didStopInvocation(snapshot),
     }
+  }
+
+  function didStartInvocation(snapshot: any): boolean {
+    if (!snapshot || !snapshot.actions || !Array.isArray(snapshot.actions)) {
+      return false
+    }
+    return snapshot.actions.some((x) => x.type === 'xstate.start')
+  }
+
+  function didStopInvocation(snapshot: any): boolean {
+    if (!snapshot || !snapshot.actions || !Array.isArray(snapshot.actions)) {
+      return false
+    }
+    return snapshot.actions.some((x) => x.type === 'xstate.stop')
   }
 
   function updateIntoFrames(
