@@ -1,6 +1,7 @@
 <script context="module" lang="ts">
   import type { StateValue } from 'xstate'
   import type { EventFrame } from './EventFrame.svelte'
+  import HideIcon from './icons/HideIcon.svelte'
 
   export interface StateNodeFrame {
     id: string
@@ -27,10 +28,17 @@
   export let data: StateNodeFrame
   export let onSelectFrame: (frame: StateNodeFrame) => void
   export let isSelected = false
+  export let hideStateName: (event: MouseEvent) => void
+  export let hiddenStates: string[] = []
 
   function selectFrame(event: MouseEvent) {
     onSelectFrame(data)
     event.stopPropagation()
+  }
+
+  function isHidden(stateName: string): boolean {
+    const root = stateName.replace(/\..+/, '')
+    return hiddenStates.includes(root)
   }
 
   const flatStateNames = flattenState(data.stateValue)
@@ -43,21 +51,41 @@
   in:fade
   on:click={selectFrame}
 >
-  <div class="parallel-state-names">
-    {#each flatStateNames as stateName}
-      {#if flatStateNames.length === 1}
-        <div>{stateName}</div>
-      {:else if flatStateNames.length > 1 && isCompoundState(stateName)}
-        <div>{stateName}</div>
-      {/if}
-    {/each}
-  </div>
+  {#key hiddenStates}
+    <div class="parallel-state-names">
+      {#each flatStateNames as stateName}
+        {#if flatStateNames.length === 1}
+          <div>{stateName}</div>
+        {:else if flatStateNames.length > 1 && isCompoundState(stateName) && !isHidden(stateName)}
+          <div class="state-name-wrapper">
+            <div>{stateName}</div>
+            <button
+              class="hide-btn"
+              type="button"
+              on:click={hideStateName}
+              data-state-name={stateName}
+              title="Hide this parallel state"
+            >
+              <HideIcon class="hide-icon" />
+            </button>
+          </div>
+        {/if}
+      {/each}
+    </div>
+  {/key}
   <div class="info-icons">
     {#if data.startedInvocation}
-      <div class="icon-started-invocation">⊕</div>
+      <div class="icon-started-invocation" title="A service was invoked here">
+        ⊕
+      </div>
     {/if}
     {#if data.stoppedInvocation}
-      <div class="icon-stopped-invocation">⊖</div>
+      <div
+        class="icon-stopped-invocation"
+        title="An invoked service was stopped here"
+      >
+        ⊖
+      </div>
     {/if}
   </div>
 </article>
@@ -80,6 +108,7 @@
   .parallel-state-names {
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
 
   .info-icons {
@@ -92,6 +121,39 @@
     padding-right: 4px;
     display: flex;
     gap: 2px;
+  }
+
+  .state-name-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .hide-btn {
+    width: 1.8rem;
+    height: 1rem;
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    transition: opacity 1s;
+  }
+
+  .state-name-wrapper:hover > .hide-btn {
+    opacity: 1;
+  }
+
+  :global(.hide-icon) {
+    width: 100%;
+    height: 100%;
+  }
+
+  :global(.hide-icon > g > path) {
+    fill: var(--base01) !important;
+  }
+  :global(.hide-icon:hover > g > path) {
+    fill: var(--green) !important;
   }
 
   .state-node-frame.final .info-icons {

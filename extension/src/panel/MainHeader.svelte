@@ -31,8 +31,19 @@
     border: 0;
     color: var(--base0);
   }
+
   .main-header button:hover {
-    color: var(--base2);
+    color: var(--green) !important;
+  }
+
+  :global(.clear-dead-btn > svg),
+  :global(.config-btn > svg) {
+    height: 100%;
+  }
+
+  :global(.clear-dead-btn:hover > svg > g > path),
+  :global(.config-btn:hover > svg > g > path) {
+    fill: var(--green) !important;
   }
 
   .add-tracker-btn {
