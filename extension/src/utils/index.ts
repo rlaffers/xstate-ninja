@@ -31,16 +31,20 @@ export function prettyJSON(obj: [] | Record<string, unknown> = {}): string {
     .join('\n')
 }
 
-export function flattenState(stateValue: StateValue) {
+export function flattenState(stateValue: StateValue): string[] {
   if (typeof stateValue === 'string') {
-    return stateValue
+    return [stateValue]
   }
-  let result = ''
-  Object.entries(stateValue).forEach(([key, value]) => {
-    // TODO add support for parallel states
-    result = `${key}.${flattenState(value)}`
-  })
+
+  const result = []
+  for (const [key, value] of Object.entries(stateValue)) {
+    result.push(`${key}.${flattenState(value)}`.replace(/\.$/, ''))
+  }
   return result
+}
+
+export function isCompoundState(stateName: string): boolean {
+  return /\./.test(stateName)
 }
 
 export function pick(names: string[], obj: Record<string, any>) {

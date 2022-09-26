@@ -22,7 +22,7 @@
 
 <script lang="ts">
   import { fade } from 'svelte/transition'
-  import { flattenState } from '../utils'
+  import { flattenState, isCompoundState } from '../utils'
 
   export let data: StateNodeFrame
   export let onSelectFrame: (frame: StateNodeFrame) => void
@@ -32,6 +32,8 @@
     onSelectFrame(data)
     event.stopPropagation()
   }
+
+  const flatStateNames = flattenState(data.stateValue)
 </script>
 
 <article
@@ -41,7 +43,15 @@
   in:fade
   on:click={selectFrame}
 >
-  {flattenState(data.stateValue)}
+  <div class="parallel-state-names">
+    {#each flatStateNames as stateName}
+      {#if flatStateNames.length === 1}
+        <div>{stateName}</div>
+      {:else if flatStateNames.length > 1 && isCompoundState(stateName)}
+        <div>{stateName}</div>
+      {/if}
+    {/each}
+  </div>
   <div class="info-icons">
     {#if data.startedInvocation}
       <div class="icon-started-invocation">⊕</div>
@@ -59,12 +69,17 @@
     background-color: var(--base03);
     color: var(--magenta);
     min-width: 10em;
-    height: 2em;
+    /* height: 2em; */
     line-height: 2em;
     text-align: center;
     cursor: pointer;
     z-index: 3;
     position: relative;
+  }
+
+  .parallel-state-names {
+    display: flex;
+    flex-direction: column;
   }
 
   .info-icons {
@@ -75,6 +90,13 @@
     height: 1rem;
     padding-top: 1px;
     padding-right: 4px;
+    display: flex;
+    gap: 2px;
+  }
+
+  .state-node-frame.final .info-icons {
+    top: 3px;
+    right: 3px;
   }
 
   .selected {
