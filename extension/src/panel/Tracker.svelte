@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { beforeUpdate, afterUpdate, getContext } from 'svelte'
+  import { afterUpdate } from 'svelte'
   import type {
     DeserializedExtendedInspectedActorObject,
     XStateInspectUpdateEvent,
@@ -9,16 +9,13 @@
   } from './StateNodeFrame.svelte'
   import EventFrameComponent, { type EventFrame } from './EventFrame.svelte'
   import ArrowDown from './ArrowDown.svelte'
-  import { last } from '../utils'
+  import { last, debounce } from '../utils'
 
   export let actor: DeserializedExtendedInspectedActorObject = null
   export let selectedFrame: EventFrame | StateNodeFrame
 
   const STATE_NODE = 'stateNode'
   const EVENT = 'event'
-
-  // TODO remove
-  const { log } = getContext('logger')
 
   function createEventFrame(
     update: XStateInspectUpdateEvent,
@@ -99,7 +96,6 @@
   }
 
   $: if (actor) {
-    log('actor changed', actor, 'goldenrod') // TODO remove
     if (
       actor.sessionId !== frames.sessionId ||
       actor.createdAt !== frames.createdAt
@@ -125,14 +121,21 @@
     }
   }
 
-  let autoscroll: boolean
+  let autoscroll = true
   let trackerElement: HTMLElement
-  beforeUpdate(() => {
-    autoscroll =
-      trackerElement &&
-      trackerElement.offsetHeight + trackerElement.scrollTop >
-        trackerElement.scrollHeight - 20
-  })
+
+  function trackScrolling(node: HTMLElement) {
+    const updateAutoscroll = debounce(function updateAutoscroll() {
+      autoscroll =
+        trackerElement &&
+        trackerElement.offsetHeight + trackerElement.scrollTop >
+          trackerElement.scrollHeight - 20
+    }, 100)
+    node.addEventListener('scroll', updateAutoscroll)
+    return () => {
+      node.removeEventListener('scroll', updateAutoscroll)
+    }
+  }
 
   afterUpdate(() => {
     if (autoscroll) {
@@ -170,6 +173,7 @@
     class="tracker nice-scroll"
     bind:this={trackerElement}
     on:click={clearSelectedFrame}
+    use:trackScrolling
   >
     {#each frames as frame, index (frame.id)}
       {#if frame.type === STATE_NODE}

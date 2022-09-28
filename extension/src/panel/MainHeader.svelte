@@ -3,10 +3,13 @@
   import TrashBinIcon from './icons/TrashBinIcon.svelte'
 
   export let clearDeadActors: () => void
+  export let addSwimLane: () => void
 </script>
 
 <header class="main-header">
-  <button title="Add tracker" class="add-tracker-btn">+</button>
+  <button title="Add swim lane" class="add-swim-lane-btn" on:click={addSwimLane}
+    >+</button
+  >
   <button
     on:click={clearDeadActors}
     title="Clear dead actors"
@@ -46,7 +49,7 @@
     fill: var(--green) !important;
   }
 
-  .add-tracker-btn {
+  .add-swim-lane-btn {
     font-size: 1.4rem;
     font-weight: bold;
   }

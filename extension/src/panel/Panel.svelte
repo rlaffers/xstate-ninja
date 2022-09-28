@@ -15,16 +15,14 @@
     SerializedExtendedInspectedActorObject,
     DeserializedExtendedInspectedActorObject,
   } from 'xstate-ninja'
-  import ActorDetail from './ActorDetail.svelte'
-  import ActorsDropdown from './ActorsDropdown.svelte'
   import SideBar from './SideBar.svelte'
   import { connectBackgroundPage } from './connectBackgroundPage'
   import Intro from './Intro.svelte'
-  import Tracker from './Tracker.svelte'
   import type { EventFrame } from './EventFrame.svelte'
   import type { StateNodeFrame } from './StateNodeFrame.svelte'
   import MainHeader from './MainHeader.svelte'
   import { MessageTypes } from '../messages'
+  import SwimLane from './SwimLane.svelte'
 
   function deserializeInspectedActor(
     serializedActor: SerializedExtendedInspectedActorObject,
@@ -166,13 +164,6 @@
 
   // -----------------------------
   let selectedActor: DeserializedExtendedInspectedActorObject
-  let selectedActorSessionId: string = null
-
-  $: {
-    if (selectedActorSessionId != null && actors) {
-      selectedActor = actors.get(selectedActorSessionId)
-    }
-  }
 
   // if selectedFrame=null, then the latest actor's snapshot is implied
   let selectedFrame: EventFrame | StateNodeFrame = null
@@ -192,16 +183,12 @@
         actors = actors
       }
     }
-    // if a dead actor was selected, select something else
-    if (selectedActor && (!actors || actors.size === 0)) {
-      selectedActor = null
-      selectedActorSessionId = null
-    } else if (selectedActor && !actors.has(selectedActor.sessionId)) {
-      selectedActor = actors.values().next()?.value
-      selectedActorSessionId = selectedActor.sessionId
-    }
-
     bkgPort.postMessage(new DeadActorsClearedEvent().detail)
+  }
+
+  // TODO
+  function addSwimLane() {
+    return false
   }
 </script>
 
@@ -209,62 +196,33 @@
   <Intro />
 {:else}
   <main class="actors-view">
-    <MainHeader {clearDeadActors} />
-    <header class="tracker-header">
-      <ActorsDropdown
-        class="actors-dropdown"
-        {actors}
-        bind:selectedActorSessionId
-      />
-    </header>
-    <section class="trackers nice-scroll">
-      <section class="tracker-container">
-        <ActorDetail actor={selectedActor} />
-        <Tracker actor={selectedActor} bind:selectedFrame />
-      </section>
+    <MainHeader {clearDeadActors} {addSwimLane} />
+
+    <section class="swim-lanes">
+      <SwimLane {actors} bind:selectedActor bind:selectedFrame />
     </section>
+
     <SideBar actor={selectedActor} {selectedFrame} />
   </main>
 {/if}
 
 <style>
   main.actors-view {
-    --actors-dropdown-height: 1.8rem;
+    /* --actors-dropdown-height: 1.8rem; */
     height: 100%;
     display: grid;
     grid-template-columns: 2fr auto;
     grid-template-rows: 2.1rem 3rem 1fr;
     grid-template-areas:
       'main-header main-header'
-      'tracker-header sidebar'
-      'trackers sidebar';
-  }
-  .tracker-header {
-    grid-area: tracker-header;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 0.2rem;
+      'swim-lanes sidebar'
+      'swim-lanes sidebar';
   }
 
-  :global(.actors-dropdown) {
-    height: var(--actors-dropdown-height);
-    max-width: 15rem;
-    align-self: center;
-    margin: 0.5rem 0;
-  }
-  .trackers {
-    grid-area: trackers;
+  .swim-lanes {
+    grid-area: swim-lanes;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    overflow-y: auto;
-    /* height: calc(100% - var(--actors-dropdown-height)); */
-  }
-  .trackers > .tracker-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 </style>

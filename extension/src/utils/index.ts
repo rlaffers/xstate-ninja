@@ -58,3 +58,14 @@ export function pick(names: string[], obj: Record<string, any>) {
   }
   return result
 }
+
+export function debounce(f: (...args: any[]) => any, timeout: number) {
+  let id: NodeJS.Timeout
+  return (...args: any[]) => {
+    clearTimeout(id)
+    id = setTimeout(() => {
+      f(...args)
+    }, timeout)
+    return id
+  }
+}
