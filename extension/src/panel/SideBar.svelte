@@ -11,11 +11,11 @@
 
   /* eslint-disable no-use-before-define */
   export let actor: DeserializedExtendedInspectedActorObject = null
-  export let selectedFrame: EventFrame | StateNodeFrame = null
+  export let activeFrame: EventFrame | StateNodeFrame = null
 
   let selectedSnapshot: any = null
   $: selectedSnapshot =
-    selectedFrame?.snapshot != null ? JSON.parse(selectedFrame.snapshot) : null
+    activeFrame?.snapshot != null ? JSON.parse(activeFrame.snapshot) : null
 
   let node: HTMLElement
 </script>
@@ -26,7 +26,7 @@
     <ContextPanel
       context={selectedSnapshot?.context ?? actor?.snapshot?.context}
     />
-    {#if isEventFrame(selectedFrame)}
+    {#if isEventFrame(activeFrame)}
       <EventPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
     {/if}
     <ActionsPanel snapshot={selectedSnapshot ?? actor?.snapshot} />

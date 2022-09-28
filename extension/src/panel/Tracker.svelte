@@ -12,7 +12,9 @@
   import { last, debounce } from '../utils'
 
   export let actor: DeserializedExtendedInspectedActorObject = null
-  export let selectedFrame: EventFrame | StateNodeFrame
+  export let onSelectFrame: (frame: EventFrame | StateNodeFrame) => void
+
+  let activeFrame: EventFrame | StateNodeFrame
 
   const STATE_NODE = 'stateNode'
   const EVENT = 'event'
@@ -80,19 +82,28 @@
     createdAt?: number
   }
 
-  function createFrameList(): FrameList {
+  function createFrameList(
+    actor?: DeserializedExtendedInspectedActorObject,
+  ): FrameList {
     const frames = [] as FrameList
     // these props serve for tracking when the reactive statements below need to run
     frames.sessionId = actor?.sessionId
     frames.historySize = actor?.history?.length ?? 0
     frames.createdAt = actor?.createdAt
+    // populate frames from the selected actor's history
+    if (actor?.history?.length > 0) {
+      actor.history.forEach((update) => {
+        frames.push(...updateIntoFrames(update))
+      })
+    }
     return frames
   }
 
-  let frames: FrameList = createFrameList()
+  let frames: FrameList = createFrameList(actor)
 
   function clearSelectedFrame() {
-    selectedFrame = null
+    activeFrame = null
+    onSelectFrame(null)
   }
 
   $: if (actor) {
@@ -100,15 +111,7 @@
       actor.sessionId !== frames.sessionId ||
       actor.createdAt !== frames.createdAt
     ) {
-      const newFrames: FrameList = createFrameList()
-      newFrames.sessionId = actor?.sessionId
-      newFrames.historySize = actor.history.length
-      // populate frames from the selected actor's history
-      if (actor?.history?.length > 0) {
-        actor.history.forEach((update) => {
-          newFrames.push(...updateIntoFrames(update))
-        })
-      }
+      const newFrames: FrameList = createFrameList(actor)
       frames = newFrames
       clearSelectedFrame()
     } else if (actor.history.length !== frames.historySize) {
@@ -143,8 +146,9 @@
     }
   })
 
-  function onSelectFrame(frame: StateNodeFrame | EventFrame) {
-    selectedFrame = frame
+  function activateFrame(frame: StateNodeFrame | EventFrame) {
+    activeFrame = frame
+    onSelectFrame(frame)
   }
 
   let hiddenStates = []
@@ -179,16 +183,16 @@
       {#if frame.type === STATE_NODE}
         <StateNodeFrameComponent
           data={frame}
-          {onSelectFrame}
-          isSelected={selectedFrame === frame}
+          onSelectFrame={activateFrame}
+          isSelected={activeFrame === frame}
           {hideStateName}
           {hiddenStates}
         />
       {:else if frame.type === EVENT}
         <EventFrameComponent
           data={frame}
-          {onSelectFrame}
-          isSelected={selectedFrame === frame}
+          onSelectFrame={activateFrame}
+          isSelected={activeFrame === frame}
         />
         {#if frames[index + 1]?.type === STATE_NODE}
           <ArrowDown />

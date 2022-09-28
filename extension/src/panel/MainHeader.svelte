@@ -7,8 +7,10 @@
 </script>
 
 <header class="main-header">
-  <button title="Add swim lane" class="add-swim-lane-btn" on:click={addSwimLane}
-    >+</button
+  <button
+    title="Add another swim lane"
+    class="add-swim-lane-btn"
+    on:click={addSwimLane}>+</button
   >
   <button
     on:click={clearDeadActors}

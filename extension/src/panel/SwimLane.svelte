@@ -7,10 +7,14 @@
   import Tracker from './Tracker.svelte'
 
   export let selectedActor: DeserializedExtendedInspectedActorObject
-  // if selectedFrame=null, then the latest actor's snapshot is implied
-  export let selectedFrame: EventFrame | StateNodeFrame = null
   export let actors: Map<string, DeserializedExtendedInspectedActorObject> =
     null
+  export let active = false
+  export let onSelectSwimLane: () => void
+  export let onActorChanged: (
+    actor: DeserializedExtendedInspectedActorObject,
+  ) => void
+  export let onSelectFrame: (frame: EventFrame | StateNodeFrame) => void
 
   let selectedActorSessionId: string = null
 
@@ -21,14 +25,16 @@
         // the currently selected actor is no longer available, select something else
         selectedActor = actors.values().next()?.value
         selectedActorSessionId = selectedActor.sessionId
+        onActorChanged(selectedActor)
       } else if (retrievedActor !== selectedActor) {
         selectedActor = retrievedActor
+        onActorChanged(selectedActor)
       }
     }
   }
 </script>
 
-<section class="swim-lane">
+<section class="swim-lane" class:active on:click={onSelectSwimLane}>
   <header class="swim-lane-header">
     <ActorsDropdown
       class="actors-dropdown"
@@ -37,7 +43,7 @@
     />
     <ActorDetail actor={selectedActor} />
   </header>
-  <Tracker actor={selectedActor} bind:selectedFrame />
+  <Tracker actor={selectedActor} {onSelectFrame} />
 </section>
 
 <style>
@@ -46,6 +52,15 @@
     flex-direction: column;
     align-items: center;
     flex: 1;
+    border-left: 1px solid var(--base01);
+  }
+
+  .swim-lane:first-child {
+    border-left: none;
+  }
+
+  :global(.swim-lanes.multi) .swim-lane.active {
+    background: var(--base02);
   }
 
   .swim-lane-header {
