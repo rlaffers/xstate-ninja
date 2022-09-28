@@ -174,19 +174,19 @@ h6 {
   font-weight: 700;
 }
 html {
-  background-color: var(--base2);
-  color: var(--base00);
+  background-color: var(--background-highlight);
+  color: var(--content);
   margin: 1em;
 }
 body {
-  background-color: var(--base3);
+  background-color: var(--background);
   margin: 0 auto;
   max-width: 23cm;
-  border: 1pt solid var(--base1);
+  border: 1pt solid var(--content-muted);
   padding: 1em;
 }
 code {
-  background-color: var(--base2);
+  background-color: var(--background-highlight);
   padding: 2px;
 }
 a {
@@ -209,14 +209,14 @@ h6 {
   color: var(--green);
 }
 pre {
-  background-color: var(--base3);
-  color: var(--base00);
-  border: 1pt solid var(--base1);
+  background-color: var(--background);
+  color: var(--content);
+  border: 1pt solid var(--content-muted);
   padding: 1em;
-  box-shadow: 5pt 5pt 8pt var(--base2);
+  box-shadow: 5pt 5pt 8pt var(--background-highlight);
 }
 pre code {
-  background-color: var(--base3);
+  background-color: var(--background);
 }
 h1 {
   font-size: 2.8em;
@@ -237,14 +237,14 @@ h6 {
   font-size: 1.15em;
 }
 .tag {
-  background-color: var(--base2);
+  background-color: var(--background-highlight);
   color: var(--magenta);
   padding: 0 0.2em;
 }
 .todo,
 .next,
 .done {
-  color: var(--base3);
+  color: var(--background);
   background-color: var(--red);
   padding: 0 0.2em;
 }

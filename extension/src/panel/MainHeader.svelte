@@ -26,15 +26,15 @@
     grid-area: main-header;
     display: flex;
     flex-direction: row;
-    background-color: var(--base02);
-    border-bottom: 1px solid var(--base01);
+    background-color: var(--background-highlight);
+    border-bottom: 1px solid var(--content-muted);
     padding: 0.2rem;
   }
 
   .main-header button {
     background: transparent;
     border: 0;
-    color: var(--base0);
+    color: var(--content);
   }
 
   .main-header button:hover {
@@ -63,7 +63,7 @@
 
   .separator {
     width: 0;
-    border-right: 1px solid var(--base01);
+    border-right: 1px solid var(--content-muted);
     margin: 0.2rem 0.5rem;
   }
 </style>

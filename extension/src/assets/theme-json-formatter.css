@@ -1,7 +1,7 @@
 .json-formatter-row,
 .json-formatter-row a,
 .json-formatter-row a:hover {
-  color: var(--base0) !important;
+  color: var(--content) !important;
 }
 
 .json-formatter-key {
@@ -29,6 +29,6 @@
 }
 
 .json-formatter-empty {
-  color: var(--base01) !important;
+  color: var(--content-muted) !important;
   opacity: 1 !important;
 }

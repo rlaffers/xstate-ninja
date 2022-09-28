@@ -71,13 +71,12 @@
 <style>
   .event-frame {
     display: inline-block;
-    border: 1px solid var(--base01);
-    color: var(--base01);
-    background-color: var(--base03);
+    border: 1px solid var(--content-muted);
+    color: var(--content-muted);
+    background-color: var(--background);
     border-radius: 1rem;
     padding: 0.5rem 1rem;
     margin-top: 0.5rem;
-    /*height: 1rem;*/
     line-height: 1rem;
     text-align: center;
     cursor: pointer;
@@ -89,9 +88,9 @@
   }
 
   .event-frame.changed-state {
-    border-color: var(--base1);
-    color: var(--base03);
-    background-color: var(--base1);
+    border-color: var(--content-accent);
+    color: var(--background);
+    background-color: var(--content-accent);
   }
 
   .event-frame.guard-not-passed {
@@ -101,7 +100,7 @@
 
   .event-frame.forbidden {
     border-color: var(--red);
-    background-color: var(--base03);
+    background-color: var(--background);
     color: var(--red);
   }
   .origin {

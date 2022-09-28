@@ -63,8 +63,8 @@
 <style>
   h1 {
     font-size: 2rem;
-    background-color: var(--base01);
-    color: var(--base03);
+    background-color: var(--content);
+    color: var(--background);
     margin: 0;
     padding: 0 8px;
   }

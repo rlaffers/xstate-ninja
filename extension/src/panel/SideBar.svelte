@@ -39,7 +39,7 @@
 <style>
   .sidebar {
     grid-area: sidebar;
-    border-left: 1px solid var(--base01);
+    border-left: 1px solid var(--content-muted);
     position: relative;
   }
   .sidebar > p {

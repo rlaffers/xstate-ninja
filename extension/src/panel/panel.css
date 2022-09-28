@@ -1,4 +1,6 @@
 :root {
+  color-scheme: dark light;
+
   --base03: #002b36;
   --base02: #073642;
   --base01: #586e75;
@@ -15,7 +17,34 @@
   --blue: #268bd2;
   --cyan: #2aa198;
   --green: #859900;
+
+  /* light theme */
+  --background: var(--base3);
+  --background-highlight: var(--base2);
+  --content: var(--base00);
+  --content-accent: var(--base01);
+  --content-muted: var(--base1);
 }
+
+:root:has(body[data-theme='dark']),
+body[data-theme='dark'] {
+  --background: var(--base03);
+  --background-highlight: var(--base02);
+  --content: var(--base0);
+  --content-accent: var(--base1);
+  --content-muted: var(--base01);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--base03);
+    --background-highlight: var(--base02);
+    --content: var(--base0);
+    --content-accent: var(--base1);
+    --content-muted: var(--base01);
+  }
+}
+
 :root:has(.actors-view) {
   margin: 0;
   background: none;
@@ -25,7 +54,6 @@
   padding: 0;
   max-width: inherit !important;
   height: 100vh;
-  /* padding: 0.3rem 0.1rem; */
 }
 
 @font-face {
@@ -52,9 +80,9 @@ select,
 textarea,
 input[type='text'],
 input[type='number'] {
-  background-color: var(--base03);
-  color: var(--base0);
-  border-color: var(--base01);
+  background-color: var(--background);
+  color: var(--content);
+  border-color: var(--content-secondary);
   padding: 0.1rem 0.3rem;
 }
 
@@ -64,7 +92,7 @@ option {
 
 .nice-scroll {
   scrollbar-width: 8px;
-  scrollbar-color: var(--base01) var(--base03);
+  scrollbar-color: var(--content-muted) var(--background);
 }
 
 .nice-scroll::-webkit-scrollbar {
@@ -72,12 +100,12 @@ option {
 }
 
 .nice-scroll::-webkit-scrollbar-track {
-  background: var(--base03);
-  border: 1px solid var(--base01);
+  background: var(--background);
+  border: 1px solid var(--content-muted);
 }
 
 .nice-scroll::-webkit-scrollbar-thumb {
-  background-color: var(--base01);
+  background-color: var(--content-muted);
   border-radius: 5px;
-  border: 1px solid var(--base01);
+  border: 1px solid var(--content-muted);
 }

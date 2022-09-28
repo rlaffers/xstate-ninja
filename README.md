@@ -81,7 +81,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~mark state nodes with invoked services with icons in the tracker~~
 - ~~add button to close a swimlane~~
 - ~~prevent autoscroll if any frame is selected~~
-- add a light theme
+- ~~add a light theme~~
 - link identical events sent between actors
 - add icons to frames for marking spawned children
 - ~~add button for hiding some parallel states~~

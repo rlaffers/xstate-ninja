@@ -103,7 +103,7 @@
     cursor: help;
   }
   .actor-detail dt {
-    color: var(--base01);
+    color: var(--content-muted);
   }
   .actor-detail dt:after {
     content: '';

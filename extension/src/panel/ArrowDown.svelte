@@ -23,7 +23,7 @@
     height: 14px;
     border-width: 2px 2px 0 0;
     border-style: solid;
-    border-color: var(--base01);
+    border-color: var(--content-muted);
     transform-origin: 50% 50%;
     transform: translate(0.5px, -16px) rotate(135deg);
   }
@@ -35,7 +35,7 @@
     height: 30px;
     border-width: 0 2px 0 0;
     border-style: solid;
-    border-color: var(--base01);
+    border-color: var(--content-muted);
     transform-origin: 50% 50%;
   }
 </style>

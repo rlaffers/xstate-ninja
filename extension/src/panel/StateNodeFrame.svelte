@@ -94,7 +94,7 @@
   .state-node-frame {
     border: 1px solid var(--magenta);
     padding: 0.5em 1em;
-    background-color: var(--base03);
+    background-color: var(--background);
     color: var(--magenta);
     min-width: 10em;
     /* height: 2em; */
@@ -150,7 +150,7 @@
   }
 
   :global(.hide-icon > g > path) {
-    fill: var(--base01) !important;
+    fill: var(--content-muted) !important;
   }
   :global(.hide-icon:hover > g > path) {
     fill: var(--green) !important;

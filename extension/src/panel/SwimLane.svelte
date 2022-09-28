@@ -54,7 +54,7 @@
     flex-direction: column;
     align-items: center;
     flex: 1;
-    border-left: 1px solid var(--base01);
+    border-left: 1px solid var(--content-muted);
     position: relative;
   }
 
@@ -65,7 +65,7 @@
     background: none;
     border: none;
     box-shadow: none;
-    color: var(--base1);
+    color: var(--content-accent);
     font-size: 1.2rem;
     display: none;
   }
@@ -87,7 +87,7 @@
   }
 
   :global(.swim-lanes.multi) .swim-lane.active {
-    background: var(--base02);
+    background: var(--background-highlight);
   }
 
   .swim-lane-header {
@@ -96,7 +96,7 @@
     justify-content: center;
     padding: 0.2rem 0 0.2rem 0;
     width: 100%;
-    border-bottom: 1px solid var(--base01);
+    border-bottom: 1px solid var(--content-muted);
   }
 
   :global(.actors-dropdown) {
