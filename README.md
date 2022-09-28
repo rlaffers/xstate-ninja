@@ -77,8 +77,10 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~add event panel for event frames with event info~~
 - ~~inspect the `devTools` option in useInterpret and useMachine hooks to include/exclude machine from tracking~~
 - ~~support parallel states~~
-- add second tracker lane
+- ~~add second tracker lane~~
 - ~~mark state nodes with invoked services with icons in the tracker~~
+- add button to close a swimlane
+- prevent autoscroll if any frame is selected
 - add icons to frames for marking spawned children
 - ~~add button for hiding some parallel states~~
 - hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.

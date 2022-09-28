@@ -38,7 +38,7 @@
   }
 
   .main-header button:hover {
-    color: var(--green) !important;
+    color: var(--blue) !important;
   }
 
   :global(.clear-dead-btn > svg),
@@ -48,7 +48,7 @@
 
   :global(.clear-dead-btn:hover > svg > g > path),
   :global(.config-btn:hover > svg > g > path) {
-    fill: var(--green) !important;
+    fill: var(--blue) !important;
   }
 
   .add-swim-lane-btn {

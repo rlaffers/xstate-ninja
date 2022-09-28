@@ -86,7 +86,6 @@
 <style>
   .actor-detail {
     display: flex;
-    height: 30px;
     width: calc(100% - 0.8rem);
     margin: 0;
     padding: 0.4rem;

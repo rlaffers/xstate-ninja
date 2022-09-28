@@ -236,11 +236,6 @@
     }
   }
 
-  // TODO fix header height when multirow
-  // TODO set minimum swimlane width and configure horizontal scrolling
-  // TODO button to remove swimlane
-  // TODO prevent autoscroll if a frame is selected
-
   function onActorChanged(
     actor: DeserializedExtendedInspectedActorObject,
     index: number,
@@ -262,7 +257,7 @@
   <main class="actors-view">
     <MainHeader {clearDeadActors} {addSwimLane} />
 
-    <section class="swim-lanes" class:multi={swimLanes.length > 1}>
+    <section class="swim-lanes nice-scroll" class:multi={swimLanes.length > 1}>
       {#each swimLanes as selectedActor, index}
         <SwimLane
           {actors}
@@ -281,10 +276,9 @@
 
 <style>
   main.actors-view {
-    /* --actors-dropdown-height: 1.8rem; */
     height: 100%;
     display: grid;
-    grid-template-columns: 2fr auto;
+    grid-template-columns: 2fr minmax(10%, auto);
     grid-template-rows: 2.1rem 3rem 1fr;
     grid-template-areas:
       'main-header main-header'
@@ -297,5 +291,6 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    overflow-x: auto;
   }
 </style>
