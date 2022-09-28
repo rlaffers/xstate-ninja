@@ -249,6 +249,20 @@
       activeActor = actor
     }
   }
+
+  function closeSwimLane(index: number) {
+    swimLanes.splice(index, 1)
+    swimLanes = swimLanes
+    if (index === activeSwimLane) {
+      if (swimLanes.length > 0) {
+        activateSwimLane(0)
+      } else {
+        activeSwimLane = null
+        activeActor = null
+        activeFrame = null
+      }
+    }
+  }
 </script>
 
 {#if actors == null || actors.size < 1}
@@ -266,6 +280,7 @@
           active={index === activeSwimLane}
           onSelectSwimLane={() => activateSwimLane(index)}
           onSelectFrame={(frame) => activateFrame(frame, index)}
+          closeSwimLane={() => closeSwimLane(index)}
         />
       {/each}
     </section>

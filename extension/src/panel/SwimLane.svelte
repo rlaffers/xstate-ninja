@@ -15,6 +15,7 @@
     actor: DeserializedExtendedInspectedActorObject,
   ) => void
   export let onSelectFrame: (frame: EventFrame | StateNodeFrame) => void
+  export let closeSwimLane: () => void
 
   let selectedActorSessionId: string = null
 
@@ -42,6 +43,7 @@
       bind:selectedActorSessionId
     />
     <ActorDetail actor={selectedActor} />
+    <button type="button" class="close-btn" on:click={closeSwimLane}>⨯</button>
   </header>
   <Tracker actor={selectedActor} {onSelectFrame} {active} />
 </section>
@@ -53,6 +55,31 @@
     align-items: center;
     flex: 1;
     border-left: 1px solid var(--base01);
+    position: relative;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: var(--base1);
+    font-size: 1.2rem;
+    display: none;
+  }
+
+  .close-btn:hover {
+    color: var(--blue);
+  }
+
+  .swim-lane:hover .close-btn {
+    display: block;
+  }
+
+  .swim-lane:only-child .close-btn {
+    display: none !important;
   }
 
   .swim-lane:first-child {

@@ -79,7 +79,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~support parallel states~~
 - ~~add second tracker lane~~
 - ~~mark state nodes with invoked services with icons in the tracker~~
-- add button to close a swimlane
+- ~~add button to close a swimlane~~
 - prevent autoscroll if any frame is selected
 - add icons to frames for marking spawned children
 - ~~add button for hiding some parallel states~~
