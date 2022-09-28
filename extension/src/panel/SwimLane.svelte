@@ -43,7 +43,7 @@
     />
     <ActorDetail actor={selectedActor} />
   </header>
-  <Tracker actor={selectedActor} {onSelectFrame} />
+  <Tracker actor={selectedActor} {onSelectFrame} {active} />
 </section>
 
 <style>

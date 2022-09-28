@@ -13,8 +13,16 @@
 
   export let actor: DeserializedExtendedInspectedActorObject = null
   export let onSelectFrame: (frame: EventFrame | StateNodeFrame) => void
+  export let active = false
 
   let activeFrame: EventFrame | StateNodeFrame
+
+  // clear activeFrame if parent swimlane stopped being active
+  $: {
+    if (!active) {
+      activeFrame = null
+    }
+  }
 
   const STATE_NODE = 'stateNode'
   const EVENT = 'event'

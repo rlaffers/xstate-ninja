@@ -190,14 +190,11 @@
   let activeSwimLane: number | null = null
   $: {
     if (actors && swimLanes.length === 0) {
-      log('populating lanes, setting first active', undefined, 'orange') // TODO
       swimLanes = [actors.values().next().value]
       activeSwimLane = 0
       activeActor = swimLanes[0]
       activeFrame = null
     } else if (!actors) {
-      log('no more actors, emptying lanes', undefined, 'orange') // TODO
-      // TODO we must have at least one lane, no?
       swimLanes = []
       activeSwimLane = null
       activeActor = null
@@ -209,7 +206,6 @@
     if (index === activeSwimLane) {
       return
     }
-    log('activateSwimLane', { index }, 'red') // TODO
     if (index > swimLanes.length - 1) {
       log(
         'attemped to change to an invalid swimlane',
@@ -227,7 +223,6 @@
     frame: EventFrame | StateNodeFrame,
     swimLaneIndex: number,
   ) {
-    log('activateFrame', frame, 'red') // TODO
     if (swimLaneIndex !== activeSwimLane) {
       activateSwimLane(swimLaneIndex)
     }
@@ -235,8 +230,6 @@
   }
 
   function addSwimLane() {
-    // TODO
-    log('adding swim lane', undefined, 'cyan')
     const firstActor = actors?.values()?.next()?.value
     if (firstActor) {
       swimLanes = [...swimLanes, firstActor]
@@ -247,23 +240,11 @@
   // TODO set minimum swimlane width and configure horizontal scrolling
   // TODO button to remove swimlane
   // TODO prevent autoscroll if a frame is selected
-  // TODO BUG: when I select frame from another lane, it is selected OK, but the current selected frame
-  // is not unselected (only one frame can be selected at a time)
 
   function onActorChanged(
     actor: DeserializedExtendedInspectedActorObject,
     index: number,
   ) {
-    log(
-      'onActorChanged',
-      {
-        index,
-        sessionId: actor.sessionId,
-        activeActor: activeActor.sessionId,
-        activeFrame,
-      },
-      'olive',
-    ) // TODO
     swimLanes[index] = actor
     swimLanes = swimLanes
     if (index === activeSwimLane) {
@@ -273,9 +254,6 @@
       activeActor = actor
     }
   }
-
-  $: log('activeActor', activeActor, 'salmon') // TODO
-  $: log('activeFrame', activeFrame, 'salmon') // TODO
 </script>
 
 {#if actors == null || actors.size < 1}
