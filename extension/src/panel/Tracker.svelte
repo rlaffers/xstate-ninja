@@ -135,6 +135,12 @@
   let autoscroll = true
   let trackerElement: HTMLElement
 
+  $: {
+    if (activeFrame) {
+      autoscroll = false
+    }
+  }
+
   function trackScrolling(node: HTMLElement) {
     const updateAutoscroll = debounce(function updateAutoscroll() {
       autoscroll =

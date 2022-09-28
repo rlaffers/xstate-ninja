@@ -80,7 +80,9 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~add second tracker lane~~
 - ~~mark state nodes with invoked services with icons in the tracker~~
 - ~~add button to close a swimlane~~
-- prevent autoscroll if any frame is selected
+- ~~prevent autoscroll if any frame is selected~~
+- add a light theme
+- link identical events sent between actors
 - add icons to frames for marking spawned children
 - ~~add button for hiding some parallel states~~
 - hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
@@ -106,8 +108,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~make context, actions, services panels resizable and collapsible~~
 - highlight changes in the context (diff mode)
 - highlight transitions guarded by "in" state guards
-- add a light theme
-- add button to emit an event
+- add button for emitting events
 - user annotations tool
 
 ## Attribution
