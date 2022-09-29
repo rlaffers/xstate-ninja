@@ -6,9 +6,13 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"cd ../example && npm run dev\"  \"wait-on -c .wait-on-config.json http-get://localhost:4000 && vite build --watch\"",
+    "dev:firefox": "concurrently \"cd ../example && npm run dev\"  \"wait-on -c .wait-on-config.json http-get://localhost:4000 && TARGET_BROWSER=firefox vite build --watch\"",
     "build": "vite build",
+    "build:firefox": "TARGET_BROWSER=firefox vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "package": "cd dist/ && zip -r xstate-ninja.crx ./*",
+    "package:firefox": "cd dist-firefox/ && zip -r xstate-ninja.xpi ./*"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.1",
@@ -29,9 +33,7 @@
     "xstate": "^4.33.6",
     "xstate-ninja": "workspace:^1.1.2"
   },
-  "keywords": [
-    "xstate"
-  ],
+  "keywords": ["xstate"],
   "author": "Richard Laffers",
   "license": "ICS",
   "homepage": "https://github.com/rlaffers/xstate-ninja",

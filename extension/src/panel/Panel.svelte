@@ -107,7 +107,7 @@
   let actors: Map<string, DeserializedExtendedInspectedActorObject> = null
 
   function messageListener(event: XStateInspectAnyEvent) {
-    log(event.type, { event, bkgPort }) // TODO remove
+    log(event.type, { event }) // TODO remove
 
     if (isXStateInspectActorsEvent(event)) {
       actors = new Map(

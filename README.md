@@ -18,7 +18,7 @@
 
 ## Quick Start
 
-1. Install the browser extension from the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/).
+1. Install the browser extension from the [Chrome Web Store](https://chrome.google.com/webstore/detail/xstate-ninja/cogeldipmkjdfjgjkghlmhehejpmcfif) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/).
 2. Install the xstate-ninja package in your project:
 
 ```bash
@@ -82,11 +82,12 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~add button to close a swimlane~~
 - ~~prevent autoscroll if any frame is selected~~
 - ~~add a light theme~~
+- add options to hide promise or callback actors from the extension
+- build for Firefox
 - link identical events sent between actors
 - add icons to frames for marking spawned children
 - ~~add button for hiding some parallel states~~
 - hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
-- add options to hide promise or callback actors from the extension
 - optimize memory usage by dead actors (config option to limit how many dead actors are retained: N of each kind; max N total; none)
 - ~~add button to clear all dead actors~~
 - display assign actions (they are not reported by the xstate interpreter)

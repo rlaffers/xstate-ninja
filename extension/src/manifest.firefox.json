@@ -1,0 +1,29 @@
+{
+  "name": "XState Ninja",
+  "author": "Richard Laffers",
+  "description": "A powerful devtool for XState state machines",
+  "version": "1.2.0",
+  "manifest_version": 2,
+  "homepage_url": "https://github.com/rlaffers/xstate-ninja",
+  "background": {
+    "scripts": ["background/background.ts"],
+    "persistent": false
+  },
+  "devtools_page": "devtools/devtools.html",
+  "icons": {
+    "16": "assets/icon_16x16.png",
+    "32": "assets/icon_32x32.png",
+    "48": "assets/icon_48x48.png",
+    "128": "assets/icon_128x128.png"
+  },
+  "web_accessible_resources": ["inject/xstate_ninja.js"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "exclude_globs": ["https://www.google*"],
+      "js": ["inject/content_script.ts"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ]
+}
