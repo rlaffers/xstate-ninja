@@ -3,7 +3,6 @@
   <img src="https://user-images.githubusercontent.com/489018/182801436-1a9c7cfd-9c67-4343-a430-17ec63f0ff3b.png" alt="logo" />
   <p>A dedicated devtool for XState state machines.</p>
   <p>
-    <a href="https://npmjs.com/package/xstate-ninja"><img src="https://img.shields.io/npm/v/xstate-ninja" alt="npm version" /></a>
     <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="code style: prettier" /></a>
     <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome" /></a>
   </p>
@@ -13,7 +12,7 @@
 ## Screenshots
 
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/489018/190877530-9ab334bf-a220-4ad6-9977-3f5000f01c66.png" alt="screenshot" />
+  <img src="https://user-images.githubusercontent.com/489018/193230455-1499360e-79b4-4e38-903c-befd6d311eb6.png" alt="screenshot" />
 </div>
 
 ## Quick Start
@@ -31,6 +30,8 @@ npm install --save xstate-ninja xstate
 import { interpret } from 'xstate-ninja'
 const service = interpret(machine)
 ```
+
+For React integration, check the <a href="https://github.com/rlaffers/xstate-ninja/tree/master/packages/xstate-ninja-react">@xstate-ninja/react</a> library.
 
 ## How it works
 
@@ -83,7 +84,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~prevent autoscroll if any frame is selected~~
 - ~~add a light theme~~
 - add options to hide promise or callback actors from the extension
-- build for Firefox
+- ~~build for Firefox~~
 - link identical events sent between actors
 - add icons to frames for marking spawned children
 - ~~add button for hiding some parallel states~~
