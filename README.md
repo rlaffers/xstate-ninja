@@ -17,7 +17,7 @@
 
 ## Quick Start
 
-1. Install the browser extension from the [Chrome Web Store](https://chrome.google.com/webstore/detail/xstate-ninja/cogeldipmkjdfjgjkghlmhehejpmcfif) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/).
+1. Install the browser extension from the [Chrome Web Store](https://chrome.google.com/webstore/detail/xstate-ninja/cogeldipmkjdfjgjkghlmhehejpmcfif) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/xstate-ninja/).
 2. Install the xstate-ninja package in your project:
 
 ```bash

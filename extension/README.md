@@ -12,7 +12,7 @@
 
 ## Quick Start
 
-1. Install the browser extension from the [Chrome Web Store](https://chrome.google.com/webstore/detail/xstate-ninja/cogeldipmkjdfjgjkghlmhehejpmcfif) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/).
+1. Install the browser extension from the [Chrome Web Store](https://chrome.google.com/webstore/detail/xstate-ninja/cogeldipmkjdfjgjkghlmhehejpmcfif) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/xstate-ninja/).
 2. Install the [xstate-ninja package](https://github.com/rlaffers/xstate-ninja) in your project.
 3. If needed, install one of the frontend library integrations: [@xstate-ninja/react](https://github.com/rlaffers/xstate-ninja/tree/master/packages/xstate-ninja-react) (more to come).
 4. Open browser devtools (F12) and select the XState panel.
