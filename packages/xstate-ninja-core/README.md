@@ -5,7 +5,7 @@
   <p>
     <a href="https://npmjs.com/package/xstate-ninja"><img src="https://img.shields.io/npm/v/xstate-ninja" alt="npm version" /></a>
     <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="code style: prettier" /></a>
-    <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome" /></a>
+    <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
   </p>
   <hr/>
 </div>
@@ -16,15 +16,15 @@
 npm install --save xstate-ninja xstate
 ```
 
-To track state machines in you project, do this:
+To track state machines in your project, do this:
 
 ```javascript
 import { interpret } from 'xstate-ninja'
 const service = interpret(machine)
 ```
 
-Open browser devtools (F12) and select the XState panel.
+Install the [browser extension](https://github.com/rlaffers/xstate-ninja/tree/master/extension), open browser devtools (F12) and select the XState panel.
 
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/489018/190674192-d7e84c96-3a55-48e3-be7d-829943de3639.png" alt="screenshot" />
+  <img src="https://user-images.githubusercontent.com/489018/193230455-1499360e-79b4-4e38-903c-befd6d311eb6.png" alt="screenshot" />
 </div>

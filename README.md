@@ -4,7 +4,7 @@
   <p>A dedicated devtool for XState state machines.</p>
   <p>
     <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="code style: prettier" /></a>
-    <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome" /></a>
+    <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
   </p>
   <hr/>
 </div>
@@ -31,7 +31,7 @@ import { interpret } from 'xstate-ninja'
 const service = interpret(machine)
 ```
 
-For React integration, check the <a href="https://github.com/rlaffers/xstate-ninja/tree/master/packages/xstate-ninja-react">@xstate-ninja/react</a> library.
+For React integration, check the [@xstate-ninja/react](https://github.com/rlaffers/xstate-ninja/tree/master/packages/xstate-ninja-react) library.
 
 ## How it works
 
