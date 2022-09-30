@@ -90,6 +90,7 @@
     bkgPort.onMessage.removeListener(messageListener)
   })
 
+  // We use this function because logging with console.log directly here does not work
   function log(text: string, data: any, color = 'cornflowerblue') {
     const msg: any = {
       type: MessageTypes.log,

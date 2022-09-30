@@ -176,14 +176,11 @@ h6 {
 html {
   background-color: var(--background-highlight);
   color: var(--content);
-  margin: 1em;
+  margin: 0;
+  padding: 0;
 }
 body {
   background-color: var(--background);
-  margin: 0 auto;
-  max-width: 23cm;
-  border: 1pt solid var(--content-muted);
-  padding: 1em;
 }
 code {
   background-color: var(--background-highlight);

@@ -27,6 +27,7 @@
     // Attach the listeners to `document`
     document.addEventListener('mousemove', mouseMoveHandler)
     document.addEventListener('mouseup', mouseUpHandler)
+    e.preventDefault()
   }
 
   function mouseMoveHandler(e: MouseEvent) {

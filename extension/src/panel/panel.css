@@ -45,17 +45,6 @@ body[data-theme='dark'] {
   }
 }
 
-:root:has(.actors-view) {
-  margin: 0;
-  background: none;
-}
-:root:has(.actors-view) body {
-  border: none;
-  padding: 0;
-  max-width: inherit !important;
-  height: 100vh;
-}
-
 @font-face {
   font-family: 'Cascadia';
   src: url('../assets/Cascadia.ttf');
@@ -66,6 +55,9 @@ body {
   margin: 0;
   padding: 0;
   font-size: 16px;
+  border: none;
+  max-width: inherit;
+  height: 100vh;
 }
 
 #app {

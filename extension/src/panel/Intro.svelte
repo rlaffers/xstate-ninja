@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
   import logo from '../assets/logo_256.png'
 
   function openHomePage(event) {
@@ -7,6 +8,13 @@
       url: 'https://github.com/rlaffers/xstate-ninja',
     })
   }
+
+  onMount(() => {
+    document.body.classList.add('intro')
+    return () => {
+      document.body.classList.remove('intro')
+    }
+  })
 </script>
 
 <img src={logo} class="logo" alt="XState Ninja" />
@@ -38,6 +46,14 @@ const service = useInterpret(machine, { devTools: true });
 </p>
 
 <style>
+  :global(body.intro) {
+    height: calc(100vh - 66px);
+    max-width: 23cm;
+    border: 1px solid var(--content-muted);
+    margin: 16px auto;
+    padding: 16px;
+  }
+
   h1 {
     text-align: center;
     text-transform: uppercase;
