@@ -26,8 +26,7 @@
   --content-muted: var(--base1);
 }
 
-:root:has(body[data-theme='dark']),
-body[data-theme='dark'] {
+:root[data-theme='dark'] {
   --background: var(--base03);
   --background-highlight: var(--base02);
   --content: var(--base0);

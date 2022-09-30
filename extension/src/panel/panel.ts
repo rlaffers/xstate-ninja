@@ -1,9 +1,9 @@
 import Panel from './Panel.svelte'
 
 if (chrome.devtools.panels.themeName === 'dark') {
-  document.body.setAttribute('data-theme', 'dark')
+  document.querySelector(':root').setAttribute('data-theme', 'dark')
 } else {
-  document.body.setAttribute('data-theme', 'light')
+  document.querySelector(':root').setAttribute('data-theme', 'light')
 }
 
 const mainPanel = new Panel({
