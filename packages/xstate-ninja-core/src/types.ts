@@ -114,8 +114,10 @@ export interface WindowWithXStateNinja {
   __xstate_ninja__?: XStateDevInterface
 }
 
+export type ParentActor = { id: string | number; sessionId: string }
+
 export type AnyActorRefWithParent = AnyActorRef & {
-  parent?: { id: string | number; sessionId: string }
+  parent?: ParentActor
 }
 
 // from xstate

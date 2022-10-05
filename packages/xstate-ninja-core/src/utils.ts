@@ -18,6 +18,7 @@ import {
   TransitionTypes,
   isTransitionConfig,
   isTransitionsConfigArray,
+  type ParentActor,
 } from './types'
 
 export function isInterpreterLike(
@@ -212,6 +213,7 @@ export function getActorType(actor: AnyActorRefWithParent): ActorTypes {
 
 export function createInspectedActorObject(
   actor: AnyActorRefWithParent | AnyInterpreter,
+  parent?: ParentActor,
 ): InspectedActorObject {
   const isInterpreter = isInterpreterLike(actor)
 
@@ -237,7 +239,9 @@ export function createInspectedActorObject(
       : false,
   }
 
-  inspectedActor.parent = actor.parent?.sessionId
+  inspectedActor.parent = actor.parent
+    ? actor.parent?.sessionId
+    : parent?.sessionId
   if (isInterpreterLike(actor)) {
     inspectedActor.sessionId = actor.sessionId
     inspectedActor.status = actor.status

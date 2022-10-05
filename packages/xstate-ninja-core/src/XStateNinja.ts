@@ -14,6 +14,7 @@ import type {
   InspectedActorObject,
   AnyActorRefWithParent,
   WindowWithXStateNinja,
+  ParentActor,
 } from './types'
 import { ActorTypes } from './types'
 import {
@@ -95,12 +96,13 @@ export class XStateNinja implements XStateDevInterface {
       !!(globalThis as WindowWithXStateNinja).__xstate_ninja__ && enabled
   }
 
-  register(actor: AnyInterpreter | AnyActorRef) {
+  register(actor: AnyInterpreter | AnyActorRef, parent?: ParentActor) {
     if (!this.enabled) {
       return
     }
     this.log('register actor', actor)
-    const inspectedActor = createInspectedActorObject(actor)
+
+    const inspectedActor = createInspectedActorObject(actor, parent)
 
     const actorEvent = new ActorEvent(inspectedActor)
     globalThis.dispatchEvent(actorEvent)
@@ -164,16 +166,17 @@ export class XStateNinja implements XStateDevInterface {
                 ) {
                   return
                 }
+                const parent: ParentActor = {
+                  id: inspectedActor.actorRef.id,
+                  sessionId: inspectedActor.sessionId,
+                }
                 if (
                   startedChildActor.parent === undefined &&
                   Object.isExtensible(startedChildActor)
                 ) {
-                  startedChildActor.parent = {
-                    id: inspectedActor.actorRef.id,
-                    sessionId: inspectedActor.sessionId,
-                  }
+                  startedChildActor.parent = parent
                 }
-                this.register(startedChildActor)
+                this.register(startedChildActor, parent)
               }
             })
           // unregister stopped actors
@@ -197,16 +200,17 @@ export class XStateNinja implements XStateDevInterface {
         Object.values(stateOrValue.children as (AnyActorRef | AnyInterpreter)[])
           .filter(notSubscribed)
           .forEach((childActor: AnyActorRefWithParent | AnyInterpreter) => {
+            const parent: ParentActor = {
+              id: inspectedActor.actorRef.id,
+              sessionId: inspectedActor.sessionId,
+            }
             if (
               childActor.parent === undefined &&
               Object.isExtensible(childActor)
             ) {
-              childActor.parent = {
-                id: inspectedActor.actorRef.id,
-                sessionId: inspectedActor.sessionId,
-              }
+              childActor.parent = parent
             }
-            this.register(childActor)
+            this.register(childActor, parent)
           })
       } else if (isEventLike(stateOrValue)) {
         // callback-based actors are capable of emitting an event-like object
