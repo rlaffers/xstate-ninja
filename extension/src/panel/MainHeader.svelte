@@ -1,9 +1,17 @@
 <script lang="ts">
   import CogwheelIcon from './icons/CogwheelIcon.svelte'
   import TrashBinIcon from './icons/TrashBinIcon.svelte'
+  import ukraineHeart from '../assets/ukraine_heart_64.png'
 
   export let clearDeadActors: () => void
   export let addSwimLane: () => void
+
+  function openHelpUkraine(event) {
+    event.preventDefault()
+    chrome.tabs.create({
+      url: 'https://www.defendukraine.org/donate',
+    })
+  }
 </script>
 
 <header class="main-header">
@@ -18,7 +26,21 @@
     class="clear-dead-btn"><TrashBinIcon /></button
   >
   <div class="separator" />
-  <button title="Settings" class="config-btn"><CogwheelIcon /></button>
+  <button title="Settings" class="config-btn" disabled><CogwheelIcon /></button>
+
+  <div class="separator" />
+  <a
+    href="https://www.defendukraine.org/donate"
+    on:click={openHelpUkraine}
+    title="Please support Ukraine"
+    class="help-ukraine"
+    ><img
+      src={ukraineHeart}
+      alt="Please help Ukraine"
+      width="20"
+      height="20"
+    /></a
+  >
 </header>
 
 <style>
@@ -49,6 +71,15 @@
   :global(.clear-dead-btn:hover > svg > g > path),
   :global(.config-btn:hover > svg > g > path) {
     fill: var(--blue) !important;
+  }
+
+  .help-ukraine {
+    display: flex;
+    align-items: center;
+  }
+
+  .help-ukraine:hover {
+    transform: scale(1.1);
   }
 
   .add-swim-lane-btn {
