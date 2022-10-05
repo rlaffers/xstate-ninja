@@ -164,7 +164,10 @@ export class XStateNinja implements XStateDevInterface {
                 ) {
                   return
                 }
-                if (startedChildActor.parent === undefined) {
+                if (
+                  startedChildActor.parent === undefined &&
+                  Object.isExtensible(startedChildActor)
+                ) {
                   startedChildActor.parent = {
                     id: inspectedActor.actorRef.id,
                     sessionId: inspectedActor.sessionId,
@@ -194,7 +197,10 @@ export class XStateNinja implements XStateDevInterface {
         Object.values(stateOrValue.children as (AnyActorRef | AnyInterpreter)[])
           .filter(notSubscribed)
           .forEach((childActor: AnyActorRefWithParent | AnyInterpreter) => {
-            if (childActor.parent === undefined) {
+            if (
+              childActor.parent === undefined &&
+              Object.isExtensible(childActor)
+            ) {
               childActor.parent = {
                 id: inspectedActor.actorRef.id,
                 sessionId: inspectedActor.sessionId,
