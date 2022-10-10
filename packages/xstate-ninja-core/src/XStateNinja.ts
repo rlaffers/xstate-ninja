@@ -53,6 +53,12 @@ export class XStateNinja implements XStateDevInterface {
   actors: Record<string, InspectedActorObject>
   logLevel: LogLevels = LogLevels.error
   enabled = true
+  // TODO make this configurable from the extension
+  trackedActorTypes: ActorTypes[] = [
+    ActorTypes.machine,
+    ActorTypes.callback,
+    ActorTypes.observable,
+  ]
 
   constructor({ logLevel, enabled }: XStateNinjaOptions = {}) {
     this.actors = {}
@@ -65,6 +71,7 @@ export class XStateNinja implements XStateDevInterface {
     this.onSend = this.onSend.bind(this)
     this.onDeadActorsCleared = this.onDeadActorsCleared.bind(this)
     this.forgetAllChildren = this.forgetAllChildren.bind(this)
+    this.isActorTypeTracked = this.isActorTypeTracked.bind(this)
 
     if (logLevel !== undefined) {
       this.setLogLevel(logLevel)
@@ -96,6 +103,10 @@ export class XStateNinja implements XStateDevInterface {
       !!(globalThis as WindowWithXStateNinja).__xstate_ninja__ && enabled
   }
 
+  isActorTypeTracked(type: ActorTypes): boolean {
+    return this.trackedActorTypes.includes(type)
+  }
+
   register(actor: AnyInterpreter | AnyActorRef, parent?: ParentActor) {
     if (!this.enabled) {
       return
@@ -103,6 +114,10 @@ export class XStateNinja implements XStateDevInterface {
     this.log('register actor', actor)
 
     const inspectedActor = createInspectedActorObject(actor, parent)
+    if (!this.isActorTypeTracked(inspectedActor.type)) {
+      this.log(`Actor type ${inspectedActor.type} is excluded from tracking.`)
+      return
+    }
 
     const actorEvent = new ActorEvent(inspectedActor)
     globalThis.dispatchEvent(actorEvent)
