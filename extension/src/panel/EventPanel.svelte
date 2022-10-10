@@ -14,6 +14,12 @@
           animateOpen: false,
         })
         element.appendChild(formatter.render())
+      } else if (typeof snapshot?.type === 'string') {
+        // values from callback actors may be events
+        const formatter = new JSONFormatter(snapshot, 2, {
+          animateOpen: false,
+        })
+        element.appendChild(formatter.render())
       }
     }
   }

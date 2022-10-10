@@ -84,6 +84,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~add button to close a swimlane~~
 - ~~prevent autoscroll if any frame is selected~~
 - ~~add a light theme~~
+- ~~display EventFrame for non-machine actors~~
 - add options to hide promise or callback actors from the extension
 - ~~build for Firefox~~
 - link identical events sent between actors

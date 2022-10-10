@@ -33,6 +33,9 @@
     <ServicesPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
   {:else}
     <p>This actor is not a state machine.</p>
+    {#if isEventFrame(activeFrame)}
+      <EventPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
+    {/if}
   {/if}
 </aside>
 
