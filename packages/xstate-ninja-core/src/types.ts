@@ -149,3 +149,7 @@ export function isTransitionsConfigArray(
 ): transitionsConfig is TransitionsConfigArray<any, EventObject> {
   return Array.isArray(transitionsConfig)
 }
+
+export type ExtensionSettings = {
+  trackedActorTypes: ActorTypes[]
+}

@@ -4,6 +4,7 @@ import {
   InspectedActorObject,
   SerializedExtendedInspectedActorObject,
   SerializedInspectedActorObject,
+  type ExtensionSettings,
 } from './types'
 import {
   isInterpreterLike,
@@ -86,6 +87,11 @@ export interface XStateNinjaDeadActorsClearedEvent {
   type: '@xstate-ninja/deadActorsCleared'
 }
 
+export interface XStateNinjaSettingsChangedEvent {
+  type: '@xstate-ninja/settingsChanged'
+  settings: ExtensionSettings
+}
+
 export type XStateInspectAnyEvent =
   | XStateInspectReadEvent
   | XStateInspectSendEvent
@@ -96,6 +102,7 @@ export type XStateInspectAnyEvent =
   | XStateInspectConnectedEvent
   | XStateNinjaUnregisterEvent
   | XStateNinjaDeadActorsClearedEvent
+  | XStateNinjaSettingsChangedEvent
 
 // -----------------------------
 export enum EventTypes {
@@ -110,6 +117,7 @@ export enum EventTypes {
   // custom xstate-ninja events
   unregister = '@xstate-ninja/unregister',
   deadActorsCleared = '@xstate-ninja/deadActorsCleared',
+  settingsChanged = '@xstate-ninja/settingsChanged',
 }
 
 export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
@@ -271,6 +279,19 @@ export class ActorsEvent extends CustomEvent<XStateInspectActorsEvent> {
   }
 }
 
+export class SettingsChangedEvent extends CustomEvent<XStateNinjaSettingsChangedEvent> {
+  type: EventTypes.settingsChanged = EventTypes.settingsChanged
+
+  constructor(settings: ExtensionSettings) {
+    super(EventTypes.settingsChanged, {
+      detail: {
+        type: EventTypes.settingsChanged,
+        settings,
+      },
+    })
+  }
+}
+
 export function isXStateInspectActorsEvent(
   event: XStateInspectAnyEvent,
 ): event is XStateInspectActorsEvent {
@@ -299,4 +320,16 @@ export function isXStateNinjaDeadActorsClearedEvent(
   event: XStateInspectAnyEvent,
 ): event is XStateNinjaDeadActorsClearedEvent {
   return event.type === EventTypes.deadActorsCleared
+}
+
+export function isXStateNinjaSettingsChangedEvent(
+  event: XStateInspectAnyEvent,
+): event is XStateNinjaSettingsChangedEvent {
+  return event.type === EventTypes.settingsChanged
+}
+
+export function isXStateInspectConnectedEvent(
+  event: XStateInspectAnyEvent,
+): event is XStateInspectConnectedEvent {
+  return event.type === EventTypes.connected
 }

@@ -51,6 +51,11 @@ export class MessageBroker {
         )
         this.tabs.set(tab.id, tab)
         port.onDisconnect.addListener(this.removeTab)
+
+        // if the devtools are open already, send the connect event
+        if (tab.devPort) {
+          tab.port.postMessage(new ConnectEvent().detail)
+        }
       }
 
       if (port.name === 'xstate-ninja.panel') {

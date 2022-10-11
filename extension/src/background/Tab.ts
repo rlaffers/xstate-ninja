@@ -1,7 +1,12 @@
+import {
+  SettingsChangedEvent,
+  isXStateInspectConnectedEvent,
+} from 'xstate-ninja'
 import type {
   XStateInspectAnyEvent,
   XStateInspectSendEvent,
   XStateInspectReadEvent,
+  ExtensionSettings,
 } from 'xstate-ninja'
 import { isInitMessage, isLogMessage } from '../messages'
 import type { AnyMessage } from '../messages'
@@ -27,12 +32,39 @@ export class Tab {
 
     // set up message forwarding from page -> devtools
     port.onMessage.addListener((message: XStateInspectAnyEvent) => {
+      // TODO test this
+      // console.log(
+      //   '%creceived msg from page',
+      //   'background: orangered; color: black; padding: 1px 5px',
+      //   message.type,
+      // )
       this.devPort?.postMessage(message)
+      if (isXStateInspectConnectedEvent(message)) {
+        // console.log(
+        //   '%csending settings',
+        //   'background: orangered; color: black; padding: 1px 5px',
+        // )
+        chrome.storage.sync.get('settings', ({ settings }) => {
+          this.sendSettingsToTab(settings)
+        })
+      }
     })
 
     this.setDevPort = this.setDevPort.bind(this)
     this.unsetDevPort = this.unsetDevPort.bind(this)
     this.forwardMessageToTab = this.forwardMessageToTab.bind(this)
+    this.sendSettingsToTab = this.sendSettingsToTab.bind(this)
+
+    // set up extension settings sync -> page
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === 'sync' && changes.settings != null) {
+        this.sendSettingsToTab(changes.settings.newValue)
+      }
+    })
+  }
+
+  sendSettingsToTab(settings: ExtensionSettings) {
+    this.port.postMessage(new SettingsChangedEvent(settings).detail)
   }
 
   setDevPort(port: chrome.runtime.Port) {

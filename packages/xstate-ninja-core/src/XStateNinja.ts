@@ -33,6 +33,7 @@ import {
   ReadEvent,
   SendEvent,
   EventTypes,
+  type SettingsChangedEvent,
 } from './events'
 
 export { ActorTypes }
@@ -53,7 +54,6 @@ export class XStateNinja implements XStateDevInterface {
   actors: Record<string, InspectedActorObject>
   logLevel: LogLevels = LogLevels.error
   enabled = true
-  // TODO make this configurable from the extension
   trackedActorTypes: ActorTypes[] = [
     ActorTypes.machine,
     ActorTypes.callback,
@@ -72,6 +72,7 @@ export class XStateNinja implements XStateDevInterface {
     this.onDeadActorsCleared = this.onDeadActorsCleared.bind(this)
     this.forgetAllChildren = this.forgetAllChildren.bind(this)
     this.isActorTypeTracked = this.isActorTypeTracked.bind(this)
+    this.onSettingsChanged = this.onSettingsChanged.bind(this)
 
     if (logLevel !== undefined) {
       this.setLogLevel(logLevel)
@@ -92,6 +93,17 @@ export class XStateNinja implements XStateDevInterface {
       EventTypes.deadActorsCleared,
       this.onDeadActorsCleared as EventListener,
     )
+
+    globalThis.addEventListener(
+      EventTypes.settingsChanged,
+      this.onSettingsChanged as EventListener,
+    )
+  }
+
+  onSettingsChanged(event: SettingsChangedEvent) {
+    this.log('received', event)
+    const settings = event.detail.settings
+    this.trackedActorTypes = settings.trackedActorTypes
   }
 
   setLogLevel(level: LogLevels) {

@@ -3,6 +3,7 @@ import type {
   XStateInspectSendEvent,
   XStateNinjaDeadActorsClearedEvent,
 } from 'xstate-ninja'
+
 export enum MessageTypes {
   init = '@xstate-ninja/init',
   log = '@xstate-ninja/log',

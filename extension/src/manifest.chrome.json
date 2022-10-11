@@ -9,6 +9,7 @@
     "service_worker": "background/background.ts"
   },
   "devtools_page": "devtools/devtools.html",
+  "permissions": ["storage"],
   "icons": {
     "16": "assets/icon_16x16.png",
     "32": "assets/icon_32x32.png",
