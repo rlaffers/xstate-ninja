@@ -158,7 +158,7 @@ export class XStateNinja implements XStateDevInterface {
       )
 
       inspectedActor.updatedAt = Date.now()
-      if (stateOrValue.done) {
+      if (stateOrValue?.done) {
         inspectedActor.dead = true
       }
       inspectedActor.snapshot = inspectedActor.actorRef.getSnapshot()
@@ -257,7 +257,7 @@ export class XStateNinja implements XStateDevInterface {
 
       globalThis.dispatchEvent(event)
 
-      if (stateOrValue.done) {
+      if (stateOrValue?.done) {
         this.unregister(actor)
       }
 

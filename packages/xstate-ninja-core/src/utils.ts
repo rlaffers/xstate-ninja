@@ -28,7 +28,7 @@ export function isInterpreterLike(
 }
 
 export function isEventLike(entity: any): entity is AnyEventObject {
-  return typeof (entity as AnyEventObject).type === 'string'
+  return typeof (entity as AnyEventObject)?.type === 'string'
 }
 
 // TODO import this from xstate when it becomes available
