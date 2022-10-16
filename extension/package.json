@@ -31,7 +31,7 @@
   "dependencies": {
     "json-formatter-js": "^2.3.4",
     "xstate": "^4.33.6",
-    "xstate-ninja": "workspace:^1.1.2"
+    "xstate-ninja": "workspace:^1.2.0"
   },
   "keywords": [
     "xstate"

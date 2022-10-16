@@ -143,7 +143,7 @@ importers:
       vite-plugin-web-extension: ^1.4.0
       wait-on: ^6.0.1
       xstate: ^4.33.6
-      xstate-ninja: workspace:^1.1.2
+      xstate-ninja: workspace:^1.2.0
     dependencies:
       json-formatter-js: 2.3.4
       xstate: 4.33.6
@@ -1334,7 +1334,7 @@ packages:
   /@types/decompress/4.2.4:
     resolution: {integrity: sha512-/C8kTMRTNiNuWGl5nEyKbPiMv6HA+0RbEXzFhFBEzASM6+oa4tJro9b8nj7eRlOFfuLdzUU+DS/GPDlvvzMOhA==}
     dependencies:
-      '@types/node': 18.7.21
+      '@types/node': 18.11.0
     dev: true
 
   /@types/download/8.0.1:
@@ -1342,7 +1342,7 @@ packages:
     dependencies:
       '@types/decompress': 4.2.4
       '@types/got': 8.3.6
-      '@types/node': 18.7.21
+      '@types/node': 18.11.0
     dev: true
 
   /@types/filesystem/0.0.32:
@@ -1358,7 +1358,7 @@ packages:
   /@types/got/8.3.6:
     resolution: {integrity: sha512-nvLlj+831dhdm4LR2Ly+HTpdLyBaMynoOr6wpIxS19d/bPeHQxFU5XQ6Gp6ohBpxvCWZM1uHQIC2+ySRH1rGrQ==}
     dependencies:
-      '@types/node': 18.7.21
+      '@types/node': 18.11.0
     dev: true
 
   /@types/har-format/1.2.8:
@@ -1394,6 +1394,10 @@ packages:
 
   /@types/node/18.0.3:
     resolution: {integrity: sha512-HzNRZtp4eepNitP+BD6k2L6DROIDG4Q0fm4x+dwfsr6LGmROENnok75VGw40628xf+iR24WeMFcHuuBDUAzzsQ==}
+    dev: true
+
+  /@types/node/18.11.0:
+    resolution: {integrity: sha512-IOXCvVRToe7e0ny7HpT/X9Rb2RYtElG1a+VshjwT00HxrM2dWBApHQoqsI6WiY7Q03vdf2bCrIGzVrkF/5t10w==}
     dev: true
 
   /@types/node/18.7.21:
