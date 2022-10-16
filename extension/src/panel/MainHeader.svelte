@@ -3,6 +3,8 @@
   import CogwheelIcon from './icons/CogwheelIcon.svelte'
   import TrashBinIcon from './icons/TrashBinIcon.svelte'
   import ukraineHeart from '../assets/ukraine_heart_64.png'
+  import githubLogo from '../assets/github_light_32px.png'
+  import XStateLogo from './icons/XStateLogo.svelte'
 
   export let clearDeadActors: () => void
   export let addSwimLane: () => void
@@ -11,6 +13,20 @@
     event.preventDefault()
     chrome.tabs.create({
       url: 'https://www.defendukraine.org/donate',
+    })
+  }
+
+  function openGithub(event: MouseEvent) {
+    event.preventDefault()
+    chrome.tabs.create({
+      url: 'https://github.com/rlaffers/xstate-ninja#xstate-ninja',
+    })
+  }
+
+  function openXStateDocs(event: MouseEvent) {
+    event.preventDefault()
+    chrome.tabs.create({
+      url: 'https://xstate.js.org/docs/',
     })
   }
 
@@ -71,6 +87,22 @@
   </div>
 
   <div class="separator" />
+  <a
+    href="https://github.com/rlaffers/xstate-ninja"
+    on:click={openGithub}
+    title="Open the home page"
+    class="github-link"><img src={githubLogo} alt="Github" /></a
+  >
+
+  <a
+    href="https://xstate.js.org/docs/"
+    on:click={openXStateDocs}
+    title="XState docs"
+    class="xstate-link"
+  >
+    <XStateLogo />
+  </a>
+
   <a
     href="https://www.defendukraine.org/donate"
     on:click={openHelpUkraine}
@@ -174,18 +206,31 @@
     height: 100%;
   }
 
+  :global(.xstate-link > svg) {
+    width: 4rem;
+    height: 2rem;
+  }
+
   :global(.clear-dead-btn:hover > svg > g > path),
   :global(.config-btn:hover > svg > g > path) {
     fill: var(--blue) !important;
   }
 
-  .help-ukraine {
+  .help-ukraine,
+  .xstate-link,
+  .github-link {
     display: flex;
     align-items: center;
   }
 
-  .help-ukraine:hover {
+  .help-ukraine:hover,
+  .github-link:hover {
     transform: scale(1.1);
+  }
+
+  .github-link > img {
+    width: 1rem;
+    height: 1rem;
   }
 
   .add-swim-lane-btn {

@@ -85,7 +85,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~prevent autoscroll if any frame is selected~~
 - ~~add a light theme~~
 - ~~display EventFrame for non-machine actors~~
-- add extra links: github, xstate docs
+- ~~add extra links: github, xstate docs~~
 - limit height and width of side panels
 - style scrollbars in side panels
 - permament hiding of parallel state nodes
