@@ -92,6 +92,10 @@ export interface XStateNinjaSettingsChangedEvent {
   settings: ExtensionSettings
 }
 
+export interface XStateNinjaInspectorCreatedEvent {
+  type: '@xstate-ninja/inspectorCreated'
+}
+
 export type XStateInspectAnyEvent =
   | XStateInspectReadEvent
   | XStateInspectSendEvent
@@ -103,6 +107,7 @@ export type XStateInspectAnyEvent =
   | XStateNinjaUnregisterEvent
   | XStateNinjaDeadActorsClearedEvent
   | XStateNinjaSettingsChangedEvent
+  | XStateNinjaInspectorCreatedEvent
 
 // -----------------------------
 export enum EventTypes {
@@ -118,6 +123,7 @@ export enum EventTypes {
   unregister = '@xstate-ninja/unregister',
   deadActorsCleared = '@xstate-ninja/deadActorsCleared',
   settingsChanged = '@xstate-ninja/settingsChanged',
+  inspectorCreated = '@xstate-ninja/inspectorCreated',
 }
 
 export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
@@ -292,6 +298,18 @@ export class SettingsChangedEvent extends CustomEvent<XStateNinjaSettingsChanged
   }
 }
 
+export class InspectorCreatedEvent extends CustomEvent<XStateNinjaInspectorCreatedEvent> {
+  type: EventTypes.inspectorCreated = EventTypes.inspectorCreated
+
+  constructor() {
+    super(EventTypes.inspectorCreated, {
+      detail: {
+        type: EventTypes.inspectorCreated,
+      },
+    })
+  }
+}
+
 export function isXStateInspectActorsEvent(
   event: XStateInspectAnyEvent,
 ): event is XStateInspectActorsEvent {
@@ -332,4 +350,10 @@ export function isXStateInspectConnectedEvent(
   event: XStateInspectAnyEvent,
 ): event is XStateInspectConnectedEvent {
   return event.type === EventTypes.connected
+}
+
+export function isXStateNinjaInspectorCreatedEvent(
+  event: XStateInspectAnyEvent,
+): event is XStateNinjaInspectorCreatedEvent {
+  return event.type === EventTypes.inspectorCreated
 }

@@ -1,25 +1,32 @@
 import { interpret as xstateInterpret } from 'xstate'
 import type { InterpreterOptions, AnyStateMachine } from 'xstate'
-import { XStateNinja, XStateNinjaOptions } from './XStateNinja'
+import {
+  XStateNinjaInspector,
+  XStateNinjaOptions,
+} from './XStateNinjaInspector'
 
 export * from './events'
 export * from './types'
-export { LogLevels, ActorTypes } from './XStateNinja'
+export { LogLevels, ActorTypes } from './XStateNinjaInspector'
 
-let xstateNinja: XStateNinja
-export default function createXStateNinjaSingleton(
+let inspector: XStateNinjaInspector
+/**
+ * Creates a singleton XStateNinjaInspector which can be used to register
+ * for updates from actors (e.g. state machines).
+ */
+export default function createXStateNinjaInspector(
   options: XStateNinjaOptions = {},
-): XStateNinja {
-  if (xstateNinja === undefined) {
-    xstateNinja = new XStateNinja(options)
+): XStateNinjaInspector {
+  if (inspector === undefined) {
+    inspector = new XStateNinjaInspector(options)
   }
   if (options.logLevel != null) {
-    xstateNinja.setLogLevel(options.logLevel)
+    inspector.setLogLevel(options.logLevel)
   }
   if (options.enabled != null) {
-    xstateNinja.setEnabled(options.enabled)
+    inspector.setEnabled(options.enabled)
   }
-  return xstateNinja
+  return inspector
 }
 
 export function interpret(
@@ -28,7 +35,7 @@ export function interpret(
 ) {
   const service = xstateInterpret(machine, options)
   if (options?.devTools) {
-    createXStateNinjaSingleton().register(service)
+    createXStateNinjaInspector().register(service)
   }
   return service
 }

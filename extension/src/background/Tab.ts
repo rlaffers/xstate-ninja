@@ -1,6 +1,8 @@
 import {
   SettingsChangedEvent,
   isXStateInspectConnectedEvent,
+  isXStateNinjaInspectorCreatedEvent,
+  ConnectEvent,
 } from 'xstate-ninja'
 import type {
   XStateInspectAnyEvent,
@@ -32,18 +34,14 @@ export class Tab {
 
     // set up message forwarding from page -> devtools
     port.onMessage.addListener((message: XStateInspectAnyEvent) => {
-      // TODO test this
-      // console.log(
-      //   '%creceived msg from page',
-      //   'background: orangered; color: black; padding: 1px 5px',
-      //   message.type,
-      // )
+      if (isXStateNinjaInspectorCreatedEvent(message)) {
+        if (this.devPort) {
+          this.port.postMessage(new ConnectEvent().detail)
+        }
+        return
+      }
       this.devPort?.postMessage(message)
       if (isXStateInspectConnectedEvent(message)) {
-        // console.log(
-        //   '%csending settings',
-        //   'background: orangered; color: black; padding: 1px 5px',
-        // )
         chrome.storage.sync.get('settings', ({ settings }) => {
           this.sendSettingsToTab(settings)
         })

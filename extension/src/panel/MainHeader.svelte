@@ -22,13 +22,8 @@
     settingsShown = false
   }
 
-  let currentSettings: ExtensionSettings = {
-    trackedActorTypes: [
-      ActorTypes.machine,
-      ActorTypes.callback,
-      ActorTypes.observable,
-    ],
-  }
+  let currentSettings: ExtensionSettings
+
   chrome.storage.sync.get('settings', ({ settings }) => {
     currentSettings = settings
   })
@@ -100,7 +95,7 @@
             <input
               type="checkbox"
               name="machine"
-              checked={currentSettings.trackedActorTypes?.includes?.(
+              checked={currentSettings?.trackedActorTypes?.includes?.(
                 ActorTypes.machine,
               )}
             />
@@ -110,7 +105,7 @@
             <input
               type="checkbox"
               name="callback"
-              checked={currentSettings.trackedActorTypes?.includes?.(
+              checked={currentSettings?.trackedActorTypes?.includes?.(
                 ActorTypes.callback,
               )}
             />
@@ -120,7 +115,7 @@
             <input
               type="checkbox"
               name="observable"
-              checked={currentSettings.trackedActorTypes?.includes?.(
+              checked={currentSettings?.trackedActorTypes?.includes?.(
                 ActorTypes.observable,
               )}
             />
@@ -130,7 +125,7 @@
             <input
               type="checkbox"
               name="promise"
-              checked={currentSettings.trackedActorTypes?.includes?.(
+              checked={currentSettings?.trackedActorTypes?.includes?.(
                 ActorTypes.promise,
               )}
             />

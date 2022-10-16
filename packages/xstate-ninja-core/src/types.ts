@@ -98,7 +98,7 @@ export interface ActorRegistration {
   createdAt: number
 }
 
-export interface XStateDevInterface {
+export interface XStateNinjaInterface {
   register: (actorRef: AnyActorRef) => void
   unregister: (actorRef: AnyActorRef) => void
   onRegister: (
@@ -111,7 +111,7 @@ export interface XStateDevInterface {
 }
 
 export interface WindowWithXStateNinja {
-  __xstate_ninja__?: XStateDevInterface
+  __xstate_ninja__?: boolean
 }
 
 export type ParentActor = { id: string | number; sessionId: string }

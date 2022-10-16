@@ -1,7 +1,5 @@
-import type { XStateDevInterface } from './types'
-
 declare global {
   interface Window {
-    __xstate_ninja__?: XStateDevInterface
+    __xstate_ninja__?: boolean
   }
 }

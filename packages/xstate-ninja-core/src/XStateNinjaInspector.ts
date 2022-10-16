@@ -8,7 +8,7 @@ import type {
   ActionObject,
 } from 'xstate'
 import type {
-  XStateDevInterface,
+  XStateNinjaInterface,
   ActorRegistration,
   ActorUpdate,
   InspectedActorObject,
@@ -33,6 +33,7 @@ import {
   ReadEvent,
   SendEvent,
   EventTypes,
+  InspectorCreatedEvent,
   type SettingsChangedEvent,
 } from './events'
 
@@ -50,7 +51,7 @@ export interface XStateNinjaOptions {
   enabled?: boolean
 }
 
-export class XStateNinja implements XStateDevInterface {
+export class XStateNinjaInspector implements XStateNinjaInterface {
   actors: Record<string, InspectedActorObject>
   logLevel: LogLevels = LogLevels.error
   enabled = true
@@ -79,7 +80,7 @@ export class XStateNinja implements XStateDevInterface {
     }
 
     if (enabled === undefined) {
-      this.enabled = !!(globalThis as WindowWithXStateNinja).__xstate_ninja__
+      this.enabled = !!(globalThis as WindowWithXStateNinja)?.__xstate_ninja__
     }
 
     globalThis.addEventListener(
@@ -98,6 +99,8 @@ export class XStateNinja implements XStateDevInterface {
       EventTypes.settingsChanged,
       this.onSettingsChanged as EventListener,
     )
+
+    globalThis.dispatchEvent(new InspectorCreatedEvent())
   }
 
   onSettingsChanged(event: SettingsChangedEvent) {
