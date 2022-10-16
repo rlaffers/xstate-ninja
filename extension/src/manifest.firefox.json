@@ -2,7 +2,7 @@
   "name": "XState Ninja",
   "author": "Richard Laffers",
   "description": "A powerful devtool for XState state machines",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "manifest_version": 2,
   "homepage_url": "https://github.com/rlaffers/xstate-ninja",
   "background": {
