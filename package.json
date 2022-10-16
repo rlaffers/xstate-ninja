@@ -1,7 +1,7 @@
 {
   "name": "xstate-monorepo",
   "private": true,
-  "version": "0.0.0-development",
+  "version": "0.0.0",
   "description": "Modern devtools for XState state machines",
   "scripts": {
     "build": "pnpm -r run build",
@@ -15,7 +15,11 @@
     "prepare": "husky install",
     "semantic-release": "semantic-release"
   },
-  "keywords": ["xstate", "state machines", "fsm"],
+  "keywords": [
+    "xstate",
+    "state machines",
+    "fsm"
+  ],
   "author": "Richard Laffers",
   "license": "ICS",
   "devDependencies": {
