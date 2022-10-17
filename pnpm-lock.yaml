@@ -186,7 +186,7 @@ importers:
       typescript: ^4.6.4
       vite: ^3.0.0
       xstate: ^4.33.6
-      xstate-ninja: workspace:^1.0.0
+      xstate-ninja: workspace:^1.2.0
     devDependencies:
       '@types/react': 18.0.20
       '@xstate/react': 3.0.1_csov6svwxizbqjpbal6caks7le
