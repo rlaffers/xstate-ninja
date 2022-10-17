@@ -44,6 +44,8 @@
     grid-area: sidebar;
     border-left: 1px solid var(--content-muted);
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
   .sidebar > p {
     margin: 1rem;

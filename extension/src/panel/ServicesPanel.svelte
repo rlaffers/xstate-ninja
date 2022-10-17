@@ -35,7 +35,7 @@
 </script>
 
 <h1>Services</h1>
-<p class="services-panel">
+<p class="services-panel nice-scroll">
   {#key snapshot}
     {#if snapshot?.activities && typeof snapshot.activities === 'object'}
       {#each Object.values(snapshot.activities) as activity (activity)}
@@ -72,6 +72,12 @@
   .services-panel {
     padding: 8px;
     margin: 0;
+    overflow: auto;
+    min-height: 1rem;
+  }
+
+  :global(.sidebar:not(.custom-sized) .services-panel) {
+    max-width: 30rem;
   }
 
   .services-panel .activity {

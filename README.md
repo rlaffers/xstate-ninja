@@ -86,9 +86,12 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~add a light theme~~
 - ~~display EventFrame for non-machine actors~~
 - ~~add extra links: github, xstate docs~~
-- limit height and width of side panels
-- style scrollbars in side panels
+- ~~limit height and width of side panels~~
+- ~~style scrollbars in side panels~~
+- optimize memory usage by dead actors (config option to limit how many dead actors are retained: N of each kind; max N total; none)
 - permament hiding of parallel state nodes
+- redesign the hide parallel state button
+- add Node integration
 - ~~add options to hide promise or callback actors from the extension~~
 - ~~build for Firefox~~
 - link identical events sent between actors
@@ -97,7 +100,6 @@ Controls how much stuff is logged into console by XState Ninja.
 - link to implementations for actions and services
 - ~~add button for hiding some parallel states~~
 - hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
-- optimize memory usage by dead actors (config option to limit how many dead actors are retained: N of each kind; max N total; none)
 - ~~add button to clear all dead actors~~
 - display assign actions (they are not reported by the xstate interpreter)
 - ~~add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children~~

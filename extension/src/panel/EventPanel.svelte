@@ -35,7 +35,7 @@
 </script>
 
 <h1>{title}</h1>
-<div class="event-panel" bind:this={container}>
+<div class="event-panel nice-scroll" bind:this={container}>
   <Resizer target={container} direction="vertical" />
   <div bind:this={element} />
 </div>
@@ -50,9 +50,12 @@
   }
 
   .event-panel {
-    position: relative;
-    margin: 8px 8px 0 8px;
-    padding-bottom: 8px;
+    margin: 0;
+    padding: 8px;
     overflow: auto;
+    min-height: 1rem;
+  }
+  :global(.sidebar:not(.custom-sized) .event-panel) {
+    max-width: 30rem;
   }
 </style>

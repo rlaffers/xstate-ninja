@@ -27,6 +27,10 @@
     // Attach the listeners to `document`
     document.addEventListener('mousemove', mouseMoveHandler)
     document.addEventListener('mouseup', mouseUpHandler)
+    // this removes the max-height
+    target.classList.add('custom-sized')
+    target.style.width = `${w}px`
+    target.style.height = `${h}px`
     e.preventDefault()
   }
 

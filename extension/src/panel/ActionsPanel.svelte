@@ -14,7 +14,7 @@
 </script>
 
 <h1>Actions</h1>
-<p class="actions-panel" bind:this={container}>
+<p class="actions-panel nice-scroll" bind:this={container}>
   <Resizer target={container} direction="vertical" />
   {#if snapshot?.actions}
     {#each snapshot.actions as action (action)}
@@ -35,10 +35,14 @@
   }
 
   .actions-panel {
-    position: relative;
-    margin: 8px 8px 0 8px;
-    padding-bottom: 8px;
+    margin: 0;
+    padding: 8px;
     overflow: auto;
+    min-height: 1rem;
+  }
+
+  :global(.sidebar:not(.custom-sized) .actions-panel) {
+    max-width: 30rem;
   }
 
   .actions-panel .action {

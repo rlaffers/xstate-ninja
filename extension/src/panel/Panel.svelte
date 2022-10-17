@@ -294,7 +294,7 @@
   main.actors-view {
     height: 100%;
     display: grid;
-    grid-template-columns: 2fr minmax(10%, auto);
+    grid-template-columns: 2fr fit-content(10%);
     grid-template-rows: 2.1rem 3rem 1fr;
     grid-template-areas:
       'main-header main-header'
