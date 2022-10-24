@@ -50,6 +50,7 @@ export interface InspectedActorObject {
   history: XStateInspectUpdateEvent[]
   // dead actor is unsubscribed, done or stopped
   dead: boolean
+  diedAt?: number // Timestamp
   type: ActorTypes
 }
 

@@ -161,8 +161,9 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
       )
 
       inspectedActor.updatedAt = Date.now()
-      if (stateOrValue?.done) {
+      if (stateOrValue?.done && !inspectedActor.dead) {
         inspectedActor.dead = true
+        inspectedActor.diedAt = Date.now()
       }
       inspectedActor.snapshot = inspectedActor.actorRef.getSnapshot()
 
@@ -272,6 +273,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
       actor.onStop(() => {
         inspectedActor.status = actor.status
         inspectedActor.dead = true
+        inspectedActor.diedAt = Date.now()
         this.unregister(actor)
         if (actor.children?.size > 0) {
           this.forgetAllChildren(inspectedActor.sessionId)
@@ -297,7 +299,9 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
     }
     inspectedActor.subscription?.unsubscribe()
     inspectedActor.dead = true
-    inspectedActor.updatedAt = Date.now()
+    const now = Date.now()
+    inspectedActor.updatedAt = now
+    inspectedActor.diedAt = now
 
     globalThis.dispatchEvent(new UnregisterEvent(inspectedActor))
     delete this.actors[sessionId]
@@ -314,6 +318,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
     Object.values(this.actors).forEach((x) => {
       if (x.parent === sessionId) {
         x.dead = true
+        x.diedAt = Date.now()
         this.unregister(x.actorRef)
         if (isInterpreterLike(x.actorRef)) {
           if (x.actorRef.children?.size > 0) {

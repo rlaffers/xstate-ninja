@@ -105,7 +105,41 @@
     log,
   })
 
-  let actors: Map<string, DeserializedExtendedInspectedActorObject> = null
+  type ActorList = Map<string, DeserializedExtendedInspectedActorObject>
+
+  function purgeSomeDeadActors(actors: ActorList): ActorList {
+    const allActors = [...actors.entries()]
+    const liveActors = allActors.filter(([, x]) => !x.dead)
+    // TODO parameterize how much we keep
+    const deadActors = Object.values(
+      allActors.reduce((result, [, actor]) => {
+        if (!actor.dead) {
+          return result
+        }
+        if (!result[actor.actorId]) {
+          result[actor.actorId] = [actor.diedAt, actor]
+          return result
+        }
+        if (actor.diedAt > result[actor.actorId][0]) {
+          result[actor.actorId] = [actor.diedAt, actor]
+        }
+        return result
+      }, {}),
+    ).reduce(
+      (
+        result: [string, DeserializedExtendedInspectedActorObject],
+        [, actor],
+      ) => {
+        result.push([actor.sessionId, actor])
+        return result
+      },
+      [],
+    )
+
+    return new Map([...liveActors, ...deadActors])
+  }
+
+  let actors: ActorList = null
 
   function messageListener(event: XStateInspectAnyEvent) {
     log(event.type, { event }) // TODO remove
@@ -135,16 +169,21 @@
       if (!actors) return
       const actor = actors.get(event.sessionId)
       if (!actor) {
-        console.error(
+        log(
           `The stopped actor ${event.sessionId} is not in the list of actors.`,
+          undefined,
+          'red',
         )
         return false
       }
       actors.set(actor.sessionId, {
         ...actor,
         dead: true,
+        diedAt: event.diedAt ?? Date.now(),
       })
-      actors = actors
+      // whenever an actor is marked dead, we may now have too many dead actors, so we need
+      // to purge some of them based on the time of death
+      actors = purgeSomeDeadActors(actors)
       return false
     }
 

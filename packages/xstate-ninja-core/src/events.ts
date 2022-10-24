@@ -79,6 +79,7 @@ export interface XStateNinjaUnregisterEvent {
   snapshot?: string
   status: 0 | 1 | 2
   dead: boolean
+  diedAt?: number
   createdAt: number
 }
 
@@ -179,6 +180,7 @@ export class UnregisterEvent extends CustomEvent<XStateNinjaUnregisterEvent> {
         createdAt: Date.now(),
         status: isInterpreterLike(actor.actorRef) ? actor.actorRef.status : 0,
         dead: actor.dead,
+        diedAt: actor.diedAt,
       },
     })
   }

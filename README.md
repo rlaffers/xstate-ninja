@@ -118,6 +118,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~display entry/exit actions for state node frames~~
 - ~~make context sidebar width adjustable~~
 - ~~make context, actions, services panels resizable and collapsible~~
+- the extension should detect whether the on-page xstate-ninja version is compatible with it
 - highlight changes in the context (diff mode)
 - highlight transitions guarded by "in" state guards
 - add button for emitting events
