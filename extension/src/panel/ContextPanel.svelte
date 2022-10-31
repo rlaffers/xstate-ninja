@@ -20,9 +20,11 @@
 </script>
 
 <h1>Context</h1>
-<div class="context-container nice-scroll" bind:this={container}>
-  <Resizer target={container} direction="vertical" />
-  <div bind:this={element} />
+<div class="wrapper">
+  <div class="context-container nice-scroll" bind:this={container}>
+    <Resizer target={container} direction="vertical" />
+    <div bind:this={element} />
+  </div>
 </div>
 
 <style>
@@ -33,11 +35,15 @@
     margin: 0;
     padding: 0 8px;
   }
+  .wrapper {
+    position: relative;
+  }
   .context-container {
     margin: 0;
     padding: 8px;
     overflow: auto;
     min-height: 1rem;
+    position: relative;
   }
   :global(.sidebar:not(.custom-sized) .context-container) {
     max-width: 30rem;

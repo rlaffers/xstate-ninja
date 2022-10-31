@@ -14,16 +14,18 @@
 </script>
 
 <h1>Actions</h1>
-<p class="actions-panel nice-scroll" bind:this={container}>
+<div class="wrapper">
+  <p class="actions-panel nice-scroll" bind:this={container}>
+    {#if snapshot?.actions}
+      {#each snapshot.actions as action (action)}
+        <details class="action" use:insertActionDetail={action}>
+          <summary>{action.type}</summary>
+        </details>
+      {/each}
+    {/if}
+  </p>
   <Resizer target={container} direction="vertical" />
-  {#if snapshot?.actions}
-    {#each snapshot.actions as action (action)}
-      <details class="action" use:insertActionDetail={action}>
-        <summary>{action.type}</summary>
-      </details>
-    {/each}
-  {/if}
-</p>
+</div>
 
 <style>
   h1 {
@@ -32,6 +34,10 @@
     color: var(--background);
     margin: 0;
     padding: 0 8px;
+  }
+
+  .wrapper {
+    position: relative;
   }
 
   .actions-panel {

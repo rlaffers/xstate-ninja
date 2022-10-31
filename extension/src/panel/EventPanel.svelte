@@ -35,9 +35,11 @@
 </script>
 
 <h1>{title}</h1>
-<div class="event-panel nice-scroll" bind:this={container}>
-  <Resizer target={container} direction="vertical" />
-  <div bind:this={element} />
+<div class="wrapper">
+  <div class="event-panel nice-scroll" bind:this={container}>
+    <Resizer target={container} direction="vertical" />
+    <div bind:this={element} />
+  </div>
 </div>
 
 <style>
@@ -47,6 +49,10 @@
     color: var(--background);
     margin: 0;
     padding: 0 8px;
+  }
+
+  .wrapper {
+    position: relative;
   }
 
   .event-panel {
