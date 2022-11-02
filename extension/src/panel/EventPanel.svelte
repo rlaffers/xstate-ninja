@@ -37,9 +37,9 @@
 <h1>{title}</h1>
 <div class="wrapper">
   <div class="event-panel nice-scroll" bind:this={container}>
-    <Resizer target={container} direction="vertical" />
     <div bind:this={element} />
   </div>
+  <Resizer target={container} direction="vertical" />
 </div>
 
 <style>

@@ -74,15 +74,47 @@
     left: 0;
     top: 0;
     z-index: 10;
+    opacity: 0;
+    transition: opacity 1s;
+    background: repeating-linear-gradient(
+      135deg,
+      var(--content-muted),
+      var(--content-muted) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+    border-left: 1px solid var(--content-muted);
+    border-right: 1px solid var(--content-muted);
+  }
+
+  .resizer-horizontal:hover {
+    transition: none;
+    opacity: 1;
   }
 
   .resizer-vertical {
     cursor: row-resize;
     height: 5px;
     width: 100%;
-    position: absolute;
+    position: sticky;
     left: 0;
     bottom: 0;
     z-index: 11;
+    opacity: 0;
+    transition: opacity 1s;
+    background: repeating-linear-gradient(
+      135deg,
+      var(--content-muted),
+      var(--content-muted) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+    border-top: 1px solid var(--content-muted);
+    border-bottom: 1px solid var(--content-muted);
+  }
+
+  .resizer-vertical:hover {
+    transition: none;
+    opacity: 1;
   }
 </style>
