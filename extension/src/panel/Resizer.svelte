@@ -1,21 +1,26 @@
 <script lang="ts">
   export let direction: 'horizontal' | 'vertical' = 'horizontal'
-  export let target: HTMLElement = null
+  export let previousTarget: HTMLElement = null
+  export let nextTarget: HTMLElement = null
 
   // The current position of mouse
   let x = 0
   let y = 0
 
-  // The dimension of the element
-  let w = 0
-  let h = 0
-  let scrollbarWidth = 0
+  // The dimension of the previous element
+  let w1 = 0
+  let h1 = 0
+  let scrollbarWidth1 = 0
+  // The dimension of the next element
+  let w2 = 0
+  let h2 = 0
+  let scrollbarWidth2 = 0
 
   function getScrollbarWidth(element: HTMLElement): number {
-    const width = (scrollbarWidth =
+    const width =
       direction === 'vertical'
         ? element.getBoundingClientRect().height - element.clientHeight
-        : element.getBoundingClientRect().width - element.clientWidth)
+        : element.getBoundingClientRect().width - element.clientWidth
     return Math.abs(Math.round(width))
   }
 
@@ -27,29 +32,50 @@
     y = e.clientY
 
     // Calculate the dimension of element
-    const computedStyle = window.getComputedStyle(target)
-    w = parseInt(computedStyle.width, 10)
-    h = parseInt(computedStyle.height, 10)
-    scrollbarWidth = getScrollbarWidth(target)
+    if (previousTarget) {
+      const computedStyle = window.getComputedStyle(previousTarget)
+      w1 = parseInt(computedStyle.width, 10)
+      h1 = parseInt(computedStyle.height, 10)
+      scrollbarWidth1 = getScrollbarWidth(previousTarget)
+      // this allows overriding the default width/height
+      previousTarget.classList.add('custom-sized')
+    }
+    if (nextTarget) {
+      const computedStyle = window.getComputedStyle(nextTarget)
+      w2 = parseInt(computedStyle.width, 10)
+      h2 = parseInt(computedStyle.height, 10)
+      scrollbarWidth2 = getScrollbarWidth(nextTarget)
+      nextTarget.classList.add('custom-sized')
+    }
 
     // Attach the listeners to `document`
     document.addEventListener('mousemove', mouseMoveHandler)
     document.addEventListener('mouseup', mouseUpHandler)
-    // this removes the max-height
-    target.classList.add('custom-sized')
     e.preventDefault()
   }
 
   function mouseMoveHandler(e: MouseEvent) {
     // How far the mouse has been moved
-    const dx = x - e.clientX
+    const dx = e.clientX - x
     const dy = e.clientY - y
 
     // Adjust the dimension of element
+    // horizontal: ← prev smaller, next larger
+    // vertical: ^ prev smaller, next larger
     if (direction === 'horizontal') {
-      target.style.width = `${w + dx + scrollbarWidth}px`
+      if (previousTarget) {
+        previousTarget.style.width = `${w1 + dx + scrollbarWidth1}px`
+      }
+      if (nextTarget) {
+        nextTarget.style.width = `${w2 - dx + scrollbarWidth2}px`
+      }
     } else {
-      target.style.height = `${h + dy + scrollbarWidth}px`
+      if (previousTarget) {
+        previousTarget.style.height = `${h1 + dy + scrollbarWidth1}px`
+      }
+      if (nextTarget) {
+        nextTarget.style.height = `${h1 - dy + scrollbarWidth2}px`
+      }
     }
     e.preventDefault()
   }

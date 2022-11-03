@@ -226,53 +226,53 @@
     bkgPort.postMessage(new DeadActorsClearedEvent().detail)
   }
 
-  let swimLanes: DeserializedExtendedInspectedActorObject[] = []
-  let activeSwimLane: number | null = null
+  let swimlanes: DeserializedExtendedInspectedActorObject[] = []
+  let activeSwimlane: number | null = null
   $: {
-    if (actors && swimLanes.length === 0) {
-      swimLanes = [actors.values().next().value]
-      activeSwimLane = 0
-      activeActor = swimLanes[0]
+    if (actors && swimlanes.length === 0) {
+      swimlanes = [actors.values().next().value]
+      activeSwimlane = 0
+      activeActor = swimlanes[0]
       activeFrame = null
     } else if (!actors) {
-      swimLanes = []
-      activeSwimLane = null
+      swimlanes = []
+      activeSwimlane = null
       activeActor = null
       activeFrame = null
     }
   }
 
-  function activateSwimLane(index: number) {
-    if (index === activeSwimLane) {
+  function activateSwimlane(index: number) {
+    if (index === activeSwimlane) {
       return
     }
-    if (index > swimLanes.length - 1) {
+    if (index > swimlanes.length - 1) {
       log(
         'attemped to change to an invalid swimlane',
-        { index, totalSwimLanes: swimLanes.length },
+        { index, totalSwimlanes: swimlanes.length },
         'red',
       )
       return
     }
-    activeSwimLane = index
-    activeActor = swimLanes[index]
+    activeSwimlane = index
+    activeActor = swimlanes[index]
     activeFrame = null
   }
 
   function activateFrame(
     frame: EventFrame | StateNodeFrame,
-    swimLaneIndex: number,
+    swimlaneIndex: number,
   ) {
-    if (swimLaneIndex !== activeSwimLane) {
-      activateSwimLane(swimLaneIndex)
+    if (swimlaneIndex !== activeSwimlane) {
+      activateSwimlane(swimlaneIndex)
     }
     activeFrame = frame
   }
 
-  function addSwimLane() {
+  function addSwimlane() {
     const firstActor = actors?.values()?.next()?.value
     if (firstActor) {
-      swimLanes = [...swimLanes, firstActor]
+      swimlanes = [...swimlanes, firstActor]
     }
   }
 
@@ -280,9 +280,9 @@
     actor: DeserializedExtendedInspectedActorObject,
     index: number,
   ) {
-    swimLanes[index] = actor
-    swimLanes = swimLanes
-    if (index === activeSwimLane) {
+    swimlanes[index] = actor
+    swimlanes = swimlanes
+    if (index === activeSwimlane) {
       if (activeFrame && actor.sessionId !== activeActor.sessionId) {
         activeFrame = null
       }
@@ -290,18 +290,27 @@
     }
   }
 
-  function closeSwimLane(index: number) {
-    swimLanes.splice(index, 1)
-    swimLanes = swimLanes
-    if (index === activeSwimLane) {
-      if (swimLanes.length > 0) {
-        activateSwimLane(0)
+  // refs to SwimLane elements
+  let elements: HTMLElement[] = []
+
+  function closeSwimlane(index: number) {
+    swimlanes.splice(index, 1)
+    swimlanes = swimlanes
+    if (index === activeSwimlane) {
+      if (swimlanes.length > 0) {
+        activateSwimlane(0)
       } else {
-        activeSwimLane = null
+        activeSwimlane = null
         activeActor = null
         activeFrame = null
       }
     }
+    // always remove the last element - Svelte will reuse the preceding elements
+    elements = elements.slice(0, -1)
+  }
+
+  function registerElement(element: HTMLElement) {
+    elements.push(element)
   }
 </script>
 
@@ -309,18 +318,20 @@
   <Intro />
 {:else}
   <main class="actors-view">
-    <MainHeader {clearDeadActors} {addSwimLane} />
+    <MainHeader {clearDeadActors} {addSwimlane} />
 
-    <section class="swim-lanes nice-scroll" class:multi={swimLanes.length > 1}>
-      {#each swimLanes as selectedActor, index}
+    <section class="swim-lanes nice-scroll" class:multi={swimlanes.length > 1}>
+      {#each swimlanes as selectedActor, index}
         <SwimLane
           {actors}
           onActorChanged={(x) => onActorChanged(x, index)}
           {selectedActor}
-          active={index === activeSwimLane}
-          onSelectSwimLane={() => activateSwimLane(index)}
+          active={index === activeSwimlane}
+          onSelectSwimlane={() => activateSwimlane(index)}
           onSelectFrame={(frame) => activateFrame(frame, index)}
-          closeSwimLane={() => closeSwimLane(index)}
+          closeSwimlane={() => closeSwimlane(index)}
+          previousSwimlane={index > 0 ? elements[index - 1] : null}
+          onMount={registerElement}
         />
       {/each}
     </section>

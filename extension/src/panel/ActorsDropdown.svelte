@@ -4,7 +4,20 @@
   export let actors: Map<string, DeserializedExtendedInspectedActorObject>
   let className = ''
   export { className as class }
-  export let selectedActorSessionId: string = null
+  export let selectedActor: DeserializedExtendedInspectedActorObject
+  export let onActorSelected: (
+    actor: DeserializedExtendedInspectedActorObject,
+  ) => void
+
+  let selectedActorSessionId: string = selectedActor.sessionId
+
+  $: {
+    // selectedActor can be later changed due to swimlane re-ordering
+    // we need to update the session id
+    if (selectedActor && selectedActor.sessionId !== selectedActorSessionId) {
+      selectedActorSessionId = selectedActor.sessionId
+    }
+  }
 
   const root = Symbol('root')
   const levelKey = Symbol('level')
@@ -51,20 +64,16 @@
   let sortedActors = []
   $: sortedActors = sortActors(actors)
 
-  $: {
-    if (selectedActorSessionId == null) {
-      const firstActor = sortedActors[0]
-      if (firstActor) {
-        selectedActorSessionId = firstActor.sessionId
-      }
-    }
-  }
-
-  function onSelectActor(event: Event) {
+  function onChange(event: Event) {
     const sessionId = (event.currentTarget as HTMLSelectElement).value
-    const selectedActor = actors.get(sessionId)
-    if (selectedActor && selectedActor.sessionId !== selectedActorSessionId) {
-      selectedActorSessionId = selectedActor.sessionId
+    const nextSelectedActor = actors.get(sessionId)
+    if (
+      nextSelectedActor &&
+      nextSelectedActor.sessionId !== selectedActorSessionId
+    ) {
+      selectedActorSessionId = nextSelectedActor.sessionId
+      selectedActor = nextSelectedActor
+      onActorSelected(selectedActor)
     }
   }
 
@@ -79,7 +88,7 @@
 
 <select
   name="activeActor"
-  on:change={onSelectActor}
+  on:change={onChange}
   value={selectedActorSessionId}
   class={`actor-dropdown ${className}`}
 >

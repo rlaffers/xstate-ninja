@@ -39,7 +39,7 @@
   <div class="event-panel nice-scroll" bind:this={container}>
     <div bind:this={element} />
   </div>
-  <Resizer target={container} direction="vertical" />
+  <Resizer previousTarget={container} direction="vertical" />
 </div>
 
 <style>

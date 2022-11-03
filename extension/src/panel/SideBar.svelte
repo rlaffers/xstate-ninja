@@ -21,7 +21,7 @@
 </script>
 
 <aside class="sidebar" bind:this={node}>
-  <Resizer direction="horizontal" target={node} />
+  <Resizer direction="horizontal" nextTarget={node} />
   {#if actor?.machine !== undefined}
     <ContextPanel
       context={selectedSnapshot?.context ?? actor?.snapshot?.context}

@@ -5,51 +5,88 @@
   import ActorsDropdown from './ActorsDropdown.svelte'
   import ActorDetail from './ActorDetail.svelte'
   import Tracker from './Tracker.svelte'
+  import Resizer from './Resizer.svelte'
 
   export let selectedActor: DeserializedExtendedInspectedActorObject
   export let actors: Map<string, DeserializedExtendedInspectedActorObject> =
     null
   export let active = false
-  export let onSelectSwimLane: () => void
+  export let onSelectSwimlane: () => void
   export let onActorChanged: (
     actor: DeserializedExtendedInspectedActorObject,
   ) => void
   export let onSelectFrame: (frame: EventFrame | StateNodeFrame) => void
-  export let closeSwimLane: () => void
+  export let closeSwimlane: () => void
+  export let previousSwimlane: HTMLElement
+  export let onMount: (node: HTMLElement) => void
 
-  let selectedActorSessionId: string = null
+  function onActorSelected(actor: DeserializedExtendedInspectedActorObject) {
+    selectedActor = actor
+    onActorChanged(selectedActor)
+  }
 
   $: {
-    if (selectedActorSessionId != null && actors) {
-      const retrievedActor = actors.get(selectedActorSessionId)
+    if (selectedActor && actors) {
+      const retrievedActor = actors.get(selectedActor.sessionId)
       if (retrievedActor == null) {
         // the currently selected actor is no longer available, select something else
         selectedActor = actors.values().next()?.value
-        selectedActorSessionId = selectedActor.sessionId
         onActorChanged(selectedActor)
       } else if (retrievedActor !== selectedActor) {
         selectedActor = retrievedActor
-        onActorChanged(selectedActor)
       }
     }
   }
+
+  let container: HTMLElement
 </script>
 
-<section class="swim-lane" class:active on:click={onSelectSwimLane}>
-  <header class="swim-lane-header">
-    <ActorsDropdown
-      class="actors-dropdown"
-      {actors}
-      bind:selectedActorSessionId
-    />
-    <ActorDetail actor={selectedActor} />
-    <button type="button" class="close-btn" on:click={closeSwimLane}>⨯</button>
-  </header>
-  <Tracker actor={selectedActor} {onSelectFrame} {active} />
+<section
+  class="swim-lane"
+  class:active
+  on:click={onSelectSwimlane}
+  bind:this={container}
+  use:onMount
+>
+  <div class="swim-lane-content">
+    <header class="swim-lane-header">
+      <ActorsDropdown
+        class="actors-dropdown"
+        {actors}
+        {selectedActor}
+        {onActorSelected}
+      />
+      <ActorDetail actor={selectedActor} />
+      <button type="button" class="close-btn" on:click={closeSwimlane}>⨯</button
+      >
+    </header>
+    <Tracker actor={selectedActor} {onSelectFrame} {active} />
+  </div>
+  <Resizer
+    nextTarget={container}
+    previousTarget={previousSwimlane}
+    direction="horizontal"
+  />
 </section>
 
 <style>
   .swim-lane {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    flex: 1;
+  }
+
+  :global(.swim-lane.custom-sized) {
+    flex: none !important;
+  }
+
+  :global(.swim-lane:first-child > .resizer-horizontal) {
+    display: none;
+  }
+
+  .swim-lane-content {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;

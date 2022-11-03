@@ -7,7 +7,7 @@
   import XStateLogo from './icons/XStateLogo.svelte'
 
   export let clearDeadActors: () => void
-  export let addSwimLane: () => void
+  export let addSwimlane: () => void
 
   function openHelpUkraine(event: MouseEvent) {
     event.preventDefault()
@@ -72,7 +72,7 @@
   <button
     title="Add another swim lane"
     class="add-swim-lane-btn"
-    on:click={addSwimLane}>+</button
+    on:click={addSwimlane}>+</button
   >
   <button
     on:click={clearDeadActors}

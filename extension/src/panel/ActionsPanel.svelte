@@ -24,7 +24,7 @@
       {/each}
     {/if}
   </p>
-  <Resizer target={container} direction="vertical" />
+  <Resizer previousTarget={container} direction="vertical" />
 </div>
 
 <style>
