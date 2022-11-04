@@ -90,7 +90,7 @@
     bkgPort.onMessage.removeListener(messageListener)
   })
 
-  // We use this function because logging with console.log directly here does not work
+  // TODO remove the log function, console.log works
   function log(text: string, data: any, color = 'cornflowerblue') {
     const msg: any = {
       type: MessageTypes.log,
@@ -227,9 +227,10 @@
   }
 
   let swimlanes: DeserializedExtendedInspectedActorObject[] = []
+
   let activeSwimlane: number | null = null
   $: {
-    if (actors && swimlanes.length === 0) {
+    if (actors && actors.size > 0 && swimlanes.length === 0) {
       swimlanes = [actors.values().next().value]
       activeSwimlane = 0
       activeActor = swimlanes[0]

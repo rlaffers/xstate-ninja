@@ -9,7 +9,7 @@
     actor: DeserializedExtendedInspectedActorObject,
   ) => void
 
-  let selectedActorSessionId: string = selectedActor.sessionId
+  let selectedActorSessionId: string = selectedActor?.sessionId
 
   $: {
     // selectedActor can be later changed due to swimlane re-ordering
