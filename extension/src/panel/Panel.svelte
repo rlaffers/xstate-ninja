@@ -240,6 +240,15 @@
       activeSwimlane = null
       activeActor = null
       activeFrame = null
+    } else if (activeActor && actors.size > 0) {
+      const retrievedActor = actors.get(activeActor.sessionId)
+      if (retrievedActor == null) {
+        // if retrievedActor is null -> this is handled in the Swimlane which will select
+        // another available actor and notify us via onActorChange
+      } else if (retrievedActor !== activeActor) {
+        // the active actor has been updated
+        activeActor = retrievedActor
+      }
     }
   }
 
