@@ -52,10 +52,10 @@ importers:
     specifiers:
       typescript: ^4.6.4
       vite: ^3.1.0
-      xstate: ^4.33.6
+      xstate: ^4.34.0
       xstate-ninja: workspace:^1.1.1
     dependencies:
-      xstate: 4.33.6
+      xstate: 4.34.0
       xstate-ninja: link:../packages/xstate-ninja-core
     devDependencies:
       typescript: 4.7.4
@@ -74,16 +74,16 @@ importers:
       react-dom: ^18.2.0
       typescript: ^4.6.4
       vite: ^3.1.0
-      xstate: ^4.33.6
+      xstate: ^4.34.0
       xstate-ninja: workspace:^1.1.1
     dependencies:
       '@xstate-ninja/react': link:../packages/xstate-ninja-react
-      '@xstate/react': 3.0.1_csov6svwxizbqjpbal6caks7le
+      '@xstate/react': 3.0.1_taam5hy3uj7ehp6sikh7yto6k4
       classnames: 2.3.2
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      xstate: 4.33.6
+      xstate: 4.34.0
       xstate-ninja: link:../packages/xstate-ninja-core
     devDependencies:
       '@types/react': 18.0.20
@@ -168,13 +168,13 @@ importers:
       tslib: ^2.4.0
       typescript: ^4.6.4
       vite: ^3.0.0
-      xstate: ^4.33.6
+      xstate: ^4.34.0
     devDependencies:
       concurrently: 7.3.0
       tslib: 2.4.0
       typescript: 4.7.4
       vite: 3.0.2
-      xstate: 4.33.6
+      xstate: 4.34.0
 
   packages/xstate-ninja-react:
     specifiers:
@@ -185,17 +185,17 @@ importers:
       tslib: ^2.4.0
       typescript: ^4.6.4
       vite: ^3.0.0
-      xstate: ^4.33.6
+      xstate: ^4.34.0
       xstate-ninja: workspace:^1.2.0
     devDependencies:
       '@types/react': 18.0.20
-      '@xstate/react': 3.0.1_csov6svwxizbqjpbal6caks7le
+      '@xstate/react': 3.0.1_taam5hy3uj7ehp6sikh7yto6k4
       concurrently: 7.3.0
       react: 18.2.0
       tslib: 2.4.0
       typescript: 4.8.3
       vite: 3.1.0
-      xstate: 4.33.6
+      xstate: 4.34.0
       xstate-ninja: link:../xstate-ninja-core
 
   packages/xstate-ninja-svelte:
@@ -1710,7 +1710,7 @@ packages:
       xstate: 4.33.6
     dev: true
 
-  /@xstate/react/3.0.1_csov6svwxizbqjpbal6caks7le:
+  /@xstate/react/3.0.1_taam5hy3uj7ehp6sikh7yto6k4:
     resolution: {integrity: sha512-/tq/gg92P9ke8J+yDNDBv5/PAxBvXJf2cYyGDByzgtl5wKaxKxzDT82Gj3eWlCJXkrBg4J5/V47//gRJuVH2fA==}
     peerDependencies:
       '@xstate/fsm': ^2.0.0
@@ -1725,7 +1725,7 @@ packages:
       react: 18.2.0
       use-isomorphic-layout-effect: 1.1.2_w5j4k42lgipnm43s3brx6h3c34
       use-sync-external-store: 1.2.0_react@18.2.0
-      xstate: 4.33.6
+      xstate: 4.34.0
     transitivePeerDependencies:
       - '@types/react'
 
@@ -8999,6 +8999,9 @@ packages:
 
   /xstate/4.33.6:
     resolution: {integrity: sha512-A5R4fsVKADWogK2a43ssu8Fz1AF077SfrKP1ZNyDBD8lNa/l4zfR//Luofp5GSWehOQr36Jp0k2z7b+sH2ivyg==}
+
+  /xstate/4.34.0:
+    resolution: {integrity: sha512-MFnYz7cJrWuXSZ8IPkcCyLB1a2T3C71kzMeShXKmNaEjBR/JQebKZPHTtxHKZpymESaWO31rA3IQ30TC6LW+sw==}
 
   /xtend/4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
