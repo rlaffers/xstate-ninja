@@ -23,6 +23,7 @@
   import MainHeader from './MainHeader.svelte'
   import { MessageTypes } from '../messages'
   import SwimLane from './SwimLane.svelte'
+  import { sortByFirstItem } from '../utils'
 
   function deserializeInspectedActor(
     serializedActor: SerializedExtendedInspectedActorObject,
@@ -107,34 +108,46 @@
 
   type ActorList = Map<string, DeserializedExtendedInspectedActorObject>
 
+  let deadHistorySize = 0
+
+  chrome.storage.sync.get('settings', ({ settings }) => {
+    deadHistorySize = settings.deadHistorySize
+  })
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'sync' && changes.settings != null) {
+      deadHistorySize = changes.settings.newValue.deadHistorySize
+    }
+  })
+
   function purgeSomeDeadActors(actors: ActorList): ActorList {
     const allActors = [...actors.entries()]
     const liveActors = allActors.filter(([, x]) => !x.dead)
-    // TODO parameterize how much we keep
-    const deadActors = Object.values(
-      allActors.reduce((result, [, actor]) => {
+    const actorsById = allActors.reduce(
+      (
+        result: {
+          [index: string]: [[number, DeserializedExtendedInspectedActorObject]]
+        },
+        [, actor],
+      ) => {
         if (!actor.dead) {
           return result
         }
         if (!result[actor.actorId]) {
-          result[actor.actorId] = [actor.diedAt, actor]
+          result[actor.actorId] = [[actor.diedAt ?? Date.now(), actor]]
           return result
         }
-        if (actor.diedAt > result[actor.actorId][0]) {
-          result[actor.actorId] = [actor.diedAt, actor]
-        }
-        return result
-      }, {}),
-    ).reduce(
-      (
-        result: [string, DeserializedExtendedInspectedActorObject],
-        [, actor],
-      ) => {
-        result.push([actor.sessionId, actor])
+        result[actor.actorId].push([actor.diedAt ?? Date.now(), actor])
         return result
       },
-      [],
+      {},
     )
+
+    const deadActors = Object.values(actorsById).flatMap((deadActorsPerId) => {
+      const sorted = sortByFirstItem(deadActorsPerId)
+      return sorted
+        .slice(deadHistorySize > 0 ? -1 * deadHistorySize : sorted.length)
+        .map(([, actor]) => [actor.sessionId, actor])
+    })
 
     return new Map([...liveActors, ...deadActors])
   }
@@ -142,7 +155,7 @@
   let actors: ActorList = null
 
   function messageListener(event: XStateInspectAnyEvent) {
-    log(event.type, { event }) // TODO remove
+    log(event.type, { event })
 
     if (isXStateInspectActorsEvent(event)) {
       actors = new Map(

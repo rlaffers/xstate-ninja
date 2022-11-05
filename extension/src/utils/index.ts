@@ -69,3 +69,11 @@ export function debounce(f: (...args: any[]) => any, timeout: number) {
     return id
   }
 }
+
+export function sortByFirstItem<B>(arr: [number, B][]): [number, B][] {
+  return arr.sort((a, b) => {
+    if (a[0] === b[0]) return 0
+    if (a[0] < b[0]) return -1
+    return 1
+  })
+}

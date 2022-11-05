@@ -52,14 +52,17 @@
 
   function saveSettings(event: Event) {
     event.preventDefault()
-    const trackedActorTypes = Array.from(
-      new FormData(event.target as HTMLFormElement).keys(),
-    ).map((name) => ActorTypes[name])
+    const formData = new FormData(event.target as HTMLFormElement)
+    const trackedActorTypes = formData
+      .getAll('trackedActorTypes')
+      .map((v) => ActorTypes[v])
+    const deadHistorySize = Number(formData.get('deadHistorySize'))
     closeSettings()
     chrome.storage.sync.get('settings', ({ settings }) => {
       const nextSettings = {
         ...settings,
         trackedActorTypes,
+        deadHistorySize: isNaN(deadHistorySize) ? 0 : deadHistorySize,
       }
       chrome.storage.sync.set({
         settings: nextSettings,
@@ -126,7 +129,8 @@
           <label>
             <input
               type="checkbox"
-              name="machine"
+              name="trackedActorTypes"
+              value="machine"
               checked={currentSettings?.trackedActorTypes?.includes?.(
                 ActorTypes.machine,
               )}
@@ -136,7 +140,8 @@
           <label>
             <input
               type="checkbox"
-              name="callback"
+              name="trackedActorTypes"
+              value="callback"
               checked={currentSettings?.trackedActorTypes?.includes?.(
                 ActorTypes.callback,
               )}
@@ -146,7 +151,8 @@
           <label>
             <input
               type="checkbox"
-              name="observable"
+              name="trackedActorTypes"
+              value="observable"
               checked={currentSettings?.trackedActorTypes?.includes?.(
                 ActorTypes.observable,
               )}
@@ -156,7 +162,8 @@
           <label>
             <input
               type="checkbox"
-              name="promise"
+              name="trackedActorTypes"
+              value="promise"
               checked={currentSettings?.trackedActorTypes?.includes?.(
                 ActorTypes.promise,
               )}
@@ -164,8 +171,20 @@
             Promises
           </label>
         </fieldset>
-        <button on:click={closeSettings} type="button">Cancel</button>
-        <button type="submit">Save</button>
+        <label>
+          Keep <input
+            type="number"
+            name="deadHistorySize"
+            id="dead-history"
+            value={currentSettings.deadHistorySize}
+            min="0"
+            max="10"
+          /> dead actors in history (per id)
+        </label>
+        <div class="buttons">
+          <button on:click={closeSettings} type="button">Cancel</button>
+          <button type="submit">Save</button>
+        </div>
       </form>
     </dialog>
   </div>
@@ -270,5 +289,11 @@
   }
   .settings label {
     display: block;
+  }
+  .settings .buttons {
+    margin-top: 1rem;
+  }
+  .settings input#dead-history {
+    width: 2rem;
   }
 </style>
