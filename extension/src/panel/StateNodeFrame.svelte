@@ -58,7 +58,6 @@
           <div>{stateName}</div>
         {:else if flatStateNames.length > 1 && isCompoundState(stateName) && !isHidden(stateName)}
           <div class="state-name-wrapper">
-            <div>{stateName}</div>
             <button
               class="hide-btn"
               type="button"
@@ -68,6 +67,7 @@
             >
               <HideIcon class="hide-icon" />
             </button>
+            <div>{stateName}</div>
           </div>
         {/if}
       {/each}
@@ -136,12 +136,11 @@
     background: none;
     padding: 0;
     margin: 0;
-    opacity: 0;
-    transition: opacity 1s;
+    display: none;
   }
 
   .state-name-wrapper:hover > .hide-btn {
-    opacity: 1;
+    display: block;
   }
 
   :global(.hide-icon) {
