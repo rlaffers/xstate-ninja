@@ -89,7 +89,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~limit height and width of side panels~~
 - ~~style scrollbars in side panels~~
 - ~~optimize memory usage by dead actors (config option to limit how many dead actors are retained: N of each kind; max N total; none)~~
-- permament hiding of parallel state nodes
+- ~~permament hiding of parallel state nodes~~
 - button to clear hidden state nodes
 - ~~redesign the hide parallel state button~~
 - add Node integration

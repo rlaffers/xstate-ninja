@@ -24,21 +24,33 @@
 <script lang="ts">
   import { fade } from 'svelte/transition'
   import { flattenState, isCompoundState } from '../utils'
+  import { hiddenStates, hide } from '../utils/hidden-states'
 
   export let data: StateNodeFrame
   export let onSelectFrame: (frame: StateNodeFrame) => void
   export let isSelected = false
-  export let hideStateName: (event: MouseEvent) => void
-  export let hiddenStates: string[] = []
+  export let actorSessionId: string = null
+
+  function hideStateName(event: MouseEvent) {
+    const btn = event.currentTarget
+    if (btn instanceof HTMLElement && btn.dataset.stateName !== undefined) {
+      hide(actorSessionId, btn.dataset.stateName.replace(/\..+/, ''))
+    }
+  }
 
   function selectFrame(event: MouseEvent) {
     onSelectFrame(data)
     event.stopPropagation()
   }
 
+  let hiddenParallelRootStates = $hiddenStates[actorSessionId] ?? new Set()
+  $: {
+    hiddenParallelRootStates = $hiddenStates[actorSessionId] ?? new Set()
+  }
+
   function isHidden(stateName: string): boolean {
     const root = stateName.replace(/\..+/, '')
-    return hiddenStates.includes(root)
+    return hiddenParallelRootStates.has(root)
   }
 
   const flatStateNames = flattenState(data.stateValue)
@@ -51,7 +63,7 @@
   in:fade
   on:click={selectFrame}
 >
-  {#key hiddenStates}
+  {#key hiddenParallelRootStates}
     <div class="parallel-state-names">
       {#each flatStateNames as stateName}
         {#if flatStateNames.length === 1}

@@ -8,7 +8,7 @@ const { assign, forwardTo, stop } = actions
 export default createMachine(
   {
     id: 'vehicle',
-    preserveActionOrder: true,
+    predictableActionArguments: true,
     initial: 'EngineStopped',
     entry: [
       'spawnFuelWatcher',

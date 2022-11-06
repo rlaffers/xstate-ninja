@@ -165,23 +165,10 @@
     onSelectFrame(frame)
   }
 
-  let hiddenStates = []
   let selectedActorSessionId: string = actor?.sessionId
-  // reset hidden states on actor change
   $: {
     if (actor && actor.sessionId !== selectedActorSessionId) {
-      hiddenStates = []
       selectedActorSessionId = actor.sessionId
-    }
-  }
-
-  function hideStateName(event: MouseEvent) {
-    const btn = event.currentTarget
-    if (btn instanceof HTMLElement && btn.dataset.stateName !== undefined) {
-      hiddenStates = [
-        ...hiddenStates,
-        btn.dataset.stateName.replace(/\..+/, ''),
-      ]
     }
   }
 </script>
@@ -199,8 +186,7 @@
           data={frame}
           onSelectFrame={activateFrame}
           isSelected={activeFrame === frame}
-          {hideStateName}
-          {hiddenStates}
+          actorSessionId={selectedActorSessionId}
         />
       {:else if frame.type === EVENT}
         <EventFrameComponent

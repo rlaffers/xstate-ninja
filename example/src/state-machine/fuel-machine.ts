@@ -5,56 +5,67 @@ const { choose, assign, sendParent } = actions
 export const fuelMachine = createMachine(
   {
     id: 'fuel',
-    preserveActionOrder: true,
+    predictableActionArguments: true,
     context: {
       fuel: 0,
     },
-    initial: 'Operating',
+    type: 'parallel',
     states: {
-      Operating: {
-        entry: choose([
-          {
-            cond: 'isFuelEmpty',
-            actions: 'sendFuelTankEmpty',
-          },
-          {
-            cond: 'isFuelLow',
-            actions: 'sendLowFuelWarning',
-          },
-        ]),
-        on: {
-          FUEL_CONSUMED: [
-            {
-              cond: 'willBeEmpty',
-              actions: ['removeFuel', 'sendFuelTankEmpty'],
-            },
-            {
-              cond: 'willBeLow',
-              actions: ['removeFuel', 'sendLowFuelWarning'],
-            },
-            {
-              actions: 'removeFuel',
-            },
-          ],
-          FUEL_ADDED: {
-            actions: choose([
+      First: {
+        initial: 'Operating',
+        states: {
+          Operating: {
+            entry: choose([
               {
-                cond: 'isFuelOK',
-                actions: 'addFuel',
+                cond: 'isFuelEmpty',
+                actions: 'sendFuelTankEmpty',
               },
               {
-                cond: 'willBeOK',
-                actions: ['addFuel', 'sendFuelOK'],
-              },
-              {
-                cond: 'willBeLow',
-                actions: ['addFuel', 'sendLowFuelWarning'],
-              },
-              {
-                actions: ['addFuel', 'sendFuelTankEmpty'],
+                cond: 'isFuelLow',
+                actions: 'sendLowFuelWarning',
               },
             ]),
+            on: {
+              FUEL_CONSUMED: [
+                {
+                  cond: 'willBeEmpty',
+                  actions: ['removeFuel', 'sendFuelTankEmpty'],
+                },
+                {
+                  cond: 'willBeLow',
+                  actions: ['removeFuel', 'sendLowFuelWarning'],
+                },
+                {
+                  actions: 'removeFuel',
+                },
+              ],
+              FUEL_ADDED: {
+                actions: choose([
+                  {
+                    cond: 'isFuelOK',
+                    actions: 'addFuel',
+                  },
+                  {
+                    cond: 'willBeOK',
+                    actions: ['addFuel', 'sendFuelOK'],
+                  },
+                  {
+                    cond: 'willBeLow',
+                    actions: ['addFuel', 'sendLowFuelWarning'],
+                  },
+                  {
+                    actions: ['addFuel', 'sendFuelTankEmpty'],
+                  },
+                ]),
+              },
+            },
           },
+        },
+      },
+      Second: {
+        initial: 'Hot',
+        states: {
+          Hot: {},
         },
       },
     },
