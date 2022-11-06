@@ -1,18 +1,13 @@
 <script lang="ts">
-  import { setContext } from 'svelte'
-  import { InterpreterStatus } from 'xstate'
   import {
     isXStateInspectActorsEvent,
     isXStateInspectActorEvent,
     isXStateInspectUpdateEvent,
     isXStateNinjaUnregisterEvent,
-    ActorTypes,
     DeadActorsClearedEvent,
   } from 'xstate-ninja'
   import type {
     XStateInspectAnyEvent,
-    XStateInspectUpdateEvent,
-    SerializedExtendedInspectedActorObject,
     DeserializedExtendedInspectedActorObject,
   } from 'xstate-ninja'
   import SideBar from './SideBar.svelte'
@@ -21,68 +16,14 @@
   import type { EventFrame } from './EventFrame.svelte'
   import type { StateNodeFrame } from './StateNodeFrame.svelte'
   import MainHeader from './MainHeader.svelte'
-  import { MessageTypes } from '../messages'
   import SwimLane from './SwimLane.svelte'
-  import { sortByFirstItem } from '../utils'
-
-  function deserializeInspectedActor(
-    serializedActor: SerializedExtendedInspectedActorObject,
-  ): DeserializedExtendedInspectedActorObject {
-    return {
-      ...serializedActor,
-      snapshot:
-        serializedActor.snapshot != null
-          ? JSON.parse(serializedActor.snapshot)
-          : undefined,
-      machine:
-        serializedActor.machine != null
-          ? JSON.parse(serializedActor.machine)
-          : undefined,
-    } as DeserializedExtendedInspectedActorObject
-  }
-
-  // This is not typically used. An actor is typically created from the ActorEvent or ActorsEvent.
-  function createActorFromUpdateEvent(
-    event: XStateInspectUpdateEvent,
-  ): DeserializedExtendedInspectedActorObject {
-    const snapshot =
-      event.snapshot != null ? JSON.parse(event.snapshot) : undefined
-    const actor = {
-      sessionId: event.sessionId,
-      parent: undefined,
-      snapshot,
-      machine: undefined,
-      events: [event.event],
-      createdAt: event.createdAt,
-      updatedAt: event.createdAt,
-      status: event.status,
-      // xstate-ninja custom props
-      history: [event],
-      dead: event.status === InterpreterStatus.Stopped || snapshot?.done,
-      actorId: event.actorId,
-      type: ActorTypes.unknown,
-    }
-    return actor
-  }
-
-  function updateActorFromUpdateEvent(
-    actor: DeserializedExtendedInspectedActorObject,
-    event: XStateInspectUpdateEvent,
-  ): DeserializedExtendedInspectedActorObject {
-    const snapshot =
-      event.snapshot != null ? JSON.parse(event.snapshot) : undefined
-    actor.history.push(event)
-    actor.events.push(event.event)
-    const updatedActor = {
-      ...actor,
-      snapshot,
-      status: event.status,
-      dead: event.status === InterpreterStatus.Stopped || snapshot?.done,
-      updatedAt: event.createdAt,
-      history: actor.history,
-    }
-    return updatedActor
-  }
+  import {
+    sortByFirstItem,
+    deserializeInspectedActor,
+    createActorFromUpdateEvent,
+    updateActorFromUpdateEvent,
+    createLogger,
+  } from '../utils'
 
   // communication with devtools
   const bkgPort: chrome.runtime.Port = connectBackgroundPage()
@@ -91,20 +32,7 @@
     bkgPort.onMessage.removeListener(messageListener)
   })
 
-  // TODO remove the log function, console.log works
-  function log(text: string, data: any, color = 'cornflowerblue') {
-    const msg: any = {
-      type: MessageTypes.log,
-      text,
-      data,
-      color,
-    }
-    bkgPort.postMessage(msg)
-  }
-
-  setContext('logger', {
-    log,
-  })
+  const log = createLogger(bkgPort)
 
   type ActorList = Map<string, DeserializedExtendedInspectedActorObject>
 
@@ -206,6 +134,7 @@
       }
       const actor = actors.get(event.sessionId)
       if (!actor) {
+        // This is not typically used. An actor is typically created from the ActorEvent or ActorsEvent.
         actors.set(event.sessionId, createActorFromUpdateEvent(event))
       } else {
         actors.set(event.sessionId, updateActorFromUpdateEvent(actor, event))
@@ -224,6 +153,7 @@
   chrome.devtools.network.onNavigated.addListener(() => {
     actors = new Map()
     activeActor = null
+    activeFrame = null
   })
 
   function clearDeadActors() {
@@ -272,7 +202,10 @@
     if (index > swimlanes.length - 1) {
       log(
         'attemped to change to an invalid swimlane',
-        { index, totalSwimlanes: swimlanes.length },
+        {
+          index,
+          totalSwimlanes: swimlanes.length,
+        },
         'red',
       )
       return

@@ -1,4 +1,12 @@
+import { InterpreterStatus } from 'xstate'
 import type { StateValue } from 'xstate'
+import { ActorTypes } from 'xstate-ninja'
+import type {
+  SerializedExtendedInspectedActorObject,
+  DeserializedExtendedInspectedActorObject,
+  XStateInspectUpdateEvent,
+} from 'xstate-ninja'
+import { MessageTypes } from '../messages'
 
 export function log(...args: any[]) {
   console.log('%c[LOG]', 'color: cyan', ...args)
@@ -77,3 +85,73 @@ export function sortByFirstItem<B>(arr: [number, B][]): [number, B][] {
     return 1
   })
 }
+
+export function deserializeInspectedActor(
+  serializedActor: SerializedExtendedInspectedActorObject,
+): DeserializedExtendedInspectedActorObject {
+  return {
+    ...serializedActor,
+    snapshot:
+      serializedActor.snapshot != null
+        ? JSON.parse(serializedActor.snapshot)
+        : undefined,
+    machine:
+      serializedActor.machine != null
+        ? JSON.parse(serializedActor.machine)
+        : undefined,
+  } as DeserializedExtendedInspectedActorObject
+}
+
+export function createActorFromUpdateEvent(
+  event: XStateInspectUpdateEvent,
+): DeserializedExtendedInspectedActorObject {
+  const snapshot =
+    event.snapshot != null ? JSON.parse(event.snapshot) : undefined
+  const actor = {
+    sessionId: event.sessionId,
+    parent: undefined,
+    snapshot,
+    machine: undefined,
+    events: [event.event],
+    createdAt: event.createdAt,
+    updatedAt: event.createdAt,
+    status: event.status,
+    // xstate-ninja custom props
+    history: [event],
+    dead: event.status === InterpreterStatus.Stopped || snapshot?.done,
+    actorId: event.actorId,
+    type: ActorTypes.unknown,
+  }
+  return actor
+}
+
+export function updateActorFromUpdateEvent(
+  actor: DeserializedExtendedInspectedActorObject,
+  event: XStateInspectUpdateEvent,
+): DeserializedExtendedInspectedActorObject {
+  const snapshot =
+    event.snapshot != null ? JSON.parse(event.snapshot) : undefined
+  actor.history.push(event)
+  actor.events.push(event.event)
+  const updatedActor = {
+    ...actor,
+    snapshot,
+    status: event.status,
+    dead: event.status === InterpreterStatus.Stopped || snapshot?.done,
+    updatedAt: event.createdAt,
+    history: actor.history,
+  }
+  return updatedActor
+}
+
+export const createLogger =
+  (port: chrome.runtime.Port) =>
+  (text: string, data: any, color = 'cornflowerblue') => {
+    const msg: any = {
+      type: MessageTypes.log,
+      text,
+      data,
+      color,
+    }
+    port.postMessage(msg)
+  }

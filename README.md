@@ -91,13 +91,14 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~optimize memory usage by dead actors (config option to limit how many dead actors are retained: N of each kind; max N total; none)~~
 - permament hiding of parallel state nodes
 - button to clear hidden state nodes
-- redesign the hide parallel state button
+- ~~redesign the hide parallel state button~~
 - add Node integration
 - ~~add options to hide promise or callback actors from the extension~~
 - ~~build for Firefox~~
+- keep context nodes expanded while switching frames
 - link identical events sent between actors
-- add icons to frames for marking spawned children
 - display guards on guarded events
+- add icons to frames for marking spawned children
 - link to implementations for actions and services
 - ~~add button for hiding some parallel states~~
 - hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
