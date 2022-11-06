@@ -10,7 +10,7 @@
     if (element) {
       element.innerHTML = ''
       if (context) {
-        const formatter = new JSONFormatter(context, 2, {
+        const formatter = new JSONFormatter(context, 1, {
           animateOpen: false,
         })
         element.appendChild(formatter.render())
