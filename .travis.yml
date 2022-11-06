@@ -2,16 +2,13 @@ language: node_js
 notifications:
   email: false
 node_js:
-  - 17
+  - 16
 before_install:
-  - npm i -g npm@^8.11.0
+  - npm i -g pnpm
 install:
-  - npm install
+  - pnpm install
 before_script:
-  - npm prune
+  - pnpm prune
 script:
-  - npm run lint
-  - npm run test
-  - npm run build
-after_success:
-  - npm run semantic-release
+  - pnpm lint
+  - pnpm format:check
