@@ -6,6 +6,8 @@
   import ActorDetail from './ActorDetail.svelte'
   import Tracker from './Tracker.svelte'
   import Resizer from './Resizer.svelte'
+  import { hiddenStates, unhide } from '../utils/hidden-states'
+  import UnhideIcon from './icons/UnhideIcon.svelte'
 
   export let selectedActor: DeserializedExtendedInspectedActorObject
   export let actors: Map<string, DeserializedExtendedInspectedActorObject> =
@@ -39,6 +41,18 @@
   }
 
   let container: HTMLElement
+
+  let hiddenParallelActorStates = selectedActor
+    ? $hiddenStates[selectedActor.sessionId]
+    : new Set()
+  $: {
+    if (selectedActor) {
+      hiddenParallelActorStates =
+        $hiddenStates[selectedActor.sessionId] ?? new Set()
+    } else {
+      hiddenParallelActorStates = new Set()
+    }
+  }
 </script>
 
 <section
@@ -50,12 +64,24 @@
 >
   <div class="swim-lane-content">
     <header class="swim-lane-header">
-      <ActorsDropdown
-        class="actors-dropdown"
-        {actors}
-        {selectedActor}
-        {onActorSelected}
-      />
+      <div class="first-row">
+        <ActorsDropdown
+          class="actors-dropdown"
+          {actors}
+          {selectedActor}
+          {onActorSelected}
+        />
+        {#if hiddenParallelActorStates.size > 0}
+          <button
+            type="button"
+            class="unhide-btn"
+            title="Show hidden parallel states"
+            on:click={() => unhide(selectedActor.sessionId)}
+          >
+            <UnhideIcon class="unhide-icon" />
+          </button>
+        {/if}
+      </div>
       <ActorDetail actor={selectedActor} />
       <button type="button" class="close-btn" on:click={closeSwimlane}>⨯</button
       >
@@ -95,6 +121,12 @@
     position: relative;
   }
 
+  .first-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
   .close-btn {
     position: absolute;
     top: 0;
@@ -117,6 +149,31 @@
 
   .swim-lane:only-child .close-btn {
     display: none !important;
+  }
+
+  .unhide-btn {
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: var(--content-accent);
+    font-size: 1.2rem;
+    width: 2rem;
+    margin: 0.5rem 0.25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :global(.unhide-btn .unhide-icon) {
+    width: 100%;
+  }
+
+  :global(.unhide-btn > svg > g path) {
+    fill: var(--content);
+  }
+
+  :global(.unhide-btn:hover > svg > g path) {
+    fill: var(--blue) !important;
   }
 
   .swim-lane:first-child {

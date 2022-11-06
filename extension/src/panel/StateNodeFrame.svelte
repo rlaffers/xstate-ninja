@@ -43,14 +43,14 @@
     event.stopPropagation()
   }
 
-  let hiddenParallelRootStates = $hiddenStates[actorSessionId] ?? new Set()
+  let hiddenParallelActorStates = $hiddenStates[actorSessionId] ?? new Set()
   $: {
-    hiddenParallelRootStates = $hiddenStates[actorSessionId] ?? new Set()
+    hiddenParallelActorStates = $hiddenStates[actorSessionId] ?? new Set()
   }
 
   function isHidden(stateName: string): boolean {
     const root = stateName.replace(/\..+/, '')
-    return hiddenParallelRootStates.has(root)
+    return hiddenParallelActorStates.has(root)
   }
 
   const flatStateNames = flattenState(data.stateValue)
@@ -63,7 +63,7 @@
   in:fade
   on:click={selectFrame}
 >
-  {#key hiddenParallelRootStates}
+  {#key hiddenParallelActorStates}
     <div class="parallel-state-names">
       {#each flatStateNames as stateName}
         {#if flatStateNames.length === 1}
@@ -164,7 +164,7 @@
     fill: var(--content-muted) !important;
   }
   :global(.hide-icon:hover > g > path) {
-    fill: var(--green) !important;
+    fill: var(--blue) !important;
   }
 
   .state-node-frame.final .info-icons {
