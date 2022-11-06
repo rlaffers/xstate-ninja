@@ -3,6 +3,9 @@
   <img src="https://user-images.githubusercontent.com/489018/182801436-1a9c7cfd-9c67-4343-a430-17ec63f0ff3b.png" alt="logo" />
   <p>A dedicated devtool for XState state machines.</p>
   <p>    
+    <a href="https://app.travis-ci.com/github/rlaffers/xstate-ninja">
+      <img src="https://img.shields.io/travis/rlaffers/xstate-ninja" alt="Build (CI)">
+    </a>
     <a href="https://github.com/support-ukraine/support-ukraine"><img src="https://bit.ly/support-ukraine-now" alt="Support Ukraine" /></a>
     <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="code style: prettier" /></a>
     <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
