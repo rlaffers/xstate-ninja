@@ -12,6 +12,7 @@
     final?: boolean
     startedInvocation: boolean
     stoppedInvocation: boolean
+    historyIndex: number
   }
 
   export function isStateNodeFrame(

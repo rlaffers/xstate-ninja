@@ -29,6 +29,7 @@
 
   function createEventFrame(
     update: XStateInspectUpdateEvent,
+    historyIndex: number,
     snapshot?: any,
   ): EventFrame {
     return {
@@ -37,11 +38,13 @@
       event: update.event,
       changed: snapshot?.changed,
       snapshot: update.snapshot,
+      historyIndex,
     }
   }
 
   function createStateNodeFrame(
     update: XStateInspectUpdateEvent,
+    historyIndex: number,
     snapshot?: any,
   ): StateNodeFrame {
     return {
@@ -53,6 +56,7 @@
       final: snapshot?.done,
       startedInvocation: didStartInvocation(snapshot),
       stoppedInvocation: didStopInvocation(snapshot),
+      historyIndex,
     }
   }
 
@@ -72,13 +76,14 @@
 
   function updateIntoFrames(
     update: XStateInspectUpdateEvent,
+    historyIndex: number,
   ): Array<EventFrame> {
     const frames = []
     const snapshot =
       update.snapshot != null ? JSON.parse(update.snapshot) : undefined
-    frames.push(createEventFrame(update, snapshot))
+    frames.push(createEventFrame(update, historyIndex, snapshot))
     if (snapshot?.changed) {
-      frames.push(createStateNodeFrame(update, snapshot))
+      frames.push(createStateNodeFrame(update, historyIndex, snapshot))
     }
     return frames
   }
@@ -100,8 +105,8 @@
     frames.createdAt = actor?.createdAt
     // populate frames from the selected actor's history
     if (actor?.history?.length > 0) {
-      actor.history.forEach((update) => {
-        frames.push(...updateIntoFrames(update))
+      actor.history.forEach((update, index) => {
+        frames.push(...updateIntoFrames(update, index))
       })
     }
     return frames
@@ -126,7 +131,7 @@
       frames.historySize = actor.history.length
       const update = last(actor.history)
       if (update != null) {
-        frames.push(...updateIntoFrames(update))
+        frames.push(...updateIntoFrames(update, actor.history.length - 1))
       }
       frames = frames
     }

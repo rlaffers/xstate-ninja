@@ -9,6 +9,7 @@
     event: InspectedEventObject
     changed?: boolean
     snapshot?: string
+    historyIndex: number
   }
 
   export function isEventFrame(

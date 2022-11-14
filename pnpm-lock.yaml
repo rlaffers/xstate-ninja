@@ -129,11 +129,13 @@ importers:
 
   extension:
     specifiers:
+      '@ramda/assocpath': ^0.26.1
       '@sveltejs/vite-plugin-svelte': ^1.0.1
       '@tsconfig/svelte': ^3.0.0
       '@types/chrome': ^0.0.193
       concurrently: ^7.3.0
       json-formatter-js: ^2.3.4
+      microdiff: ^1.3.1
       svelte: ^3.49.0
       svelte-check: ^2.8.0
       svelte-preprocess: ^4.10.7
@@ -145,7 +147,9 @@ importers:
       xstate: ^4.33.6
       xstate-ninja: workspace:^1.3.0
     dependencies:
+      '@ramda/assocpath': 0.26.1
       json-formatter-js: 2.3.4
+      microdiff: 1.3.1
       xstate: 4.33.6
       xstate-ninja: link:../packages/xstate-ninja-core
     devDependencies:
@@ -1092,6 +1096,10 @@ packages:
     dependencies:
       '@octokit/openapi-types': 12.8.0
     dev: true
+
+  /@ramda/assocpath/0.26.1:
+    resolution: {integrity: sha512-K42DpAQfs/+oYCFiZ35O9k+bAQwUTu2Xt7iZXSqKKfERGQXbm3RuCX+MHq8Ld4kAMe/005pirHkthsQ7CSbtqQ==}
+    dev: false
 
   /@rollup/pluginutils/4.2.1:
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
@@ -6053,6 +6061,10 @@ packages:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
     dev: true
+
+  /microdiff/1.3.1:
+    resolution: {integrity: sha512-I7/87bSf15N4nMwkiHFBHksNGDa1ijNQtvWIR09hd5ZJ4+9Y2PS9cGqP8bINB1aKcNmRKwBHKtcwUpGfr+4B/A==}
+    dev: false
 
   /micromatch/4.0.5:
     resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}

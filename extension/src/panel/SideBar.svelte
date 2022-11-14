@@ -14,8 +14,21 @@
   export let activeFrame: EventFrame | StateNodeFrame = null
 
   let selectedSnapshot: any = null
-  $: selectedSnapshot =
-    activeFrame?.snapshot != null ? JSON.parse(activeFrame.snapshot) : null
+  let previousSnapshot: any = null
+  $: {
+    if (activeFrame?.snapshot != null) {
+      selectedSnapshot = JSON.parse(activeFrame.snapshot)
+      previousSnapshot = JSON.parse(
+        actor?.history?.[activeFrame.historyIndex - 1]?.snapshot ?? null,
+      )
+    } else {
+      selectedSnapshot = actor?.snapshot
+      const historySize = actor?.history?.length ?? 0
+      previousSnapshot = JSON.parse(
+        actor?.history?.[historySize - 2]?.snapshot ?? null,
+      )
+    }
+  }
 
   let node: HTMLElement
 </script>
@@ -24,17 +37,18 @@
   <Resizer direction="horizontal" nextTarget={node} />
   {#if actor?.machine !== undefined}
     <ContextPanel
-      context={selectedSnapshot?.context ?? actor?.snapshot?.context}
+      context={selectedSnapshot?.context}
+      previousContext={previousSnapshot?.context}
     />
     {#if isEventFrame(activeFrame)}
-      <EventPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
+      <EventPanel snapshot={selectedSnapshot} />
     {/if}
-    <ActionsPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
-    <ServicesPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
+    <ActionsPanel snapshot={selectedSnapshot} />
+    <ServicesPanel snapshot={selectedSnapshot} />
   {:else}
     <p>This actor is not a state machine.</p>
     {#if isEventFrame(activeFrame)}
-      <EventPanel snapshot={selectedSnapshot ?? actor?.snapshot} />
+      <EventPanel snapshot={selectedSnapshot} />
     {/if}
   {/if}
 </aside>

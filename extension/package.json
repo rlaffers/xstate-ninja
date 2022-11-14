@@ -29,7 +29,9 @@
     "wait-on": "^6.0.1"
   },
   "dependencies": {
+    "@ramda/assocpath": "^0.26.1",
     "json-formatter-js": "^2.3.4",
+    "microdiff": "^1.3.1",
     "xstate": "^4.33.6",
     "xstate-ninja": "workspace:^1.3.0"
   },

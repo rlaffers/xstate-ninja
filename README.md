@@ -128,6 +128,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - highlight transitions guarded by "in" state guards
 - add button for emitting events
 - user annotations tool
+- if an event does not change current finite state (only actions are executed, and/or the transition was internal), do not add a new state frame
 
 ## Attribution
 
