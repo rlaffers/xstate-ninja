@@ -4,14 +4,6 @@
   import diff from 'microdiff'
   import assocPath from '@ramda/assocpath'
 
-  // from microdiff
-  interface DifferenceChange {
-    type: 'CHANGE'
-    path: (string | number)[]
-    value: any
-    oldValue: any
-  }
-
   export let context: any = null
   export let previousContext: any = null
 
@@ -38,10 +30,8 @@
     if (changes.length < 1) {
       return noChangesElement
     }
-    // TODO display additions
-    // TODO display removals
     const structuredChanges = changes.reduce((result, change) => {
-      if (change.type === 'CHANGE') {
+      if (change.type === 'CHANGE' || change.type === 'CREATE') {
         return assocPath(change.path, change.value, result)
       }
       return result
