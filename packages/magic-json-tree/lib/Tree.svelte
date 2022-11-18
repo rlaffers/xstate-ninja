@@ -7,7 +7,8 @@
   export let formatKey: (entry: [any, any], path: any[]) => any = null
   export let formatValue: (entry: [any, any], path: any[]) => any = null
 
-  const safeFormatKey = formatKey
+  let safeFormatKey = null
+  $: safeFormatKey = formatKey
     ? (entry: [any, any], p: any[]) => {
         try {
           return formatKey(entry, p)
@@ -21,7 +22,8 @@
       }
     : null
 
-  const safeFormatValue = formatValue
+  let safeFormatValue = null
+  $: safeFormatValue = formatValue
     ? (entry: [any, any], p: any[]) => {
         try {
           return formatValue(entry, p)
