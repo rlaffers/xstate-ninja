@@ -1,3 +1,1 @@
-import Tree from './Tree.svelte'
-
-export default Tree
+export { default } from './Tree.svelte'

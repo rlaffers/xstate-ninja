@@ -59,4 +59,18 @@ Execute `npm run dev` and open the given URL in your browser.
 
 ## Theming
 
-TODO
+You can set some of the following CSS variables to overwrite the default colors:
+
+```css
+--mjt-color-key: var(--base1);
+--mjt-color-string: var(--orange);
+--mjt-color-number: var(--cyan);
+--mjt-color-null: var(--yellow);
+--mjt-color-undefined: var(--yellow);
+--mjt-color-boolean: var(--blue);
+--mjt-color-object: var(--base1);
+--mjt-color-array: var(--base1);
+--mjt-color-symbol: var(--green);
+--mjt-color-map: var(--green);
+--mjt-color-set: var(--green);
+```

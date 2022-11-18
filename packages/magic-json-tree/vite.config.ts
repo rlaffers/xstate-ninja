@@ -8,8 +8,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve('lib/index.ts'),
-      name: 'JSONMagicTree',
-      fileName: 'json-magic-tree',
+      name: 'MagicJsonTree',
+      fileName: 'magic-json-tree',
     },
     rollupOptions: {
       external: ['svelte'],

@@ -7,6 +7,7 @@
   "type": "module",
   "main": "./dist/magic-json-tree.umd.cjs",
   "module": "./dist/magic-json-tree.js",
+  "svelte": "lib/index.ts",
   "types": "dist/index.d.ts",
   "files": ["dist/*.js", "dist/*.d.ts", "dist/*.cjs"],
   "exports": {
