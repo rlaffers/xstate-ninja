@@ -6,7 +6,7 @@
   "scripts": {
     "build": "pnpm -r run build",
     "dev": "pnpm -r --parallel --filter=./packages/* --filter=./example --filter=./extension run dev",
-    "lint": "eslint --no-error-on-unmatched-pattern --cache packages/ example/ example-svelte/ extension/ example-react/",
+    "lint": "eslint --no-error-on-unmatched-pattern --cache packages/!magic-json-tree example/ example-svelte/ extension/ example-react/ && svelte-check --workspace=./packages/magic-json-tree",
     "lint:all": "eslint --no-error-on-unmatched-pattern packages/ example/ example-svelte/ extension/ example-react/",
     "lint:fix": "eslint --fix --no-error-on-unmatched-pattern packages/ example/ example-svelte/ extension/ example-react/",
     "test": "pnpm test -r",
@@ -38,6 +38,7 @@
     "prettier-plugin-svelte": "^2.7.0",
     "semantic-release": "^19.0.2",
     "svelte": "^3.49.0",
+    "svelte-check": "^2.9.2",
     "vite": "^2.9.9",
     "vite-plugin-web-extension": "^1.4.0"
   },
