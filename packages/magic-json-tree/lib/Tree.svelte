@@ -3,7 +3,7 @@
   import { getType } from './utils'
 
   export let value: any
-  export let expand: number | string[] = 0
+  export let expand: number | (string | number)[] = 0
 </script>
 
 <div class="magic-json-tree-root">
@@ -34,10 +34,6 @@
     --blue: #268bd2;
     --cyan: #2aa198;
     --green: #859900;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: var(--base03);
-    color: var(--base1);
 
     --mjt-color-key: var(--base1);
     --mjt-color-string: var(--orange);

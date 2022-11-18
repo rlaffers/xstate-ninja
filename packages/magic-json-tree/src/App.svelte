@@ -1,7 +1,7 @@
 <script lang="ts">
   import Tree from '../lib'
 
-  const value1 = {
+  const value = {
     name: 'john',
     age: 123,
     male: true,
@@ -14,15 +14,33 @@
       // @ts-ignore
       map: new Map([
         ['foo', 123],
-        [[456], 'bar'],
+        [[456], ['one', 'two', 'three']],
+        ['food', { taste: 'apple', smell: 'banana' }],
       ]),
+      set: new Set(['a', 'b', 'c', 'c', 'b', 'b']),
     },
   }
 </script>
 
 <main>
   <h1>Magic JSON Tree</h1>
-  <Tree value={value1} expand={1} />
+  <p>
+    <code>&lt;Tree &lbrace;value&rbrace; /&gt;</code>
+    <Tree {value} />
+  </p>
+
+  <p>
+    <code>&lt;Tree &lbrace;value&rbrace; expand=&lbrace;1&rbrace; /&gt;</code>
+    <Tree {value} expand={1} />
+  </p>
+
+  <p>
+    <code
+      >&lt;Tree &lbrace;value&rbrace; expand=&lbrace;['inventory', 'belt',
+      2]&rbrace; /&gt;</code
+    >
+    <Tree {value} expand={['inventory', 'belt', 2]} />
+  </p>
 </main>
 
 <style>

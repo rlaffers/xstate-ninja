@@ -1,14 +1,20 @@
 <script lang="ts">
   import { getType } from './utils'
   export let value: any[]
-  export let expand: number | string[] = 0
+  export let expand: number | (string | number)[] = 0
   export let level = 0
 
-  let expanded = typeof expand === 'number' ? level <= expand : false
+  let expanded = Array.isArray(expand)
+    ? true
+    : typeof expand === 'number'
+    ? level <= expand
+    : false
   function toggleExpanded(event: Event) {
     expanded = !expanded
     event.preventDefault()
   }
+
+  const [expandFirstItem, ...expandRest] = Array.isArray(expand) ? expand : []
 
   let entries =
     typeof value.entries === 'function'
@@ -24,6 +30,7 @@
   class="magic-json-tree-value magic-json-tree-value-{getType(value)}"
   class:expanded
 >
+  <!-- svelte-ignore a11y-invalid-attribute -->
   <a class="magic-json-tree-summary" href="#" on:click={toggleExpanded}>
     <span class="arrow">‣</span><span class="type-name"
       >{getType(value)}[{entries.length}]</span
@@ -40,7 +47,15 @@
           {:else if val == null}
             {String(val)}
           {:else if typeof val === 'object'}
-            <svelte:self value={val} level={level + 1} {expand} />
+            <svelte:self
+              value={val}
+              level={level + 1}
+              expand={!Array.isArray(expand)
+                ? expand
+                : expandFirstItem === key
+                ? expandRest
+                : 0}
+            />
           {:else}
             {String(val)}
           {/if}
