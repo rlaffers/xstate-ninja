@@ -1,47 +1,62 @@
-# Svelte + TS + Vite
+<div align="center">
+  <h1>magic-json-tree</h1>
+  <p>Svelte component to render interactive JSON trees.</p>
+  <p>
+    <a href="https://npmjs.com/package/magic-json-tree"><img src="https://img.shields.io/npm/v/magic-json-tree" alt="npm version" /></a>
+    <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="code style: prettier" /></a>
+    <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
+  </p>
+  <hr/>
+</div>
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+## Quick Start
 
-## Recommended IDE Setup
-
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
-
-## Need an official Svelte framework?
-
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
-
-## Technical considerations
-
-**Why use this over SvelteKit?**
-
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
-
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+```bash
+npm install --save magic-json-tree
 ```
+
+In your Svelte app:
+
+```javascript
+<script>
+  import Tree from 'magic-json-tree'
+
+  const json = {
+    name: 'john',
+    age: 123,
+    male: true,
+    pets: ['rat', 'flees'],
+    inventory: {
+      belt: ['coins', 'knife', 8, undefined],
+      backpack: null,
+    },
+    skills: new Map([
+      ['strength', 123],
+      [456, ['one', 'two', 'three']],
+      [['favourite', 'inputs'], { taste: 'apple', smell: 'banana' }],
+    ]),
+  }
+</script>
+
+<Tree value={json} />
+```
+
+This renders a tree view:
+
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/489018/202722774-db620b02-25c0-45eb-a84b-999b63a5c90b.png" alt="screenshot" />
+</div>
+
+## Props
+
+| Name     | Type                           | Default | Description                                                                                                   |
+| -------- | ------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------- |
+| `expand` | number \| (string \| number)[] | 0       | Pass a number to expand that many levels deep OR pass an object path like `['item', 'subItem', 'subSubItem']` |
+
+## Example
+
+Execute `npm run dev` and open the given URL in your browser.
+
+## Theming
+
+TODO
