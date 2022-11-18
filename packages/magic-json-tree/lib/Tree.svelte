@@ -4,6 +4,36 @@
 
   export let value: any
   export let expand: number | (string | number)[] = 0
+  export let formatKey: (entry: [any, any], path: any[]) => any = null
+  export let formatValue: (entry: [any, any], path: any[]) => any = null
+
+  const safeFormatKey = formatKey
+    ? (entry: [any, any], p: any[]) => {
+        try {
+          return formatKey(entry, p)
+        } catch (e) {
+          console.error(
+            'The passed `formatKey` function threw an error. An unformatted key will be rendered.\n',
+            e,
+          )
+          return entry[0]
+        }
+      }
+    : null
+
+  const safeFormatValue = formatValue
+    ? (entry: [any, any], p: any[]) => {
+        try {
+          return formatValue(entry, p)
+        } catch (e) {
+          console.error(
+            'The passed `formatValue` function threw an error. An unformatted value will be rendered.\n',
+            e,
+          )
+          return entry[1]
+        }
+      }
+    : null
 </script>
 
 <div class="magic-json-tree-root">
@@ -12,7 +42,13 @@
       {String(value)}
     </div>
   {:else}
-    <ObjectValue {value} level={1} {expand} />
+    <ObjectValue
+      {value}
+      level={1}
+      {expand}
+      formatValue={safeFormatValue}
+      formatKey={safeFormatKey}
+    />
   {/if}
 </div>
 

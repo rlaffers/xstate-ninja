@@ -20,6 +20,16 @@
       set: new Set(['a', 'b', 'c', 'c', 'b', 'b']),
     },
   }
+
+  function formatKey([key, val]: [any, any]): any {
+    return `${key}(${typeof val})`
+  }
+  function formatValue([key, val]: [any, any]): any {
+    if (key === 'age') {
+      return 999
+    }
+    return val
+  }
 </script>
 
 <main>
@@ -40,6 +50,28 @@
       2]&rbrace; /&gt;</code
     >
     <Tree {value} expand={['inventory', 'belt', 2]} />
+  </p>
+
+  <p>
+    <code
+      ><pre>&lt;script&gt;
+  const formatValue = ([key, value], path) =&gt; key === 'age' ? 999 : value
+&lt;/script&gt;
+
+&lt;Tree &lbrace;value&rbrace; &lbrace;formatValue&rbrace; /&gt;</pre></code
+    >
+    <Tree {value} {formatValue} />
+  </p>
+
+  <p>
+    <code
+      ><pre>&lt;script&gt;
+  const formatKey = ([key, value], path) =&gt; `$&lbrace;key&rbrace;(&lbrace;typeof value&rbrace;)`
+&lt;/script&gt;
+
+&lt;Tree &lbrace;value&rbrace; &lbrace;formatKey&rbrace; /&gt;</pre></code
+    >
+    <Tree {value} {formatKey} />
   </p>
 </main>
 

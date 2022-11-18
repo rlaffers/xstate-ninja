@@ -3,6 +3,9 @@
   export let value: any[]
   export let expand: number | (string | number)[] = 0
   export let level = 0
+  export let formatKey: (entry: [any, any], path: any[]) => any = null
+  export let formatValue: (entry: [any, any], path: any[]) => any = null
+  export let path: (number | string)[] = []
 
   let expanded = Array.isArray(expand)
     ? true
@@ -39,23 +42,43 @@
   {#if expanded}
     {#each entries as [key, val]}
       <div class="magic-json-tree-item">
-        <div class="magic-json-tree-key">{key}</div>
+        <div class="magic-json-tree-key">
+          {formatKey ? formatKey([key, val], path) : key}
+        </div>
         :
         <div class="magic-json-tree-value magic-json-tree-value-{getType(val)}">
           {#if typeof val === 'string'}
-            "{val}"
-          {:else if val == null}
-            {String(val)}
-          {:else if typeof val === 'object'}
-            <svelte:self
-              value={val}
-              level={level + 1}
-              expand={!Array.isArray(expand)
-                ? expand
-                : expandFirstItem === key
-                ? expandRest
-                : 0}
-            />
+            {formatValue ? formatValue([key, val], [...path, key]) : `"${val}"`}
+          {:else if typeof val === 'object' && val != null}
+            {#if formatValue}
+              <svelte:self
+                value={formatValue([key, val], [...path, key])}
+                level={level + 1}
+                {formatKey}
+                {formatValue}
+                path={[...path, key]}
+                expand={!Array.isArray(expand)
+                  ? expand
+                  : expandFirstItem === key
+                  ? expandRest
+                  : 0}
+              />
+            {:else}
+              <svelte:self
+                value={val}
+                level={level + 1}
+                {formatKey}
+                {formatValue}
+                path={[...path, key]}
+                expand={!Array.isArray(expand)
+                  ? expand
+                  : expandFirstItem === key
+                  ? expandRest
+                  : 0}
+              />
+            {/if}
+          {:else if formatValue}
+            {String(formatValue([key, val], [...path, key]))}
           {:else}
             {String(val)}
           {/if}

@@ -49,9 +49,11 @@ This renders a tree view:
 
 ## Props
 
-| Name     | Type                           | Default | Description                                                                                                   |
-| -------- | ------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------- |
-| `expand` | number \| (string \| number)[] | 0       | Pass a number to expand that many levels deep OR pass an object path like `['item', 'subItem', 'subSubItem']` |
+| Name          | Type                             | Default | Description                                                                                                                                                                           |
+| ------------- | -------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `expand`      | number \| (string \| number)[]   | 0       | Pass a number to expand that many levels deep OR pass an object path like `['item', 'subItem', 'subSubItem']`                                                                         |
+| `formatKey`   | ([any, any], path: any[]) => any | null    | Pass a function to format object keys. The function is passed `[key, value]` as its first parameter, and an object path as its second (e.g. `['item', 'subItem', 2, 'subSubItem']`)   |
+| `formatValue` | ([any, any], path: any[]) => any | null    | Pass a function to format object values. The function is passed `[key, value]` as its first parameter, and an object path as its second (e.g. `['item', 'subItem', 2, 'subSubItem']`) |
 
 ## Example
 
