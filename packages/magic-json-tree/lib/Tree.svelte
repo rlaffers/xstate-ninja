@@ -12,7 +12,7 @@
       {String(value)}
     </div>
   {:else}
-    <ObjectValue {value} />
+    <ObjectValue {value} level={1} {expand} />
   {/if}
 </div>
 

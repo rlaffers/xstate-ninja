@@ -1,8 +1,10 @@
 <script lang="ts">
   import { getType } from './utils'
   export let value: any[]
-  export let expanded = false
+  export let expand: number | string[] = 0
+  export let level = 0
 
+  let expanded = typeof expand === 'number' ? level <= expand : false
   function toggleExpanded(event: Event) {
     expanded = !expanded
     event.preventDefault()
@@ -38,7 +40,7 @@
           {:else if val == null}
             {String(val)}
           {:else if typeof val === 'object'}
-            <svelte:self value={val} />
+            <svelte:self value={val} level={level + 1} {expand} />
           {:else}
             {String(val)}
           {/if}

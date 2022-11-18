@@ -22,7 +22,7 @@
 
 <main>
   <h1>Magic JSON Tree</h1>
-  <Tree value={value1} />
+  <Tree value={value1} expand={1} />
 </main>
 
 <style>
