@@ -13,3 +13,12 @@ export function getType(value: any): string {
   }
   return typeof value
 }
+
+export function getEntries(
+  obj: Record<string, unknown> | any[] | Map<any, any> | Set<any>,
+): [any, any][] {
+  if ('entries' in obj && typeof obj.entries === 'function') {
+    return [...obj.entries()]
+  }
+  return Object.entries(obj)
+}

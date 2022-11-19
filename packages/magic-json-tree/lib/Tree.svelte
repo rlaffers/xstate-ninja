@@ -1,6 +1,8 @@
 <script lang="ts">
-  import ObjectValue from './Object.svelte'
-  import { getType } from './utils'
+  import Item from './Item.svelte'
+  import Value from './Value.svelte'
+  import Summary from './Summary.svelte'
+  import { getEntries } from './utils'
 
   export let value: any
   export let expand: number | (string | number)[] = 0
@@ -36,21 +38,40 @@
         }
       }
     : null
+
+  let expanded = Array.isArray(expand) ? true : expand >= 1 ? true : false
+  function toggleExpanded(event: Event) {
+    expanded = !expanded
+    event.preventDefault()
+  }
+
+  const [firstExpandItem, ...restExpand] = Array.isArray(expand) ? expand : []
 </script>
 
-<div class="magic-json-tree-root">
-  {#if typeof value !== 'object'}
-    <div class="magic-json-tree-value magic-json-tree-value-{getType(value)}">
-      {String(value)}
-    </div>
+<div class="magic-json-tree-root" class:expanded>
+  {#if typeof value === 'object' && value !== null}
+    <Summary {value} onClick={toggleExpanded} />
+    {#if expanded}
+      <div class="magic-json-tree-object-items">
+        {#each getEntries(value) as [key, val]}
+          <Item
+            {key}
+            value={val}
+            path={[key]}
+            formatKey={safeFormatKey}
+            formatValue={safeFormatValue}
+            level={2}
+            expand={!Array.isArray(expand)
+              ? expand
+              : firstExpandItem === key
+              ? restExpand
+              : 0}
+          />
+        {/each}
+      </div>
+    {/if}
   {:else}
-    <ObjectValue
-      {value}
-      level={1}
-      {expand}
-      formatValue={safeFormatValue}
-      formatKey={safeFormatKey}
-    />
+    <Value {value} format={safeFormatValue} />
   {/if}
 </div>
 
@@ -87,44 +108,5 @@
   }
   .magic-json-tree-root {
     text-align: left;
-  }
-  :global(.magic-json-tree-key) {
-    color: var(--mjt-color-key);
-  }
-  :global(.magic-json-tree-value) {
-    margin-left: 0.3rem;
-  }
-  :global(.magic-json-tree-value-string) {
-    color: var(--mjt-color-string);
-  }
-  :global(.magic-json-tree-value-number) {
-    color: var(--mjt-color-number);
-  }
-  :global(.magic-json-tree-value-boolean) {
-    color: var(--mjt-color-boolean);
-  }
-  :global(.magic-json-tree-value-null) {
-    color: var(--mjt-color-null);
-  }
-  :global(.magic-json-tree-value-undefined) {
-    color: var(--mjt-color-undefined);
-  }
-  :global(.magic-json-tree-value-symbol) {
-    color: var(--mjt-color-symbol);
-  }
-  :global(.magic-json-tree-value-object > .magic-json-tree-summary) {
-    color: var(--mjt-color-object);
-  }
-  :global(.magic-json-tree-value-array > .magic-json-tree-summary) {
-    color: var(--mjt-color-array);
-  }
-  :global(.magic-json-tree-value-map > .magic-json-tree-summary) {
-    color: var(--mjt-color-map);
-  }
-  :global(.magic-json-tree-value-set > .magic-json-tree-summary) {
-    color: var(--mjt-color-set);
-  }
-  :global(.magic-json-tree-item) {
-    margin-left: 1rem;
   }
 </style>
