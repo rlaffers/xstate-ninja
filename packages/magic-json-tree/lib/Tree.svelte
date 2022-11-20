@@ -114,11 +114,11 @@
     --mjt-color-key: var(--base1);
     --mjt-color-string: var(--orange);
     --mjt-color-number: var(--cyan);
-    --mjt-color-null: var(--yellow);
-    --mjt-color-undefined: var(--yellow);
+    --mjt-color-null: var(--red);
+    --mjt-color-undefined: var(--red);
     --mjt-color-boolean: var(--blue);
-    --mjt-color-object: var(--base1);
-    --mjt-color-array: var(--base1);
+    --mjt-color-object: var(--base00);
+    --mjt-color-array: var(--base00);
     --mjt-color-symbol: var(--green);
     --mjt-color-map: var(--green);
     --mjt-color-set: var(--green);
