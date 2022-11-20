@@ -8,6 +8,7 @@
   export let expand: number | (string | number)[] = 0
   export let formatKey: (entry: [any, any], path: any[]) => any = null
   export let formatValue: (entry: [any, any], path: any[]) => any = null
+  export let formatSummary: (entry: [any, any], path: any[]) => any = null
 
   let safeFormatKey = null
   $: safeFormatKey = formatKey
@@ -39,6 +40,21 @@
       }
     : null
 
+  let safeFormatSummary = null
+  $: safeFormatSummary = formatSummary
+    ? (entry: [any, any], p: any[]) => {
+        try {
+          return formatSummary(entry, p)
+        } catch (e) {
+          console.error(
+            'The passed `formatSummary` function threw an error. A default summary will be rendered.\n',
+            e,
+          )
+          return entry[1]
+        }
+      }
+    : null
+
   let expanded = Array.isArray(expand) ? true : expand >= 1 ? true : false
   function toggleExpanded(event: Event) {
     expanded = !expanded
@@ -50,7 +66,7 @@
 
 <div class="magic-json-tree-root" class:expanded>
   {#if typeof value === 'object' && value !== null}
-    <Summary {value} onClick={toggleExpanded} />
+    <Summary {value} onClick={toggleExpanded} format={safeFormatSummary} />
     {#if expanded}
       <div class="magic-json-tree-object-items">
         {#each getEntries(value) as [key, val]}
@@ -60,6 +76,7 @@
             path={[key]}
             formatKey={safeFormatKey}
             formatValue={safeFormatValue}
+            formatSummary={safeFormatSummary}
             level={2}
             expand={!Array.isArray(expand)
               ? expand

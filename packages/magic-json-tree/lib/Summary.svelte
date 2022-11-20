@@ -1,19 +1,29 @@
 <script lang="ts">
-  import { getType, getEntries } from './utils'
+  import { getTypeSummary } from './utils'
 
-  export let value:
+  type ValueType =
     | Record<string, unknown>
     | Array<any>
     | Map<any, any>
     | Set<any>
+
+  export let value: ValueType
+
   export let onClick: (event: MouseEvent) => void
+  export let format: (entry: [any, any], path: any[]) => any = null
+  export let key: any = null
+  export let path: (number | string)[] = []
 </script>
 
 <!-- svelte-ignore a11y-invalid-attribute -->
 <a class="magic-json-tree-summary" href="#" on:click={onClick}>
-  <span class="arrow">‣</span><span class="type-name"
-    >{getType(value)}[{getEntries(value).length}]</span
-  >
+  <span class="arrow">‣</span><span class="summary-content">
+    {#if format}
+      {format([key, value], path) ?? getTypeSummary(value)}
+    {:else}
+      {getTypeSummary(value)}
+    {/if}
+  </span>
 </a>
 
 <style>
@@ -21,7 +31,7 @@
     text-decoration: none;
     margin-left: 0.2rem;
   }
-  .magic-json-tree-summary > .type-name {
+  .magic-json-tree-summary > .summary-content {
     text-transform: capitalize;
   }
   :global(:is(.magic-json-tree-item > .key-line, .magic-json-tree-root)

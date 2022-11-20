@@ -26,3 +26,19 @@ export function getEntries(
   }
   return Object.entries(obj)
 }
+
+export function getTypeSummary(v: any): string {
+  const type = getType(v)
+  if (type === 'string') {
+    return `${type}[v.length]`
+  }
+  if (
+    type === 'array' ||
+    type === 'map' ||
+    type === 'set' ||
+    type === 'object'
+  ) {
+    return `${type}[${getEntries(v).length}]`
+  }
+  return type
+}

@@ -9,6 +9,7 @@
   export let path: (number | string)[] = []
   export let formatKey: (entry: [any, any], path: any[]) => any = null
   export let formatValue: (entry: [any, any], path: any[]) => any = null
+  export let formatSummary: (entry: [any, any], path: any[]) => any = null
   export let level: number = 2
   export let expand: number | (string | number)[]
 
@@ -29,6 +30,9 @@
     <div class="key-line">
       <Key {key} {value} {path} format={formatKey} />:<Summary
         {value}
+        {key}
+        {path}
+        format={formatSummary}
         onClick={toggleExpanded}
       />
     </div>
@@ -42,6 +46,7 @@
             path={[...path, k]}
             {formatKey}
             {formatValue}
+            {formatSummary}
             expand={!Array.isArray(expand)
               ? expand
               : firstExpandItem === k
