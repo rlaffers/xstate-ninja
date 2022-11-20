@@ -1,6 +1,6 @@
 <script lang="ts">
   import Resizer from './Resizer.svelte'
-  import JSONFormatter from 'json-formatter-js'
+  import Tree from 'magic-json-tree'
   import diff from 'microdiff'
   import assocPath from '@ramda/assocpath'
 
@@ -15,53 +15,76 @@
     diffMode = true
   }
 
-  const noChangesElement = document.createElement('p')
-  noChangesElement.classList.add('no-changes')
-  noChangesElement.innerText = 'No changes'
-
-  function renderDiff(current: any, previous: any): HTMLElement {
-    if (!previous) {
-      const formatter = new JSONFormatter(current, 1, {
-        animateOpen: false,
-      })
-      return formatter.render()
-    }
-    const changes = diff(previous, current)
-    if (changes.length < 1) {
-      return noChangesElement
-    }
-    const structuredChanges = changes.reduce((result, change) => {
-      if (change.type === 'CHANGE' || change.type === 'CREATE') {
-        return assocPath(change.path, change.value, result)
-      }
-      return result
-    }, {})
-
-    const formatter = new JSONFormatter(structuredChanges, 1, {
-      animateOpen: false,
-    })
-    return formatter.render()
+  function serializePath(path: any[]): string {
+    return path.reduce(
+      (result, item) =>
+        `${result}${result.length > 0 ? '·' : ''}${String(item)}`,
+      '',
+    )
   }
 
-  function renderFull(ctx: any): HTMLElement {
-    const formatter = new JSONFormatter(ctx, 1, {
-      animateOpen: false,
-    })
-    return formatter.render()
+  let contextDiff = context
+  let formatValue: (entry: [any, any], path: any[]) => any = null
+  let formatKey: (entry: [any, any], path: any[]) => any = null
+  $: {
+    if (diffMode && !previousContext) {
+      contextDiff = context
+      formatValue = null
+      formatKey = null
+    } else if (diffMode && previousContext) {
+      const changes = diff(previousContext, context)
+      console.log(
+        '%cchanges',
+        'background: red; color: black; padding: 1px 5px',
+        changes,
+      ) // TODO
+      if (changes.length === 0) {
+        formatValue = null
+        formatKey = null
+        contextDiff = null
+      } else {
+        const deltas = changes.reduce(
+          (result, { type, path, oldValue, value }) => {
+            result.contextDiff = assocPath(
+              path,
+              type === 'REMOVE' ? oldValue : value,
+              result.contextDiff,
+            )
+            result.byPath[serializePath(path)] = { type, oldValue }
+            return result
+          },
+          { contextDiff: {}, byPath: {} },
+        )
+
+        contextDiff = deltas.contextDiff
+
+        // TODO add formatting to Summary (null -> Array[1] or Array[1] -> Array[2])
+        // TODO add styles to changes
+        // TODO when array items are deleted, the summary does not make sense (should be Array[3] => Array[2])
+        formatValue = ([, value], path: any[]) => {
+          const serializedPath = serializePath(path)
+          const delta = deltas.byPath[serializedPath]
+          if (delta?.type === 'CHANGE') {
+            return `${delta.oldValue} ⇨ ${value}`
+          }
+          return value
+        }
+        formatKey = ([key], path: any[]) => {
+          const serializedPath = serializePath(path)
+          const delta = deltas.byPath[serializedPath]
+          if (delta?.type === 'CREATE') {
+            return `+${key}`
+          }
+          if (delta?.type === 'REMOVE') {
+            return `-${key}`
+          }
+          return key
+        }
+      }
+    }
   }
 
   let container: HTMLElement
-  let element: HTMLElement
-  $: {
-    if (element) {
-      element.innerHTML = ''
-      if (context && diffMode) {
-        element.appendChild(renderDiff(context, previousContext))
-      } else if (context && !diffMode) {
-        element.appendChild(renderFull(context))
-      }
-    }
-  }
 </script>
 
 <h1>Context</h1>
@@ -75,7 +98,13 @@
         >Diff</button
       >
     </div>
-    <div bind:this={element} />
+    {#if diffMode && contextDiff === null}
+      <p class="no-changes">No changes</p>
+    {:else if diffMode}
+      <Tree value={contextDiff} expand={1} {formatValue} {formatKey} />
+    {:else}
+      <Tree value={context} expand={1} />
+    {/if}
   </div>
   <Resizer previousTarget={container} direction="vertical" />
 </div>

@@ -137,6 +137,7 @@ importers:
       '@types/chrome': ^0.0.193
       concurrently: ^7.3.0
       json-formatter-js: ^2.3.4
+      magic-json-tree: workspace:^1.0.0
       microdiff: ^1.3.1
       svelte: ^3.49.0
       svelte-check: ^2.8.0
@@ -151,6 +152,7 @@ importers:
     dependencies:
       '@ramda/assocpath': 0.26.1
       json-formatter-js: 2.3.4
+      magic-json-tree: link:../packages/magic-json-tree
       microdiff: 1.3.1
       xstate: 4.33.6
       xstate-ninja: link:../packages/xstate-ninja-core
@@ -1447,7 +1449,7 @@ packages:
   /@types/keyv/3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 18.7.21
+      '@types/node': 18.11.9
     dev: true
 
   /@types/minimatch/3.0.5:
@@ -1469,10 +1471,6 @@ packages:
 
   /@types/node/18.11.9:
     resolution: {integrity: sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg==}
-    dev: true
-
-  /@types/node/18.7.21:
-    resolution: {integrity: sha512-rLFzK5bhM0YPyCoTC8bolBjMk7bwnZ8qeZUBslBfjZQou2ssJdWslx9CZ8DGM+Dx7QXQiiTVZ/6QO6kwtHkZCA==}
     dev: true
 
   /@types/normalize-package-data/2.4.1:
@@ -1506,7 +1504,7 @@ packages:
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 18.7.21
+      '@types/node': 18.11.9
     dev: true
 
   /@types/retry/0.12.0:
