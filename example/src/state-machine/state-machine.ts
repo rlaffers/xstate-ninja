@@ -24,6 +24,7 @@ export default createMachine(
       lowFuelWarning: false,
       lowBatteryWarning: false,
       shutdownInitiated: false,
+      startTimes: null,
     },
     states: {
       EngineStopped: {
@@ -33,7 +34,7 @@ export default createMachine(
             target: 'Igniting',
           },
           FUEL_ADDED: {
-            actions: ['addFuel', 'sendToFuelWatcher'],
+            actions: ['addFuel', 'sendToFuelWatcher', 'resetStartTimes'],
           },
           CHARGED_BATTERY: {
             actions: ['increaseBattery', 'sendToBatteryWatcher'],
@@ -70,7 +71,7 @@ export default createMachine(
         },
       },
       EngineRunning: {
-        entry: 'startChargingBattery',
+        entry: ['startChargingBattery', 'logStartTime'],
         exit: 'stopChargingBattery',
         initial: 'Idle',
         states: {
@@ -269,6 +270,14 @@ export default createMachine(
             return () => clearInterval(interval)
           }, 'batteryCharger'),
         }),
+      }),
+
+      logStartTime: assign({
+        startTimes: ({ startTimes }) => [...(startTimes ?? []), Date.now()],
+      }),
+
+      resetStartTimes: assign({
+        startTimes: [],
       }),
 
       stopChargingBattery: stop('batteryCharger'),

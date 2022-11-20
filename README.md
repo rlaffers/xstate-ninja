@@ -95,13 +95,13 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~permament hiding of parallel state nodes~~
 - ~~button to clear hidden state nodes~~
 - ~~redesign the hide parallel state button~~
-- bug: resizer overlaps the config dialog
+- ~~bug: resizer overlaps the config dialog~~
 - add timestamps to events (display on hover/selection?)
 - add hideable timeline
 - add Node integration
 - ~~add options to hide promise or callback actors from the extension~~
 - ~~build for Firefox~~
-- keep context nodes expanded while switching frames
+- ~~keep context nodes expanded while switching frames~~
 - link identical events sent between actors
 - display guards on guarded events
 - add icons to frames for marking spawned children

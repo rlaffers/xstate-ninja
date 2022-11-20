@@ -36,11 +36,6 @@
       formatSummary = null
     } else if (diffMode && previousContext) {
       const changes = diff(previousContext, context)
-      // console.log(
-      //   '%cchanges',
-      //   'background: red; color: black; padding: 1px 5px',
-      //   changes,
-      // ) // TODO
       if (changes.length === 0) {
         formatValue = null
         formatKey = null
@@ -152,7 +147,7 @@
     color: var(--content-accent);
   }
   .buttons button:disabled {
-    color: var(--orange);
+    color: var(--green);
   }
   .buttons button:enabled:hover {
     color: var(--blue);

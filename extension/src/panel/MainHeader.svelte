@@ -271,7 +271,7 @@
 
   .modal-background {
     position: absolute;
-    z-index: 10;
+    z-index: 100;
     width: 100vw;
     height: 100vh;
     /* var(--background) */
