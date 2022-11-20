@@ -1,15 +1,22 @@
 {
   "name": "magic-json-tree",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Richard Laffers",
   "license": "ISC",
-  "keywords": ["svelte", "json"],
+  "keywords": [
+    "svelte",
+    "json"
+  ],
   "type": "module",
   "main": "./dist/magic-json-tree.umd.cjs",
   "module": "./dist/magic-json-tree.js",
   "svelte": "lib/index.ts",
   "types": "dist/index.d.ts",
-  "files": ["dist/*.js", "dist/*.d.ts", "dist/*.cjs"],
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts",
+    "dist/*.cjs"
+  ],
   "exports": {
     ".": {
       "import": "./dist/magic-json-tree.js",
