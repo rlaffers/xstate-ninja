@@ -97,17 +97,18 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~redesign the hide parallel state button~~
 - ~~bug: resizer overlaps the config dialog~~
 - add timestamps to events (display on hover/selection?)
+- the extension should detect whether the on-page xstate-ninja version is compatible with it
 - add hideable timeline
-- add Node integration
 - ~~add options to hide promise or callback actors from the extension~~
 - ~~build for Firefox~~
 - ~~keep context nodes expanded while switching frames~~
 - link identical events sent between actors
+- hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
 - display guards on guarded events
 - add icons to frames for marking spawned children
+- add Node integration
 - link to implementations for actions and services
 - ~~add button for hiding some parallel states~~
-- hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
 - ~~add button to clear all dead actors~~
 - display assign actions (they are not reported by the xstate interpreter)
 - ~~add more info on the ActorDetail bar: time started, time finished, time unsubscribed, children~~
@@ -126,10 +127,10 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~display entry/exit actions for state node frames~~
 - ~~make context sidebar width adjustable~~
 - ~~make context, actions, services panels resizable and collapsible~~
-- the extension should detect whether the on-page xstate-ninja version is compatible with it
 - ~~highlight changes in the context (diff mode)~~
 - highlight transitions guarded by "in" state guards
 - add button for emitting events
+- user tagged frames
 - user annotations tool
 - if an event does not change current finite state (only actions are executed, and/or the transition was internal), do not add a new state frame
 
