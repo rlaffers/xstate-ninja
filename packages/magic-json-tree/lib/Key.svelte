@@ -6,7 +6,7 @@
 </script>
 
 <div class="magic-json-tree-key">
-  {format ? format([key, value], [...path, key]) : String(key)}
+  {format ? format([key, value], path) : String(key)}
 </div>
 
 <style>

@@ -9,9 +9,9 @@
 
 <div class="magic-json-tree-value magic-json-tree-value-{getType(value)}">
   {#if typeof value === 'string'}
-    {format ? format([key, value], [...path, key]) : `"${value}"`}
+    {format ? format([key, value], path) : `"${value}"`}
   {:else if format}
-    {String(format([key, value], [...path, key]))}
+    {String(format([key, value], path))}
   {:else}
     {String(value)}
   {/if}

@@ -14,9 +14,13 @@ export function getType(value: any): string {
   return typeof value
 }
 
+// this function will make sure that entries from sparse arrays will not include empty slots.
 export function getEntries(
   obj: Record<string, unknown> | any[] | Map<any, any> | Set<any>,
 ): [any, any][] {
+  if (Array.isArray(obj)) {
+    return Object.keys(obj).map((k) => [k, obj[k]])
+  }
   if ('entries' in obj && typeof obj.entries === 'function') {
     return [...obj.entries()]
   }
