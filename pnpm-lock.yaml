@@ -132,6 +132,7 @@ importers:
   extension:
     specifiers:
       '@ramda/assocpath': ^0.26.1
+      '@ramda/path': ^0.26.1
       '@sveltejs/vite-plugin-svelte': ^1.0.1
       '@tsconfig/svelte': ^3.0.0
       '@types/chrome': ^0.0.193
@@ -151,6 +152,7 @@ importers:
       xstate-ninja: workspace:^1.3.0
     dependencies:
       '@ramda/assocpath': 0.26.1
+      '@ramda/path': 0.26.1
       json-formatter-js: 2.3.4
       magic-json-tree: link:../packages/magic-json-tree
       microdiff: 1.3.1
@@ -1141,6 +1143,10 @@ packages:
 
   /@ramda/assocpath/0.26.1:
     resolution: {integrity: sha512-K42DpAQfs/+oYCFiZ35O9k+bAQwUTu2Xt7iZXSqKKfERGQXbm3RuCX+MHq8Ld4kAMe/005pirHkthsQ7CSbtqQ==}
+    dev: false
+
+  /@ramda/path/0.26.1:
+    resolution: {integrity: sha512-5b6plevJ50FAvdXAjiKs6uRIUNq9RYj1BF0uWe04LK8uvYJCo5N4U3pxWLrKJJIS5nC5ASJaoiRPIvM2PbvouA==}
     dev: false
 
   /@rollup/pluginutils/4.2.1:

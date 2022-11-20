@@ -1,8 +1,9 @@
 <script lang="ts">
   import Resizer from './Resizer.svelte'
-  import Tree from 'magic-json-tree'
+  import Tree, { getTypeSummary } from 'magic-json-tree'
   import diff from 'microdiff'
   import assocPath from '@ramda/assocpath'
+  import getPath from '@ramda/path'
 
   export let context: any = null
   export let previousContext: any = null
@@ -26,21 +27,24 @@
   let contextDiff = context
   let formatValue: (entry: [any, any], path: any[]) => any = null
   let formatKey: (entry: [any, any], path: any[]) => any = null
+  let formatSummary: (entry: [any, any], path: any[]) => any = null
   $: {
     if (diffMode && !previousContext) {
       contextDiff = context
       formatValue = null
       formatKey = null
+      formatSummary = null
     } else if (diffMode && previousContext) {
       const changes = diff(previousContext, context)
-      console.log(
-        '%cchanges',
-        'background: red; color: black; padding: 1px 5px',
-        changes,
-      ) // TODO
+      // console.log(
+      //   '%cchanges',
+      //   'background: red; color: black; padding: 1px 5px',
+      //   changes,
+      // ) // TODO
       if (changes.length === 0) {
         formatValue = null
         formatKey = null
+        formatSummary = null
         contextDiff = null
       } else {
         const deltas = changes.reduce(
@@ -51,16 +55,18 @@
               result.contextDiff,
             )
             result.byPath[serializePath(path)] = { type, oldValue }
+            if (type === 'CREATE' || type === 'REMOVE') {
+              result.extendedOrShrinkedPaths.push(
+                serializePath(path.slice(0, -1)),
+              )
+            }
             return result
           },
-          { contextDiff: {}, byPath: {} },
+          { contextDiff: {}, byPath: {}, extendedOrShrinkedPaths: [] },
         )
 
         contextDiff = deltas.contextDiff
 
-        // TODO add formatting to Summary (null -> Array[1] or Array[1] -> Array[2])
-        // TODO add styles to changes
-        // TODO when array items are deleted, the summary does not make sense (should be Array[3] => Array[2])
         formatValue = ([, value], path: any[]) => {
           const serializedPath = serializePath(path)
           const delta = deltas.byPath[serializedPath]
@@ -79,6 +85,15 @@
             return `-${key}`
           }
           return key
+        }
+        formatSummary = ([, value], path: any[]) => {
+          const serializedPath = serializePath(path)
+          if (deltas.extendedOrShrinkedPaths.includes(serializedPath)) {
+            return `${getTypeSummary(
+              getPath(path, previousContext),
+            )} ⇨ ${getTypeSummary(getPath(path, context))}`
+          }
+          return getTypeSummary(value)
         }
       }
     }
@@ -101,7 +116,13 @@
     {#if diffMode && contextDiff === null}
       <p class="no-changes">No changes</p>
     {:else if diffMode}
-      <Tree value={contextDiff} expand={1} {formatValue} {formatKey} />
+      <Tree
+        value={contextDiff}
+        expand={1}
+        {formatValue}
+        {formatKey}
+        {formatSummary}
+      />
     {:else}
       <Tree value={context} expand={1} />
     {/if}

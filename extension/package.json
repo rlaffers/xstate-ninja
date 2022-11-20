@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@ramda/assocpath": "^0.26.1",
+    "@ramda/path": "^0.26.1",
     "json-formatter-js": "^2.3.4",
     "magic-json-tree": "workspace:^1.0.0",
     "microdiff": "^1.3.1",
