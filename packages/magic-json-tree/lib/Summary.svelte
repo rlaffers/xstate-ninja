@@ -41,7 +41,8 @@
     text-align: center;
     margin-right: 0.2rem;
   }
-  :global(:is(.magic-json-tree-item.expanded > .key-line, .magic-json-tree-root)
+  :global(:is(.magic-json-tree-item.expanded
+        > .key-line, .magic-json-tree-root.expanded)
       > .magic-json-tree-summary
       > .arrow) {
     transform: rotate(90deg);
