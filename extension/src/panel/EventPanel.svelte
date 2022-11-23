@@ -1,35 +1,17 @@
 <script lang="ts">
+  import Tree from 'magic-json-tree'
   import Resizer from './Resizer.svelte'
-  import JSONFormatter from 'json-formatter-js'
 
   export let snapshot: any = null
   let container: HTMLElement
-  let element: HTMLElement
 
   let title = 'Event'
   $: {
-    if (element) {
-      element.innerHTML = ''
-      if (snapshot?.event) {
-        title = 'Event'
-        const formatter = new JSONFormatter(snapshot.event, 2, {
-          animateOpen: false,
-        })
-        element.appendChild(formatter.render())
-      } else if (typeof snapshot?.type === 'string') {
-        // values from callback actors may be events
-        title = 'Event'
-        const formatter = new JSONFormatter(snapshot, 2, {
-          animateOpen: false,
-        })
-        element.appendChild(formatter.render())
-      } else {
-        title = 'Emitted value'
-        const formatter = new JSONFormatter(snapshot, 2, {
-          animateOpen: false,
-        })
-        element.appendChild(formatter.render())
-      }
+    // values from callback actors may be events
+    if (snapshot?.event || typeof snapshot?.type === 'string') {
+      title = 'Event'
+    } else {
+      title = 'Emitted value'
     }
   }
 </script>
@@ -37,7 +19,11 @@
 <h1>{title}</h1>
 <div class="wrapper">
   <div class="event-panel nice-scroll" bind:this={container}>
-    <div bind:this={element} />
+    {#if snapshot?.event}
+      <Tree value={snapshot.event} expand={1} />
+    {:else}
+      <Tree value={snapshot} expand={1} />
+    {/if}
   </div>
   <Resizer previousTarget={container} direction="vertical" />
 </div>
