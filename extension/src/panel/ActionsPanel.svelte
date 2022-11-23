@@ -1,16 +1,11 @@
 <script lang="ts">
+  import Tree from 'magic-json-tree'
   import Resizer from './Resizer.svelte'
-  import JSONFormatter from 'json-formatter-js'
   import { omit } from '../utils'
 
   export let snapshot: any = null
 
   let container: HTMLElement
-
-  function insertActionDetail(node: HTMLElement, action: any) {
-    const formatter = new JSONFormatter(omit('type', action))
-    node.appendChild(formatter.render())
-  }
 </script>
 
 <h1>Actions</h1>
@@ -18,8 +13,9 @@
   <p class="actions-panel nice-scroll" bind:this={container}>
     {#if snapshot?.actions}
       {#each snapshot.actions as action (action)}
-        <details class="action" use:insertActionDetail={action}>
+        <details class="action">
           <summary>{action.type}</summary>
+          <Tree value={omit('type', action)} expand={1} />
         </details>
       {/each}
     {/if}
@@ -63,16 +59,16 @@
 
   .actions-panel
     .action
-    > :global(.json-formatter-row)
-    > :global(.json-formatter-toggler-link) {
+    > :global(.magic-json-tree-root)
+    > :global(.magic-json-tree-summary) {
     display: none;
   }
 
   .actions-panel
     .action
-    > :global(.json-formatter-row)
-    > :global(.json-formatter-children)
-    > :global(.json-formatter-row) {
+    > :global(.magic-json-tree-root)
+    > :global(.magic-json-tree-object-items)
+    > :global(.magic-json-tree-item) {
     margin-left: 0;
   }
 </style>
