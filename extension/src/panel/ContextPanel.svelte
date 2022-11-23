@@ -117,9 +117,10 @@
         {formatValue}
         {formatKey}
         {formatSummary}
+        sorted
       />
     {:else}
-      <Tree value={context} expand={1} />
+      <Tree value={context} expand={1} sorted />
     {/if}
   </div>
   <Resizer previousTarget={container} direction="vertical" />
