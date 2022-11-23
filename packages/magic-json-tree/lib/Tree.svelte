@@ -2,13 +2,14 @@
   import Item from './Item.svelte'
   import Value from './Value.svelte'
   import Summary from './Summary.svelte'
-  import { getEntries } from './utils'
+  import { getEntries, getSortedEntries } from './utils'
 
   export let value: any
   export let expand: number | (string | number)[] = 0
   export let formatKey: (entry: [any, any], path: any[]) => any = null
   export let formatValue: (entry: [any, any], path: any[]) => any = null
   export let formatSummary: (entry: [any, any], path: any[]) => any = null
+  export let sorted: boolean = false
 
   let safeFormatKey = null
   $: safeFormatKey = formatKey
@@ -62,6 +63,9 @@
   }
 
   const [firstExpandItem, ...restExpand] = Array.isArray(expand) ? expand : []
+
+  let entries = sorted ? getSortedEntries : getEntries
+  $: entries = sorted ? getSortedEntries : getEntries
 </script>
 
 <div class="magic-json-tree-root" class:expanded>
@@ -69,7 +73,7 @@
     <Summary {value} onClick={toggleExpanded} format={safeFormatSummary} />
     {#if expanded}
       <div class="magic-json-tree-object-items">
-        {#each getEntries(value) as [key, val]}
+        {#each entries(value) as [key, val]}
           <Item
             {key}
             value={val}
@@ -78,6 +82,7 @@
             formatValue={safeFormatValue}
             formatSummary={safeFormatSummary}
             level={2}
+            {sorted}
             expand={!Array.isArray(expand)
               ? expand
               : firstExpandItem === key

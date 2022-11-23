@@ -40,6 +40,11 @@
   </p>
 
   <p>
+    <code>&lt;Tree &lbrace;value&rbrace; sorted /&gt;</code>
+    <Tree {value} sorted />
+  </p>
+
+  <p>
     <code>&lt;Tree &lbrace;value&rbrace; expand=&lbrace;1&rbrace; /&gt;</code>
     <Tree {value} expand={1} />
   </p>

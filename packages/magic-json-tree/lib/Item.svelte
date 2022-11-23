@@ -2,7 +2,7 @@
   import Key from './Key.svelte'
   import Value from './Value.svelte'
   import Summary from './Summary.svelte'
-  import { getEntries, getType } from './utils'
+  import { getEntries, getSortedEntries, getType } from './utils'
 
   export let key: any
   export let value: any
@@ -12,6 +12,7 @@
   export let formatSummary: (entry: [any, any], path: any[]) => any = null
   export let level: number = 2
   export let expand: number | (string | number)[]
+  export let sorted: boolean = false
 
   let expanded = Array.isArray(expand) ? true : expand >= level ? true : false
   function toggleExpanded(event: Event) {
@@ -20,6 +21,8 @@
   }
 
   const [firstExpandItem, ...restExpand] = Array.isArray(expand) ? expand : []
+  let entries = sorted ? getSortedEntries : getEntries
+  $: entries = sorted ? getSortedEntries : getEntries
 </script>
 
 <div
@@ -38,7 +41,7 @@
     </div>
     {#if expanded}
       <div class="magic-json-tree-object-items">
-        {#each getEntries(value) as [k, v]}
+        {#each entries(value) as [k, v]}
           <svelte:self
             key={k}
             value={v}

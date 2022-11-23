@@ -42,3 +42,9 @@ export function getTypeSummary(v: any): string {
   }
   return type
 }
+
+export function getSortedEntries(
+  obj: Record<string, unknown> | any[] | Map<any, any> | Set<any>,
+) {
+  return getEntries(obj).sort(([k1], [k2]) => ('' + k1).localeCompare(k2))
+}
