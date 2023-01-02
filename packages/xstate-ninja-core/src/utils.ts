@@ -142,20 +142,21 @@ export function serializeActor(
   return serialized as SerializedExtendedInspectedActorObject
 }
 
-export function sanitizeEvent(event: AnyEventObject): AnyEventObject {
-  // some events from xstate may contain functions, which break their serialization
-  // for transport over window.dispatchEvent()
-  return Object.entries(event).reduce(
-    (result: { [key: string]: any }, [key, value]) => {
+export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
+  const result: Record<string, any> = {}
+  for (const key in obj) {
+    if (Object.hasOwn(obj, key)) {
+      const value = obj[key]
       if (typeof value === 'function') {
         result[key] = value.toString()
+      } else if (typeof value === 'object' && value !== null) {
+        result[key] = sanitizeObject(value)
       } else {
         result[key] = value
       }
-      return result
-    },
-    {},
-  ) as AnyEventObject
+    }
+  }
+  return result as T
 }
 
 export function findChildBySessionId(
@@ -261,7 +262,7 @@ export function createInspectedEventObject(
 ): InspectedEventObject {
   return {
     name: event.name,
-    data: sanitizeEvent(event.data),
+    data: sanitizeObject(event.data),
     origin: event.origin,
     createdAt: Date.now(),
     transitionType: getTransitionInfo(actor),
