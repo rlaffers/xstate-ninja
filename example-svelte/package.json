@@ -27,5 +27,8 @@
     "@xstate/svelte": "^2.0.0",
     "xstate": "^4.33.6",
     "xstate-ninja": "workspace:^1.1.1"
+  },
+  "volta": {
+    "node": "16.18.0"
   }
 }

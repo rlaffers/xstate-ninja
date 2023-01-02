@@ -15,5 +15,8 @@
   "dependencies": {
     "xstate": "^4.34.0",
     "xstate-ninja": "workspace:^1.1.1"
+  },
+  "volta": {
+    "node": "16.18.0"
   }
 }

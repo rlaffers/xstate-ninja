@@ -15,7 +15,11 @@
     "prepare": "husky install",
     "semantic-release": "semantic-release"
   },
-  "keywords": ["xstate", "state machines", "fsm"],
+  "keywords": [
+    "xstate",
+    "state machines",
+    "fsm"
+  ],
   "author": "Richard Laffers",
   "license": "ICS",
   "devDependencies": {
@@ -54,7 +58,6 @@
     "url": "https://github.com/rlaffers/xstate-ninja"
   },
   "volta": {
-    "node": "16.15.0",
-    "npm": "8.11.0"
+    "node": "16.18.0"
   }
 }
