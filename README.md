@@ -96,6 +96,10 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~button to clear hidden state nodes~~
 - ~~redesign the hide parallel state button~~
 - ~~bug: resizer overlaps the config dialog~~
+- ~~bug: it fails when event with synthetic react event is sent~~
+- bug: when event panel takes too much space, the context panel is hidden
+- improve: send events with "to" should display that in the summary (e.g. "xstate.send -> otherActor"). To can be object or a string.
+- improve how lower level parallel states are visualized
 - add timestamps to events (display on hover/selection?)
 - the extension should detect whether the on-page xstate-ninja version is compatible with it
 - add hideable timeline
