@@ -10,6 +10,7 @@ import {
   isInterpreterLike,
   serializeActor,
   createInspectedEventObject,
+  sanitizeReactEvent,
 } from './utils'
 
 // client -> inspector
@@ -153,6 +154,8 @@ export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
     scxmlEvent: SCXML.Event<AnyEventObject>,
   ) {
     const snapshot = actor.actorRef.getSnapshot()
+    // synthetic react events must be sanitized because they are not serializable
+    snapshot.event = sanitizeReactEvent(snapshot.event)
     super(EventTypes.update, {
       detail: {
         type: EventTypes.update,
