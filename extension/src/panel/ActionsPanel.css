@@ -1,0 +1,10 @@
+@container action-summary (min-width: 250px) {
+  .send-action-event {
+    display: inline !important;
+  }
+}
+@container action-summary (min-width: 350px) {
+  .send-action-target {
+    display: inline !important;
+  }
+}

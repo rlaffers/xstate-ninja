@@ -1,11 +1,17 @@
 <script lang="ts">
+  import type { AnyActorRef } from 'xstate'
   import Tree from 'magic-json-tree'
   import Resizer from './Resizer.svelte'
   import { omit } from '../utils'
+  import './ActionsPanel.css'
 
   export let snapshot: any = null
 
   let container: HTMLElement
+
+  function getSendTargetName(to: string | AnyActorRef): string {
+    return typeof to === 'string' ? to : to.id ?? 'N/A'
+  }
 </script>
 
 <h1>Actions</h1>
@@ -14,7 +20,17 @@
     {#if snapshot?.actions}
       {#each snapshot.actions as action (action)}
         <details class="action">
-          <summary>{action.type}</summary>
+          <summary>
+            <span class="action-type">{action.type}</span>
+            {#if action.type === 'xstate.send'}
+              <span class="send-action-event">{action.event?.type}</span>
+              {#if action.to != null}
+                <span class="send-action-target"
+                  >{getSendTargetName(action.to)}</span
+                >
+              {/if}
+            {/if}
+          </summary>
           <Tree value={omit('type', action)} expand={1} />
         </details>
       {/each}
@@ -55,6 +71,24 @@
     display: list-item;
     cursor: pointer;
     margin-left: -1rem;
+    container: action-summary / inline-size;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .actions-panel .action > summary .send-action-event {
+    color: var(--orange);
+    display: none;
+  }
+
+  .actions-panel .action > summary .send-action-target {
+    color: var(--violet);
+    display: none;
+  }
+
+  .actions-panel .action > summary .send-action-target::before {
+    content: '➔';
+    margin-right: 5px;
   }
 
   .actions-panel
