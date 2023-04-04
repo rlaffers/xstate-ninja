@@ -136,6 +136,7 @@
   }
   .wrapper {
     overflow: auto;
+    min-height: 30px;
   }
   :global(.no-changes) {
     font-style: italic;

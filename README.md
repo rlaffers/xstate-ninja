@@ -97,7 +97,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~redesign the hide parallel state button~~
 - ~~bug: resizer overlaps the config dialog~~
 - ~~bug: it fails when event with synthetic react event is sent~~
-- bug: when event panel takes too much space, the context panel is hidden
+- ~~bug: when event panel takes too much space, the context panel is hidden~~
 - ~~improve: send events with "to" should display that in the summary (e.g. "xstate.send -> otherActor"). To can be object or a string.~~
 - improve how lower level parallel states are visualized
 - add timestamps to events (display on hover/selection?)
@@ -106,6 +106,7 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~add options to hide promise or callback actors from the extension~~
 - ~~build for Firefox~~
 - ~~keep context nodes expanded while switching frames~~
+- add configurable watchers for specific events (with sounds?)
 - link identical events sent between actors
 - hide transition actions from state node frames; Hide entry/exit actions from event frames. Mark them as such.
 - display guards on guarded events
