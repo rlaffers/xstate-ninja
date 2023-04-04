@@ -174,7 +174,10 @@
   let activeSwimlane: number | null = null
   $: {
     if (actors && actors.size > 0 && swimlanes.length === 0) {
-      swimlanes = [actors.values().next().value]
+      const preselectedActor =
+        [...actors.values()].find((x) => x.parent == null) ??
+        actors.values().next().value
+      swimlanes = [preselectedActor]
       activeSwimlane = 0
       activeActor = swimlanes[0]
       activeFrame = null
@@ -226,9 +229,11 @@
   }
 
   function addSwimlane() {
-    const firstActor = actors?.values()?.next()?.value
-    if (firstActor) {
-      swimlanes = [...swimlanes, firstActor]
+    const preselectedActor =
+      [...actors.values()].find((x) => x.parent == null) ??
+      actors.values().next().value
+    if (preselectedActor) {
+      swimlanes = [...swimlanes, preselectedActor]
     }
   }
 
