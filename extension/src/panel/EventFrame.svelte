@@ -2,6 +2,7 @@
   import { TransitionTypes } from 'xstate-ninja'
   import type { InspectedEventObject } from 'xstate-ninja'
   import type { StateNodeFrame } from './StateNodeFrame.svelte'
+  import { formatTime } from '../utils'
 
   export interface EventFrame {
     id: string
@@ -25,6 +26,13 @@
   export let data: EventFrame
   export let onSelectFrame: (frame: EventFrame) => void
   export let isSelected = false
+
+  // TODO
+  console.log(
+    '%cframe',
+    'background: indigo; color: white; padding: 1px 5px',
+    data,
+  )
 
   function selectFrame(event: MouseEvent) {
     onSelectFrame(data)
@@ -56,20 +64,28 @@
   }
 </script>
 
-<div
-  class:selected={isSelected}
-  class="event-frame {className}"
-  title={description}
-  in:fade
-  on:click={selectFrame}
->
-  {data.event.data.type}
-  {#if data.event.origin}
-    <div class="origin">from:&nbsp;{data.event.origin}</div>
-  {/if}
+<div class="container">
+  <div class="timestamp">{formatTime(data.event.createdAt)}</div>
+  <div
+    class:selected={isSelected}
+    class="event-frame {className}"
+    title={description}
+    in:fade
+    on:click={selectFrame}
+  >
+    {data.event.data.type}
+    {#if data.event.origin}
+      <div class="origin">from:&nbsp;{data.event.origin}</div>
+    {/if}
+  </div>
 </div>
 
 <style>
+  .container {
+    display: flex;
+    flex-direction: row;
+  }
+
   .event-frame {
     display: inline-block;
     border: 1px solid var(--content-muted);

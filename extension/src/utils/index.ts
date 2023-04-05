@@ -155,3 +155,11 @@ export const createLogger =
     }
     port.postMessage(msg)
   }
+
+export function formatTime(timestamp: number): string {
+  const dt = new Date(timestamp)
+  const hours = `${dt.getHours()}`.padStart(2, '0')
+  const minutes = `${dt.getMinutes()}`.padStart(2, '0')
+  const seconds = `${dt.getSeconds()}`.padStart(2, '0')
+  return `${hours}:${minutes}:${seconds}`
+}
