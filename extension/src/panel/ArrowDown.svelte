@@ -6,6 +6,7 @@
 
 <style>
   .arrow-down {
+    grid-column: 2 / 3;
     width: 50px;
     height: 50px;
     display: flex;

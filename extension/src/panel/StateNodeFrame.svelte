@@ -105,6 +105,7 @@
 
 <style>
   .state-node-frame {
+    grid-column: 2 / 3;
     border: 1px solid var(--magenta);
     padding: 0.5em 1em;
     background-color: var(--background);

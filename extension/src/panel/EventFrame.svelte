@@ -64,30 +64,28 @@
   }
 </script>
 
-<div class="container">
-  <div class="timestamp">{formatTime(data.event.createdAt)}</div>
-  <div
-    class:selected={isSelected}
-    class="event-frame {className}"
-    title={description}
-    in:fade
-    on:click={selectFrame}
-  >
-    {data.event.data.type}
-    {#if data.event.origin}
-      <div class="origin">from:&nbsp;{data.event.origin}</div>
-    {/if}
-  </div>
+<div class="timestamp">{formatTime(data.event.createdAt)}</div>
+<div
+  class:selected={isSelected}
+  class="event-frame {className}"
+  title={description}
+  in:fade
+  on:click={selectFrame}
+>
+  {data.event.data.type}
+  {#if data.event.origin}
+    <div class="origin">from:&nbsp;{data.event.origin}</div>
+  {/if}
 </div>
 
 <style>
-  .container {
-    display: flex;
-    flex-direction: row;
+  .timestamp {
+    color: var(--content-muted);
+    margin-top: 0.5rem;
+    padding: 0 5px;
   }
-
   .event-frame {
-    display: inline-block;
+    display: block;
     border: 1px solid var(--content-muted);
     color: var(--content-muted);
     background-color: var(--background);
