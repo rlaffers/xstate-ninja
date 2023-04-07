@@ -27,13 +27,6 @@
   export let onSelectFrame: (frame: EventFrame) => void
   export let isSelected = false
 
-  // TODO
-  console.log(
-    '%cframe',
-    'background: indigo; color: white; padding: 1px 5px',
-    data,
-  )
-
   function selectFrame(event: MouseEvent) {
     onSelectFrame(data)
     event.stopPropagation()

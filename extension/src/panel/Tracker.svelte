@@ -214,7 +214,6 @@
     align-items: center;
     justify-items: center;
     width: 100%;
-    height: 100%;
     overflow-y: auto;
     padding-bottom: 5px;
   }
