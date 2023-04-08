@@ -176,11 +176,23 @@
       selectedActorSessionId = actor.sessionId
     }
   }
+
+  let showTimestamps = true
+
+  chrome.storage.sync.get('settings', ({ settings }) => {
+    showTimestamps = settings.showTimestamps
+  })
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'sync' && changes.settings != null) {
+      showTimestamps = changes.settings.newValue.showTimestamps
+    }
+  })
 </script>
 
 {#if actor != null}
   <div
     class="tracker nice-scroll"
+    class:hidden-timestamps={!showTimestamps}
     bind:this={trackerElement}
     on:click={clearSelectedFrame}
     use:trackScrolling

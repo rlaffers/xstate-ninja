@@ -10,6 +10,7 @@ chrome.storage.sync.get('settings', ({ settings }) => {
         ActorTypes.observable,
       ],
       deadHistorySize: 1,
+      showTimestamps: true,
     }
     chrome.storage.sync.set({ settings: defaultSettings })
   }

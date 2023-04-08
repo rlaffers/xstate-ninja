@@ -154,4 +154,5 @@ export function isTransitionsConfigArray(
 export type ExtensionSettings = {
   trackedActorTypes: ActorTypes[]
   deadHistorySize: number
+  showTimestamps: boolean
 }

@@ -28,6 +28,7 @@
         ...settings,
         trackedActorTypes,
         deadHistorySize: isNaN(deadHistorySize) ? 0 : deadHistorySize,
+        showTimestamps: !!formData.get('showTimestamps'),
       }
       chrome.storage.sync.set({
         settings: nextSettings,
@@ -96,6 +97,15 @@
           min="0"
           max="10"
         /> dead actors in history (per id)
+      </label>
+      <label
+        >Show timestamps
+        <input
+          type="checkbox"
+          name="showTimestamps"
+          value="1"
+          checked={currentSettings?.showTimestamps}
+        />
       </label>
       <div class="buttons">
         <button on:click={close} type="button">Cancel</button>

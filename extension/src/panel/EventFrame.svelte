@@ -77,6 +77,12 @@
     margin-top: 0.5rem;
     padding: 0 5px;
   }
+  :global(.hidden-timestamps .timestamp) {
+    width: 0px;
+    padding: 0;
+    margin: 0;
+    visibility: hidden;
+  }
   .event-frame {
     display: block;
     border: 1px solid var(--content-muted);
