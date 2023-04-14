@@ -2,7 +2,7 @@ import xstateNinja, { interpret, LogLevels } from 'xstate-ninja'
 import type { AnyInterpreter } from 'xstate'
 import logo from './assets/logo_512.png'
 import './style.css'
-import machine from './state-machine/state-machine'
+import machine from './state-machine2/state-machine'
 
 xstateNinja({ logLevel: LogLevels.debug })
 
@@ -38,18 +38,54 @@ if (rootElement) {
       <p>
         Press F12 and check the XState devtools.
       </p>
-      <button id="start-btn">Start</button>
-      <button id="add-fuel-btn">Add fuel</button>
+      <div class="buttons">
+        <button id="power-btn">Power</button>
+        <button id="play-btn">Play</button>
+        <button id="stop-btn">Stop</button>
+        <button id="pause-btn">Pause</button>
+        <button id="faster-btn">»</button>
+        <button id="slower-btn">«</button>
+        <button id="guarded-event-btn">Send event for guarded transition</button>
+        <button id="trigger-pure-btn">Trigger pure action</button>
+        <button id="always-transition-btn">Trigger always transition</button>
+      </div>
     </div>
   `
 }
 
-document.querySelector('#start-btn')?.addEventListener('mousedown', () => {
-  service.send('START_BUTTON_PRESSED')
+document.querySelector('#power-btn')?.addEventListener('mousedown', () => {
+  service.send('POWER')
 })
-document.querySelector('#start-btn')?.addEventListener('mouseup', () => {
-  service.send('START_BUTTON_RELEASED')
+document.querySelector('#play-btn')?.addEventListener('mousedown', () => {
+  service.send({ type: 'PLAY', speed: 1 })
 })
-document.querySelector('#add-fuel-btn')?.addEventListener('mousedown', () => {
-  service.send({ type: 'FUEL_ADDED', amount: 1 })
+document.querySelector('#stop-btn')?.addEventListener('mousedown', () => {
+  service.send('STOP')
 })
+document.querySelector('#pause-btn')?.addEventListener('mousedown', () => {
+  service.send('PAUSE')
+})
+document.querySelector('#faster-btn')?.addEventListener('mousedown', () => {
+  service.send('FASTER')
+})
+document.querySelector('#slower-btn')?.addEventListener('mousedown', () => {
+  service.send('SLOWER')
+})
+document
+  .querySelector('#guarded-event-btn')
+  ?.addEventListener('mousedown', () => {
+    service.send({
+      type: 'GUARDED_EVENT',
+      randomValue: Math.floor(Math.random() * 100),
+    })
+  })
+document
+  .querySelector('#trigger-pure-btn')
+  ?.addEventListener('mousedown', () => {
+    service.send('PURE_ACTION')
+  })
+document
+  .querySelector('#always-transition-btn')
+  ?.addEventListener('mousedown', () => {
+    service.send('ALWAYS')
+  })

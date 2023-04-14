@@ -52,10 +52,20 @@ h1 {
 button {
   padding: 0.3rem 0.6rem;
   cursor: pointer;
+  width: 100px;
+  margin: 5px 10px;
+  background: var(--base02);
+  color: var(--base1);
+  border: 2px solid var(--base1);
 }
 
-button.reset-btn {
-  margin-left: 50px;
+button:hover {
+  color: var(--base2);
+}
+
+button:active {
+  color: var(--base2);
+  background: var(--base01);
 }
 
 img {
@@ -63,68 +73,20 @@ img {
   height: 16rem;
 }
 
-.indicators {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 250px;
+.buttons {
+  display: grid;
+  justify-content: center;
+  justify-items: center;
+  grid-template-columns: repeat(2, 250px);
 }
 
-.indicators .battery-and-fuel {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.car-controls {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  text-align: left;
-}
-
-.shifting-controls {
-  display: flex;
-  flex-direction: column;
-  margin-left: 50px;
-}
-
-.shifting-controls button {
-  margin-bottom: 10px;
-  font-size: 3rem;
-}
-
-button.start-stop-btn {
+button#power-btn {
   text-transform: uppercase;
-  color: var(--base3);
-  border: 5px solid var(--base2);
-  padding: 5px;
-  font-size: 28px;
-  height: 120px;
-  width: 120px;
-  border-radius: 60px;
-  box-shadow: 0 2px 4px darkslategray;
+  color: var(--red);
 }
 
-button.start-stop-btn.start {
-  background-color: var(--green);
-}
-
-button.start-stop-btn.start:active {
-  background: radial-gradient(var(--base3), var(--green));
-}
-
-button.start-stop-btn.stop {
-  background-color: var(--red);
-}
-
-button.start-stop-btn.stop:active {
-  background: radial-gradient(var(--base3), var(--red));
-}
-
-button.fuel-btn,
-button.battery-btn {
-  margin-left: 50px;
+button#power-btn:active {
+  color: var(--green);
 }
 
 @media (min-width: 480px) {
