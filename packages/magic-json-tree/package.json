@@ -19,6 +19,7 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/magic-json-tree.js",
       "require": "./dist/magic-json-tree.umd.cjs"
     }
