@@ -2,7 +2,7 @@
   "name": "xstate-ninja-extension",
   "description": "Devtools extension for XState state machines",
   "private": true,
-  "version": "1.6.0",
+  "version": "1.7.0",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"cd ../example && npm run dev\"  \"wait-on -c .wait-on-config.json http-get://localhost:4000 && vite build --watch\"",
