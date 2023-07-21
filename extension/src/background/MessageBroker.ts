@@ -1,7 +1,13 @@
 import { ConnectEvent, isXStateNinjaDeadActorsClearedEvent } from 'xstate-ninja'
 import { Tab } from './Tab'
 import { log, error } from '../utils'
-import { isInitMessage, isLogMessage, type AnyMessage } from '../messages'
+import {
+  isInitMessage,
+  isLogMessage,
+  MessageTypes,
+  type AnyMessage,
+  type KeepAliveMessage,
+} from '../messages'
 
 interface IKeptAlivePort extends chrome.runtime.Port {
   _timer: NodeJS.Timeout
@@ -27,7 +33,6 @@ export class MessageBroker {
     this.removeDevPort = this.removeDevPort.bind(this)
     this.removeTab = this.removeTab.bind(this)
     this.keepAlive = this.keepAlive.bind(this)
-    this.forceReconnect = this.forceReconnect.bind(this)
     this.forwardDeadActorsClearedMessage =
       this.forwardDeadActorsClearedMessage.bind(this)
   }
@@ -148,21 +153,28 @@ export class MessageBroker {
 
   // periodically reconnect the page port to keep the background service worker alive
   keepAlive(port: IKeptAlivePort) {
-    port._timer = setTimeout(this.forceReconnect, 250e3, port)
+    if (this.isKeptAlive) {
+      return
+    }
+    port._timer = setInterval(
+      () => {
+        const msg: KeepAliveMessage = {
+          type: MessageTypes.keepAlive,
+        }
+        port.postMessage(msg)
+      },
+      10e3,
+      port,
+    )
     // triggered when the tab is closed
     port.onDisconnect.addListener((disconnectedPort) => {
       this.deleteTimer(disconnectedPort as IKeptAlivePort)
+      this.isKeptAlive = false
       if (this.tabs.size > 0) {
         this.keepAlive(this.tabs.values().next().value.port)
       }
     })
     this.isKeptAlive = true
-  }
-
-  forceReconnect(port: IKeptAlivePort) {
-    this.deleteTimer(port)
-    this.isKeptAlive = false
-    port.disconnect()
   }
 
   deleteTimer(port: IKeptAlivePort) {
