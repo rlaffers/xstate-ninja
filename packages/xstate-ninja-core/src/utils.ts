@@ -162,7 +162,7 @@ export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
 export function sanitizeReactEvent(event: AnyEventObject): AnyEventObject {
   for (const k in event) {
     const v = event[k]
-    if (typeof v === 'object' && v.nativeEvent instanceof Event) {
+    if (v?.nativeEvent instanceof Event) {
       v.view = undefined
       v.target = undefined
       v.currentTarget = undefined
