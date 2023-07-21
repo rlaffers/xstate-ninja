@@ -54,6 +54,6 @@
     "url": "https://github.com/rlaffers/xstate-ninja"
   },
   "volta": {
-    "node": "16.18.0"
+    "node": "18.17.0"
   }
 }
