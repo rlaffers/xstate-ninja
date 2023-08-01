@@ -172,6 +172,10 @@ export function sanitizeReactEvent(event: AnyEventObject): AnyEventObject {
   return event
 }
 
+export function isEventObject(x: any): x is AnyEventObject {
+  return x && typeof x === 'object' && typeof x.type === 'string'
+}
+
 export function findChildBySessionId(
   actor: AnyInterpreter,
   sessionId: string,

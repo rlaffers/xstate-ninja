@@ -11,6 +11,7 @@ import {
   serializeActor,
   createInspectedEventObject,
   sanitizeReactEvent,
+  isEventObject,
 } from './utils'
 
 // client -> inspector
@@ -153,9 +154,14 @@ export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
     actor: InspectedActorObject,
     scxmlEvent: SCXML.Event<AnyEventObject>,
   ) {
-    const snapshot = actor.actorRef.getSnapshot()
+    const snapshot = actor.actorRef.getSnapshot() as unknown
     // synthetic react events must be sanitized because they are not serializable
-    snapshot.event = sanitizeReactEvent(snapshot.event)
+    if (typeof snapshot === 'object' && snapshot !== null && 'event' in snapshot) {
+      const evt = (snapshot as any).event
+      if (isEventObject(evt)) {
+        (snapshot as any).event = sanitizeReactEvent(evt)
+      }
+    }
     super(EventTypes.update, {
       detail: {
         type: EventTypes.update,
