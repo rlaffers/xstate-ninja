@@ -36,6 +36,7 @@ const service = interpret(machine)
 ```
 
 For React integration, check the [@xstate-ninja/react](https://github.com/rlaffers/xstate-ninja/tree/master/packages/xstate-ninja-react) library.
+For Vue integration, check the [@xstate-ninja/vue](https://github.com/rlaffers/xstate-ninja/tree/master/packages/xstate-ninja-vue) library.
 
 ## How it works
 
