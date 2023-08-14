@@ -46,8 +46,23 @@
     "state machine",
     "vue"
   ],
-  "author": "Richard Laffers",
-  "license": "ISC",
+  "license": "MIT",
+  "author": {
+    "name": "Zehir",
+    "email": "zehir@zorim.fr",
+    "url": "https://github.com/Zehir"
+  },
+  "maintainers": [
+    {
+      "name": "Zehir",
+      "email": "zehir@zorim.fr",
+      "url": "https://github.com/Zehir"
+    }
+  ],
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/Zehir"
+  },
   "homepage": "https://github.com/rlaffers/xstate-ninja",
   "repository": {
     "type": "git",
