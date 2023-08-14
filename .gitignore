@@ -18,6 +18,7 @@ _lib
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+.devcontainer
 .idea
 .DS_Store
 *.suo

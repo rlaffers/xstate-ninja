@@ -3,5 +3,6 @@ packages:
   - 'packages/*'
   - 'example'
   - 'example-react'
+  - 'example-vue'
   - 'example-svelte'
   - '!**/src/test'
