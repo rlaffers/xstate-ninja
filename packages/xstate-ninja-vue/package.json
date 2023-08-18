@@ -1,6 +1,6 @@
 {
   "name": "@xstate-ninja/vue",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "XState Ninja integration for Vue",
   "type": "module",
   "main": "./dist/xstate-ninja-vue.umd.cjs",
