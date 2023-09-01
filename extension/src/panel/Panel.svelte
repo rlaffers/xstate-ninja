@@ -147,11 +147,15 @@
   // -----------------------------
   let activeActor: DeserializedExtendedInspectedActorObject
 
+  let swimlanes: DeserializedExtendedInspectedActorObject[] = []
+  let activeSwimlane: number | null = null
+
   // if activeFrame=null, then the latest actor's snapshot is implied
   let activeFrame: EventFrame | StateNodeFrame = null
 
   chrome.devtools.network.onNavigated.addListener(() => {
     actors = new Map()
+    swimlanes = []
     activeActor = null
     activeFrame = null
   })
@@ -169,9 +173,6 @@
     bkgPort.postMessage(new DeadActorsClearedEvent().detail)
   }
 
-  let swimlanes: DeserializedExtendedInspectedActorObject[] = []
-
-  let activeSwimlane: number | null = null
   $: {
     if (actors && actors.size > 0 && swimlanes.length === 0) {
       const preselectedActor =
