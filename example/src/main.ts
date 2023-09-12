@@ -26,6 +26,13 @@ function subscribe(actor: AnyInterpreter) {
 subscribe(service)
 service.start()
 
+const complexObject: Record<string, unknown> = {}
+const hasCircularRef = {
+  dummy: true,
+  complexObject,
+}
+complexObject.ref = hasCircularRef
+
 const rootElement = document.querySelector<HTMLDivElement>('#app')
 if (rootElement) {
   rootElement.innerHTML = `
@@ -48,6 +55,7 @@ if (rootElement) {
         <button id="guarded-event-btn">Send event for guarded transition</button>
         <button id="trigger-pure-btn">Trigger pure action</button>
         <button id="always-transition-btn">Trigger always transition</button>
+        <button id="send-circular-object-btn">Send complex data</button>
       </div>
     </div>
   `
@@ -71,6 +79,20 @@ document.querySelector('#faster-btn')?.addEventListener('mousedown', () => {
 document.querySelector('#slower-btn')?.addEventListener('mousedown', () => {
   service.send('SLOWER')
 })
+document.querySelector('#send-circular-object-btn')?.addEventListener(
+  'mousedown',
+  (event) => {
+    service.send({
+      type: 'DISPATCHED_CIRCULAR_DATA',
+      data: {
+        description: 'this object contains circular data',
+        complexObject,
+        browserEvent: event,
+        actorRef: service,
+      },
+    })
+  },
+)
 document
   .querySelector('#guarded-event-btn')
   ?.addEventListener('mousedown', () => {
