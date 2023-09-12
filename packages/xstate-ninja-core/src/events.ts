@@ -11,6 +11,7 @@ import {
   isInterpreterLike,
   serializeInspectedActor,
   serializeSnapshot,
+  stringifySafely,
 } from './utils'
 
 // client -> inspector
@@ -138,7 +139,7 @@ export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
         sessionId: actor.sessionId,
         createdAt: Date.now(),
         machine: isInterpreterLike(actor.actorRef)
-          ? JSON.stringify(actor.actorRef.machine)
+          ? stringifySafely(actor.actorRef.machine)
           : undefined,
         inspectedActor: serializeInspectedActor(actor),
       },
@@ -261,7 +262,7 @@ export class ActorsEvent extends CustomEvent<XStateInspectActorsEvent> {
             result[actor.sessionId] = {
               sessionId: actor.sessionId,
               parent: actor.parent,
-              machine: JSON.stringify(actor.machine),
+              machine: stringifySafely(actor.machine),
               snapshot: serializeSnapshot(actor.snapshot),
               createdAt: actor.createdAt,
             }

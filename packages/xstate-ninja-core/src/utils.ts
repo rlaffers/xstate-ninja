@@ -139,7 +139,7 @@ export function serializeInspectedActor(
   serialized.snapshot = serializeSnapshot(serialized.snapshot)
   serialized.actorId = actor.actorRef.id
   if (serialized.machine !== undefined) {
-    serialized.machine = JSON.stringify(serialized.machine)
+    serialized.machine = stringifySafely(serialized.machine)
   }
   return serialized as SerializedExtendedInspectedActorObject
 }
@@ -339,7 +339,7 @@ export function serializeSnapshot(snapshot?: unknown): string | undefined {
       }
     }
   }
-  return JSON.stringify(snapshot)
+  return stringifySafely(snapshot)
 }
 
 /**
@@ -578,4 +578,13 @@ function isTransitionForbidden(
     }
   }
   return false
+}
+
+export function stringifySafely(value: any): string | undefined {
+  try {
+    return JSON.stringify(value)
+  } catch (error) {
+    console.error('Failed to stringify:', { value, error })
+    return undefined
+  }
 }
