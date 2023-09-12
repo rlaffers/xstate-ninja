@@ -89,6 +89,8 @@ document.querySelector('#send-circular-object-btn')?.addEventListener(
         complexObject,
         browserEvent: event,
         actorRef: service,
+        someMap: new Map([['foo', 'one']]),
+        someSet: new Set([1, 1, 2, 3]),
       },
     })
   },
