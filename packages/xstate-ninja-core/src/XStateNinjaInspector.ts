@@ -1,40 +1,40 @@
 import { toSCXMLEvent } from 'xstate'
 import type {
-  AnyInterpreter,
-  AnyActorRef,
-  Subscription,
-  AnyEventObject,
-  SCXML,
   ActionObject,
+  AnyActorRef,
+  AnyEventObject,
+  AnyInterpreter,
+  SCXML,
+  Subscription,
 } from 'xstate'
 import type {
-  XStateNinjaInterface,
   ActorRegistration,
   ActorUpdate,
-  InspectedActorObject,
   AnyActorRefWithParent,
-  WindowWithXStateNinja,
+  InspectedActorObject,
   ParentActor,
+  WindowWithXStateNinja,
+  XStateNinjaInterface,
 } from './types'
 import { ActorTypes } from './types'
 import {
-  isInterpreterLike,
-  isEventLike,
-  findChildBySessionId,
   createInspectedActorObject,
+  findChildBySessionId,
+  isEventLike,
+  isInterpreterLike,
 } from './utils'
 import {
   ActorEvent,
   ActorsEvent,
-  UpdateEvent,
-  UnregisterEvent,
-  ConnectEvent,
   ConnectedEvent,
-  ReadEvent,
-  SendEvent,
+  ConnectEvent,
   EventTypes,
   InspectorCreatedEvent,
+  ReadEvent,
+  SendEvent,
   type SettingsChangedEvent,
+  UnregisterEvent,
+  UpdateEvent,
 } from './events'
 
 export { ActorTypes }
@@ -114,8 +114,8 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
   }
 
   setEnabled(enabled: boolean) {
-    this.enabled =
-      !!(globalThis as WindowWithXStateNinja).__xstate_ninja__ && enabled
+    this.enabled = !!(globalThis as WindowWithXStateNinja).__xstate_ninja__ &&
+      enabled
   }
 
   isActorTypeTracked(type: ActorTypes): boolean {
@@ -290,10 +290,9 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
       return
     }
     this.log('unregister actor', actor)
-    const [sessionId, inspectedActor] =
-      Object.entries(this.actors).find(
-        ([, { actorRef }]) => actorRef === actor,
-      ) ?? []
+    const [sessionId, inspectedActor] = Object.entries(this.actors).find(
+      ([, { actorRef }]) => actorRef === actor,
+    ) ?? []
     if (sessionId === undefined || inspectedActor === undefined) {
       return
     }

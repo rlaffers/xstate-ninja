@@ -1,24 +1,25 @@
 import {
-  AnyActorRef,
-  AnyInterpreter,
-  StateNode,
   ActionObject,
-  InvokeDefinition,
-  Guard,
-  InterpreterStatus,
-  type SCXML,
+  AnyActorRef,
   type AnyEventObject,
+  AnyInterpreter,
+  Guard,
+  Interpreter,
+  InterpreterStatus,
+  InvokeDefinition,
+  type SCXML,
+  StateNode,
 } from 'xstate'
 import {
+  ActorTypes,
+  AnyActorRefWithParent,
   InspectedActorObject,
   InspectedEventObject,
-  SerializedExtendedInspectedActorObject,
-  AnyActorRefWithParent,
-  ActorTypes,
-  TransitionTypes,
   isTransitionConfig,
   isTransitionsConfigArray,
   type ParentActor,
+  SerializedExtendedInspectedActorObject,
+  TransitionTypes,
 } from './types'
 
 export function isInterpreterLike(
@@ -55,8 +56,9 @@ interface StateNodeConfig {
 export function machineToJSON(stateNode: StateNode): StateNodeConfig {
   const config = {
     type: stateNode.type,
-    initial:
-      stateNode.initial === undefined ? undefined : String(stateNode.initial),
+    initial: stateNode.initial === undefined
+      ? undefined
+      : String(stateNode.initial),
     id: stateNode.id,
     key: stateNode.key,
     entry: stateNode.onEntry,
@@ -130,11 +132,11 @@ export function omit(
   return result
 }
 
-export function serializeActor(
+export function serializeInspectedActor(
   actor: InspectedActorObject,
 ): SerializedExtendedInspectedActorObject {
   const serialized = omit(['actorRef', 'subscription'], actor)
-  serialized.snapshot = JSON.stringify(serialized.snapshot)
+  serialized.snapshot = serializeSnapshot(serialized.snapshot)
   serialized.actorId = actor.actorRef.id
   if (serialized.machine !== undefined) {
     serialized.machine = JSON.stringify(serialized.machine)
@@ -142,27 +144,232 @@ export function serializeActor(
   return serialized as SerializedExtendedInspectedActorObject
 }
 
-export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
-  const result: Record<string, any> = {}
-  for (const key in obj) {
-    if (Object.hasOwn(obj, key)) {
-      const value = obj[key]
-      if (typeof value === 'function') {
-        result[key] = value.toString()
-      } else if (typeof value === 'object' && value !== null) {
-        result[key] = sanitizeObject(value)
+function mutateEventObject(
+  path: (string | number)[],
+  value: unknown,
+  obj: AnyEventObject,
+): AnyEventObject {
+  const lastIndex = path.length - 1
+  let ref = obj
+  for (let i = 0; i <= lastIndex; i++) {
+    const key = path[i]
+    if (i === lastIndex) {
+      ref[key] = value
+    } else {
+      if (typeof ref[key] !== 'object' || ref[key] === null) {
+        ref[key] = {}
+      }
+      ref = ref[key]
+    }
+  }
+  return obj
+}
+
+function truncate(str: string, num = 10) {
+  if (str.length <= num) {
+    return str
+  } else {
+    return str.slice(0, num) + '…'
+  }
+}
+
+const safeBuiltins = [
+  Promise,
+  Date,
+  RegExp,
+]
+
+function isJSONSafe(
+  value: unknown,
+): value is
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | bigint
+  | Date
+  | Promise<any>
+  | RegExp
+  | WeakSet<any>
+  | WeakMap<any, any> {
+  return typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean' ||
+    typeof value === 'bigint' ||
+    typeof value === 'undefined' ||
+    value === null ||
+    (typeof value === 'object' && safeBuiltins.some((c) => value instanceof c))
+}
+
+type BasicType =
+  | string
+  | number
+  | bigint
+  | boolean
+  | symbol
+  | null
+  | undefined
+  | object
+
+type IterationQueueItem = [
+  (string | number)[],
+  | Record<string, BasicType>
+  | BasicType[],
+]
+
+function isActorRef(x: unknown): x is Interpreter<any> {
+  return x instanceof Interpreter
+}
+
+/**
+ * Returns an iterator for [key, value] pairs from object, array, map, or set.
+ */
+// function getIterator<T>(x: Record<string, T> | T[] | Set<T> | Map<string, T>) {
+function getIterator<T>(x: Record<string, T> | T[] | Map<string, T>) {
+  if (Array.isArray(x)) {
+    return x.entries()
+  }
+  // if (x instanceof Set) {
+  //   return x.entries()
+  // }
+  if (x instanceof Map) {
+    return x.entries()
+  }
+  return Object.entries(x).values()
+}
+
+/**
+ * Sanitizes an event object by removing circular references and pre-formatting unserializable properties.
+ */
+function sanitizeEventObject(
+  event: AnyEventObject,
+): AnyEventObject {
+  if (typeof event !== 'object' || event === null) {
+    return event
+  }
+  const queue: IterationQueueItem[] = [[[], event]]
+  const seen = new WeakSet()
+  const sanitized: AnyEventObject = {
+    type: event.type,
+  }
+  while (queue.length > 0) {
+    const [path, obj] = queue.shift() as IterationQueueItem
+
+    for (const [key, val] of getIterator(obj)) {
+      if (isJSONSafe(val)) {
+        mutateEventObject([...path, key], val, sanitized)
+      } else if (typeof val === 'function') {
+        mutateEventObject(
+          [...path, key],
+          '<function>: ' + truncate(val.toString(), 20),
+          sanitized,
+        )
+      } else if (typeof val === 'symbol') {
+        mutateEventObject(
+          [...path, key],
+          '<symbol>: ' + truncate(val.toString(), 20),
+          sanitized,
+        )
+      } else if (isActorRef(val)) {
+        // actor refs need to be simplified, otherwise they are not going to be passed through window.dispatchEvent
+        const simplifiedActor = {
+          id: val.id,
+          sessionId: val.sessionId,
+          status: val.status,
+        }
+        mutateEventObject([...path, key], simplifiedActor, sanitized)
+      } else if (val instanceof Map || val instanceof Set) {
+        // TODO sanitize maps and sets properly
+        // Sets should be converted to arrays
+        // Maps should be converted to plain objects but only if they use string keys
+        mutateEventObject([...path, key], {}, sanitized)
+      } else if (Array.isArray(val)) {
+        if (seen.has(val)) {
+          mutateEventObject([...path, key], '<circular>', sanitized)
+        } else {
+          seen.add(val)
+          queue.push([
+            [...path, key],
+            val,
+          ])
+          mutateEventObject([...path, key], [], sanitized)
+        }
+      } else if (typeof val === 'object' && val !== null) {
+        if (seen.has(val)) {
+          mutateEventObject([...path, key], '<circular>', sanitized)
+        } else {
+          const sanitizedVal = (isEventObject(val))
+            ? sanitizeBrowserEvent(val)
+            : val
+          seen.add(sanitizedVal)
+          queue.push([
+            [...path, key],
+            sanitizedVal as Record<string, BasicType>,
+          ])
+          mutateEventObject([...path, key], {}, sanitized)
+        }
       } else {
-        result[key] = value
+        const sink: never = val
+        console.error('Unexpected value type', typeof sink)
       }
     }
   }
-  return result as T
+  return sanitized
 }
 
-export function sanitizeReactEvent(event: AnyEventObject): AnyEventObject {
+export function serializeSnapshot(snapshot?: unknown): string | undefined {
+  if (snapshot == null) {
+    return undefined
+  }
+  // synthetic react events and events with circular refs must be sanitized because they are not serializable
+  if (
+    typeof snapshot === 'object' && snapshot !== null
+  ) {
+    if ('event' in snapshot) {
+      const evt = (snapshot as any).event
+      if (isEventObject(evt)) {
+        ;(snapshot as any).event = sanitizeEventObject(evt)
+      }
+    }
+    if ('_event' in snapshot) {
+      const evt = (snapshot as any)._event
+      if (isEventObject(evt)) {
+        ;(snapshot as any)._event = sanitizeEventObject(evt)
+      }
+    }
+  }
+  return JSON.stringify(snapshot)
+}
+
+/**
+ * Strips unserializable props from native events and React events wrapping native events
+ */
+function sanitizeBrowserEvent(event: AnyEventObject): AnyEventObject {
+  if (event instanceof Event) {
+    const cloned: AnyEventObject = {
+      type: event.type,
+    }
+    const skippedKeys = [
+      'view',
+      'target',
+      'currentTarget',
+      'relatedTarget',
+      'srcElement',
+    ]
+    for (const key in event) {
+      if (
+        !skippedKeys.includes(key) &&
+        !(event[key as keyof typeof event] instanceof Element)
+      ) {
+        cloned[key] = event[key as keyof typeof event]
+      }
+    }
+    return cloned
+  }
   for (const k in event) {
     const v = event[k]
-    if (v?.nativeEvent instanceof Event) {
+    if (v instanceof Event || v?.nativeEvent instanceof Event) {
       v.view = undefined
       v.target = undefined
       v.currentTarget = undefined
@@ -239,10 +446,9 @@ export function createInspectedActorObject(
     actorRef: actor,
     sessionId: '',
     parent: undefined,
-    snapshot:
-      (isInterpreter && actor.initialized) || !isInterpreter
-        ? actor.getSnapshot()
-        : null,
+    snapshot: (isInterpreter && actor.initialized) || !isInterpreter
+      ? actor.getSnapshot()
+      : null,
     machine: undefined,
     events: [],
     createdAt: Date.now(),
@@ -266,8 +472,8 @@ export function createInspectedActorObject(
     inspectedActor.machine = actor.machine.definition
     inspectedActor.type = ActorTypes.machine
   } else {
-    inspectedActor.sessionId =
-      globalThis.crypto?.randomUUID() ?? String(Math.round(Math.random() * 1e6))
+    inspectedActor.sessionId = globalThis.crypto?.randomUUID() ??
+      String(Math.round(Math.random() * 1e6))
     inspectedActor.type = getActorType(actor)
   }
   return inspectedActor
@@ -279,7 +485,7 @@ export function createInspectedEventObject(
 ): InspectedEventObject {
   return {
     name: event.name,
-    data: sanitizeObject(event.data),
+    data: sanitizeEventObject(event.data),
     origin: event.origin,
     createdAt: Date.now(),
     transitionType: getTransitionInfo(actor),

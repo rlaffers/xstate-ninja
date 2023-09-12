@@ -1,17 +1,16 @@
 import type { AnyEventObject, SCXML } from 'xstate'
 import {
-  InspectedEventObject,
+  type ExtensionSettings,
   InspectedActorObject,
+  InspectedEventObject,
   SerializedExtendedInspectedActorObject,
   SerializedInspectedActorObject,
-  type ExtensionSettings,
 } from './types'
 import {
-  isInterpreterLike,
-  serializeActor,
   createInspectedEventObject,
-  sanitizeReactEvent,
-  isEventObject,
+  isInterpreterLike,
+  serializeInspectedActor,
+  serializeSnapshot,
 } from './utils'
 
 // client -> inspector
@@ -141,7 +140,7 @@ export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
         machine: isInterpreterLike(actor.actorRef)
           ? JSON.stringify(actor.actorRef.machine)
           : undefined,
-        inspectedActor: serializeActor(actor),
+        inspectedActor: serializeInspectedActor(actor),
       },
     })
   }
@@ -154,20 +153,12 @@ export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
     actor: InspectedActorObject,
     scxmlEvent: SCXML.Event<AnyEventObject>,
   ) {
-    const snapshot = actor.actorRef.getSnapshot() as unknown
-    // synthetic react events must be sanitized because they are not serializable
-    if (typeof snapshot === 'object' && snapshot !== null && 'event' in snapshot) {
-      const evt = (snapshot as any).event
-      if (isEventObject(evt)) {
-        (snapshot as any).event = sanitizeReactEvent(evt)
-      }
-    }
     super(EventTypes.update, {
       detail: {
         type: EventTypes.update,
         sessionId: actor.sessionId,
         actorId: actor.actorRef.id,
-        snapshot: snapshot != null ? JSON.stringify(snapshot) : undefined,
+        snapshot: serializeSnapshot(actor.actorRef.getSnapshot()),
         createdAt: Date.now(),
         status: isInterpreterLike(actor.actorRef) ? actor.actorRef.status : 0,
         event: createInspectedEventObject(scxmlEvent, actor.actorRef),
@@ -180,12 +171,11 @@ export class UnregisterEvent extends CustomEvent<XStateNinjaUnregisterEvent> {
   type: EventTypes.unregister = EventTypes.unregister
 
   constructor(actor: InspectedActorObject) {
-    const snapshot = actor.actorRef.getSnapshot()
     super(EventTypes.unregister, {
       detail: {
         type: EventTypes.unregister,
         sessionId: actor.sessionId,
-        snapshot: snapshot != null ? JSON.stringify(snapshot) : undefined,
+        snapshot: serializeSnapshot(actor.actorRef.getSnapshot()),
         createdAt: Date.now(),
         status: isInterpreterLike(actor.actorRef) ? actor.actorRef.status : 0,
         dead: actor.dead,
@@ -246,7 +236,8 @@ export class SendEvent extends CustomEvent<XStateInspectSendEvent> {
   }
 }
 
-export class DeadActorsClearedEvent extends CustomEvent<XStateNinjaDeadActorsClearedEvent> {
+export class DeadActorsClearedEvent
+  extends CustomEvent<XStateNinjaDeadActorsClearedEvent> {
   type: EventTypes.deadActorsCleared = EventTypes.deadActorsCleared
 
   constructor() {
@@ -271,10 +262,7 @@ export class ActorsEvent extends CustomEvent<XStateInspectActorsEvent> {
               sessionId: actor.sessionId,
               parent: actor.parent,
               machine: JSON.stringify(actor.machine),
-              snapshot:
-                actor.snapshot != null
-                  ? JSON.stringify(actor.snapshot)
-                  : undefined,
+              snapshot: serializeSnapshot(actor.snapshot),
               createdAt: actor.createdAt,
             }
             return result
@@ -286,7 +274,7 @@ export class ActorsEvent extends CustomEvent<XStateInspectActorsEvent> {
             result: Record<string, SerializedExtendedInspectedActorObject>,
             actor,
           ) => {
-            result[actor.sessionId] = serializeActor(actor)
+            result[actor.sessionId] = serializeInspectedActor(actor)
             return result
           },
           {},
@@ -296,7 +284,8 @@ export class ActorsEvent extends CustomEvent<XStateInspectActorsEvent> {
   }
 }
 
-export class SettingsChangedEvent extends CustomEvent<XStateNinjaSettingsChangedEvent> {
+export class SettingsChangedEvent
+  extends CustomEvent<XStateNinjaSettingsChangedEvent> {
   type: EventTypes.settingsChanged = EventTypes.settingsChanged
 
   constructor(settings: ExtensionSettings) {
@@ -309,7 +298,8 @@ export class SettingsChangedEvent extends CustomEvent<XStateNinjaSettingsChanged
   }
 }
 
-export class InspectorCreatedEvent extends CustomEvent<XStateNinjaInspectorCreatedEvent> {
+export class InspectorCreatedEvent
+  extends CustomEvent<XStateNinjaInspectorCreatedEvent> {
   type: EventTypes.inspectorCreated = EventTypes.inspectorCreated
 
   constructor() {
