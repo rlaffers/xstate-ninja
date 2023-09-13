@@ -1,10 +1,16 @@
-import { createMachine, actions } from 'xstate'
+import { actions, createMachine } from 'xstate'
 import playMachine from './play-machine'
 
 const { assign, forwardTo, send, pure, log } = actions
 
 // TODO cb, promise services
 // TODO in guards
+const circular: Record<string, any> = {}
+const complex = {
+  description: 'contains circular refs',
+  circular,
+}
+circular.ref = complex
 
 export default createMachine(
   {
@@ -12,6 +18,7 @@ export default createMachine(
     predictableActionArguments: true,
     context: {
       progress: 0,
+      circular,
     },
     initial: 'Off',
     states: {
