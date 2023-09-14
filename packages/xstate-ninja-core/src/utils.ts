@@ -139,18 +139,25 @@ export function serializeInspectedActor(
   serialized.snapshot = serializeSnapshot(serialized.snapshot)
   serialized.actorId = actor.actorRef.id
   if (serialized.machine !== undefined) {
+    if (
+      typeof serialized.machine === 'object' &&
+      isContextObject(serialized.machine.context)
+    ) {
+      serialized.machine.context = sanitizeObject(serialized.machine.context)
+    }
+
     serialized.machine = stringifySafely(serialized.machine)
   }
   return serialized as SerializedExtendedInspectedActorObject
 }
 
-function mutateEventObject(
+function mutateObject<T extends Record<string | symbol, unknown>>(
   path: (string | number)[],
   value: unknown,
-  obj: AnyEventObject,
-): AnyEventObject {
+  obj: T,
+): Record<keyof T, unknown> {
   const lastIndex = path.length - 1
-  let ref = obj
+  let ref: any = obj
   for (let i = 0; i <= lastIndex; i++) {
     const key = path[i]
     if (i === lastIndex) {
@@ -173,11 +180,7 @@ function truncate(str: string, num = 10) {
   }
 }
 
-const safeBuiltins = [
-  Promise,
-  Date,
-  RegExp,
-]
+const safeBuiltins = [Promise, Date, RegExp]
 
 function isJSONSafe(
   value: unknown,
@@ -190,32 +193,21 @@ function isJSONSafe(
   | bigint
   | Date
   | Promise<any>
-  | RegExp
-  | WeakSet<any>
-  | WeakMap<any, any> {
-  return typeof value === 'string' ||
+  | RegExp {
+  return (
+    typeof value === 'string' ||
     typeof value === 'number' ||
     typeof value === 'boolean' ||
     typeof value === 'bigint' ||
     typeof value === 'undefined' ||
     value === null ||
     (typeof value === 'object' && safeBuiltins.some((c) => value instanceof c))
+  )
 }
-
-type BasicType =
-  | string
-  | number
-  | bigint
-  | boolean
-  | symbol
-  | null
-  | undefined
-  | object
 
 type IterationQueueItem = [
   (string | number)[],
-  | Record<string, BasicType>
-  | BasicType[],
+  Record<string, unknown> | unknown[],
 ]
 
 function isActorRef(x: unknown): x is Interpreter<any> {
@@ -240,33 +232,33 @@ function getIterator<T>(x: Record<string, T> | T[] | Map<string, T>) {
 }
 
 /**
- * Sanitizes an event object by removing circular references and pre-formatting unserializable properties.
+ * Sanitizes an object by removing circular references and pre-formatting unserializable properties.
+ * If the passed object is AnyEventObject, this function will return a sanitized AnyEventObject (the "type" property is
+ * guaranteed to remain an unchanged string).
  */
-function sanitizeEventObject(
-  event: AnyEventObject,
-): AnyEventObject {
-  if (typeof event !== 'object' || event === null) {
-    return event
-  }
-  const queue: IterationQueueItem[] = [[[], event]]
+export function sanitizeObject<T extends Record<string, unknown>>(
+  unsafeObject: T,
+): T extends AnyEventObject ? Record<keyof T, unknown> & AnyEventObject
+  : Record<keyof T, unknown> {
+  const queue: IterationQueueItem[] = [[[], unsafeObject]]
   const seen = new WeakSet()
-  const sanitized: AnyEventObject = {
-    type: event.type,
-  }
+
+  const sanitized: Record<string, unknown> = {}
+
   while (queue.length > 0) {
     const [path, obj] = queue.shift() as IterationQueueItem
 
     for (const [key, val] of getIterator(obj)) {
       if (isJSONSafe(val)) {
-        mutateEventObject([...path, key], val, sanitized)
+        mutateObject([...path, key], val, sanitized)
       } else if (typeof val === 'function') {
-        mutateEventObject(
+        mutateObject(
           [...path, key],
           '<function>: ' + truncate(val.toString(), 20),
           sanitized,
         )
       } else if (typeof val === 'symbol') {
-        mutateEventObject(
+        mutateObject(
           [...path, key],
           '<symbol>: ' + truncate(val.toString(), 20),
           sanitized,
@@ -278,44 +270,40 @@ function sanitizeEventObject(
           sessionId: val.sessionId,
           status: val.status,
         }
-        mutateEventObject([...path, key], simplifiedActor, sanitized)
+        mutateObject([...path, key], simplifiedActor, sanitized)
       } else if (val instanceof Map || val instanceof Set) {
         // TODO sanitize maps and sets properly
         // Sets should be converted to arrays
         // Maps should be converted to plain objects but only if they use string keys
-        mutateEventObject([...path, key], {}, sanitized)
+        mutateObject([...path, key], {}, sanitized)
       } else if (Array.isArray(val)) {
         if (seen.has(val)) {
-          mutateEventObject([...path, key], '<circular>', sanitized)
+          mutateObject([...path, key], '<circular>', sanitized)
         } else {
           seen.add(val)
-          queue.push([
-            [...path, key],
-            val,
-          ])
-          mutateEventObject([...path, key], [], sanitized)
+          queue.push([[...path, key], val])
+          mutateObject([...path, key], [], sanitized)
         }
       } else if (typeof val === 'object' && val !== null) {
         if (seen.has(val)) {
-          mutateEventObject([...path, key], '<circular>', sanitized)
+          mutateObject([...path, key], '<circular>', sanitized)
         } else {
-          const sanitizedVal = (isEventObject(val))
+          const sanitizedVal = isEventObject(val)
             ? sanitizeBrowserEvent(val)
             : val
           seen.add(sanitizedVal)
-          queue.push([
-            [...path, key],
-            sanitizedVal as Record<string, BasicType>,
-          ])
-          mutateEventObject([...path, key], {}, sanitized)
+          queue.push([[...path, key], sanitizedVal as Record<string, unknown>])
+          mutateObject([...path, key], {}, sanitized)
         }
       } else {
-        const sink: never = val
-        console.error('Unexpected value type', typeof sink)
+        console.error(`Unexpected value type: [${typeof val}]`, val)
+        mutateObject([...path, key], '<sanitized unexpected value>', sanitized)
       }
     }
   }
-  return sanitized
+  return sanitized as T extends AnyEventObject
+    ? Record<keyof T, unknown> & AnyEventObject
+    : Record<keyof T, unknown>
 }
 
 export function serializeSnapshot(snapshot?: unknown): string | undefined {
@@ -323,20 +311,15 @@ export function serializeSnapshot(snapshot?: unknown): string | undefined {
     return undefined
   }
   // synthetic react events and events with circular refs must be sanitized because they are not serializable
-  if (
-    typeof snapshot === 'object' && snapshot !== null
-  ) {
-    if ('event' in snapshot) {
-      const evt = (snapshot as any).event
-      if (isEventObject(evt)) {
-        ;(snapshot as any).event = sanitizeEventObject(evt)
-      }
+  if (typeof snapshot === 'object' && snapshot !== null) {
+    if ('event' in snapshot && isEventObject(snapshot.event)) {
+      snapshot.event = sanitizeObject(snapshot.event)
     }
-    if ('_event' in snapshot) {
-      const evt = (snapshot as any)._event
-      if (isEventObject(evt)) {
-        ;(snapshot as any)._event = sanitizeEventObject(evt)
-      }
+    if ('_event' in snapshot && isEventObject(snapshot._event)) {
+      snapshot._event = sanitizeObject(snapshot._event)
+    }
+    if ('context' in snapshot && isContextObject(snapshot.context)) {
+      snapshot.context = sanitizeObject(snapshot.context)
     }
   }
   return stringifySafely(snapshot)
@@ -381,6 +364,14 @@ function sanitizeBrowserEvent(event: AnyEventObject): AnyEventObject {
 
 export function isEventObject(x: any): x is AnyEventObject {
   return x && typeof x === 'object' && typeof x.type === 'string'
+}
+
+export function isContextObject(x: any): x is Record<string, unknown> {
+  return (
+    typeof x === 'object' &&
+    x != null &&
+    Object.keys(x).every((k) => typeof k === 'string')
+  )
 }
 
 export function findChildBySessionId(
@@ -485,7 +476,7 @@ export function createInspectedEventObject(
 ): InspectedEventObject {
   return {
     name: event.name,
-    data: sanitizeEventObject(event.data),
+    data: sanitizeObject(event.data),
     origin: event.origin,
     createdAt: Date.now(),
     transitionType: getTransitionInfo(actor),
@@ -587,4 +578,8 @@ export function stringifySafely(value: any): string | undefined {
     console.error('Failed to stringify:', { value, error })
     return undefined
   }
+}
+
+export function isActorType(x: any): x is ActorTypes {
+  return x in ActorTypes
 }

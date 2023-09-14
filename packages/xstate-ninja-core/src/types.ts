@@ -1,8 +1,8 @@
 import type {
   AnyActorRef,
-  StateNodeDefinition as StateMachineDefinition,
-  EventObject,
   AnyEventObject,
+  EventObject,
+  StateNodeDefinition as StateMachineDefinition,
   Subscription,
   TransitionConfig,
   TransitionsConfig,
@@ -155,4 +155,11 @@ export type ExtensionSettings = {
   trackedActorTypes: ActorTypes[]
   deadHistorySize: number
   showTimestamps: boolean
+}
+
+/**
+ * Creates a new type out of T where all properties are mutable.
+ */
+export type Mutable<T> = {
+  -readonly [K in keyof T]: T[K]
 }

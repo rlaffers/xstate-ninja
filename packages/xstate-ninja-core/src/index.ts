@@ -1,5 +1,5 @@
 import { interpret as xstateInterpret } from 'xstate'
-import type { InterpreterOptions, AnyStateMachine } from 'xstate'
+import type { AnyStateMachine, InterpreterOptions } from 'xstate'
 import {
   XStateNinjaInspector,
   XStateNinjaOptions,
@@ -7,7 +7,7 @@ import {
 
 export * from './events'
 export * from './types'
-export { LogLevels, ActorTypes } from './XStateNinjaInspector'
+export { isActorType, LogLevels } from './XStateNinjaInspector'
 
 let inspector: XStateNinjaInspector
 /**

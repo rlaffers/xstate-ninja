@@ -8,7 +8,9 @@ import {
 } from './types'
 import {
   createInspectedEventObject,
+  isContextObject,
   isInterpreterLike,
+  sanitizeObject,
   serializeInspectedActor,
   serializeSnapshot,
   stringifySafely,
@@ -133,6 +135,14 @@ export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
   type: EventTypes.actor = EventTypes.actor
 
   constructor(actor: InspectedActorObject) {
+    if (
+      isInterpreterLike(actor.actorRef) &&
+      isContextObject(actor.actorRef.machine.context)
+    ) {
+      ;(actor.actorRef.machine as any)._context = sanitizeObject(
+        actor.actorRef.machine.context,
+      )
+    }
     super(EventTypes.actor, {
       detail: {
         type: EventTypes.actor,
@@ -229,8 +239,8 @@ export class SendEvent extends CustomEvent<XStateInspectSendEvent> {
     super(EventTypes.send, {
       detail: {
         type: EventTypes.send,
-        sessionId: sessionId,
-        event: event,
+        sessionId,
+        event,
         createdAt: Date.now(),
       },
     })

@@ -20,6 +20,7 @@ import { ActorTypes } from './types'
 import {
   createInspectedActorObject,
   findChildBySessionId,
+  isActorType,
   isEventLike,
   isInterpreterLike,
 } from './utils'
@@ -37,7 +38,7 @@ import {
   UpdateEvent,
 } from './events'
 
-export { ActorTypes }
+export { ActorTypes, isActorType }
 
 export enum LogLevels {
   error,
