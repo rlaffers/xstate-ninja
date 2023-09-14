@@ -6,20 +6,16 @@
   "scripts": {
     "build": "pnpm -r run build",
     "dev": "pnpm -r --parallel --filter=./packages/* --filter=./example --filter=./extension run dev",
-    "lint": "eslint --no-error-on-unmatched-pattern --cache packages/!magic-json-tree example/ example-svelte/ extension/ example-react/ && svelte-check --workspace=./packages/magic-json-tree",
-    "lint:all": "eslint --no-error-on-unmatched-pattern packages/ example/ example-svelte/ extension/ example-react/",
-    "lint:fix": "eslint --fix --no-error-on-unmatched-pattern packages/ example/ example-svelte/ extension/ example-react/",
+    "lint": "eslint --no-error-on-unmatched-pattern --cache packages/ example/ example-react/ example-svelte/ example-vue/ extension/",
+    "lint:fix": "eslint --fix --no-error-on-unmatched-pattern packages/ example/ example-svelte/ example-react/ example-vue/ extension/ packages/",
+    "check": "svelte-check --workspace=./packages/magic-json-tree && svelte-check --workspace=./example-svelte && svelte-check --workspace=./extension",
     "test": "pnpm test -r",
-    "format": "prettier --write README.md packages/**/*.{js,ts,svelte} extension/**/*.{js,ts,svelte} example/**/*.{ts,js} example-svelte/**/*.{js,ts,svelte}",
-    "format:check": "prettier --check README.md packages/**/*.{js,svelte} extension/**/*.{js,svelte} example-svelte/**/*.{js,svelte}",
+    "format": "prettier --write README.md packages/**/*.{js,ts,svelte} extension/**/*.{js,ts,svelte} example/**/*.{ts,js} example-svelte/**/*.{js,ts,svelte} example-react/**/*.{ts,js} example-vue/**/*.{vue,ts,js}",
+    "format:check": "prettier --check README.md packages/**/*.{js,svelte} extension/**/*.{js,svelte} example-svelte/**/*.{js,svelte} example-react/**/*.{tsx,ts,js} example-vue/**/*.{vue,ts,js} example/**/*.{ts,js}",
     "prepare": "husky install",
     "semantic-release": "semantic-release"
   },
-  "keywords": [
-    "xstate",
-    "state machines",
-    "fsm"
-  ],
+  "keywords": ["xstate", "state machines", "fsm"],
   "author": "Richard Laffers",
   "license": "ICS",
   "devDependencies": {
@@ -32,17 +28,18 @@
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "8",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-config-standard": "^16.0.3",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-import-resolver-typescript": "^3.6.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.2.0",
-    "eslint-plugin-svelte3": "^4.0.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-svelte": "^2.33.1",
     "husky": "^7.0.0",
     "prettier": "^2.5.1",
     "prettier-plugin-svelte": "^2.7.0",
     "semantic-release": "^19.0.2",
     "svelte": "^3.49.0",
-    "svelte-check": "^2.9.2",
+    "svelte-check": "^3.5.1",
     "vite": "^2.9.9",
     "vite-plugin-web-extension": "^1.4.0"
   },
@@ -59,5 +56,8 @@
   },
   "volta": {
     "node": "18.17.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
