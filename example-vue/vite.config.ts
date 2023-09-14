@@ -33,11 +33,7 @@ export default defineConfig({
 
     // https://github.com/antfu/unplugin-auto-import
     AutoImport({
-      imports: [
-        'vue',
-        'vue-router',
-        '@vueuse/core',
-      ],
+      imports: ['vue', 'vue-router', '@vueuse/core'],
       dts: true,
       dirs: [
         // './src/composables',
@@ -51,7 +47,6 @@ export default defineConfig({
       dts: true,
     })
     */
-
   ],
 
   // https://github.com/vitest-dev/vitest

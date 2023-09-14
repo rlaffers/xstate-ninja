@@ -4,7 +4,9 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
-    "typecheck": "vue-tsc --noEmit",
+    "check": "vue-tsc --noEmit",
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix src/",
     "preview": "vite preview",
     "test": "vitest",
     "up": "taze major -I"
@@ -27,6 +29,7 @@
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue-macros/volar": "^0.10.2",
     "@vue/test-utils": "^2.3.2",
+    "eslint": "8",
     "jsdom": "^22.1.0",
     "pnpm": "^8.6.0",
     "sass": "^1.65.1",
