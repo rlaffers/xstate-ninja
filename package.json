@@ -8,10 +8,10 @@
     "dev": "pnpm -r --parallel --filter=./packages/* --filter=./example --filter=./extension run dev",
     "lint": "eslint --no-error-on-unmatched-pattern --cache packages/ example/ example-react/ example-svelte/ example-vue/ extension/",
     "lint:fix": "eslint --fix --no-error-on-unmatched-pattern packages/ example/ example-svelte/ example-react/ example-vue/ extension/ packages/",
-    "check": "svelte-check --workspace=./packages/magic-json-tree && svelte-check --workspace=./example-svelte && svelte-check --workspace=./extension",
+    "check": "pnpm -r -F xstate-ninja -F magic-json-tree -F example-svelte -F xstate-ninja-extension check",
     "test": "pnpm test -r",
     "format": "prettier --write README.md packages/**/*.{js,ts,svelte} extension/**/*.{js,ts,svelte} example/**/*.{ts,js} example-svelte/**/*.{js,ts,svelte} example-react/**/*.{ts,js} example-vue/**/*.{vue,ts,js}",
-    "format:check": "prettier --check README.md packages/**/*.{js,svelte} extension/**/*.{js,svelte} example-svelte/**/*.{js,svelte} example-react/**/*.{tsx,ts,js} example-vue/**/*.{vue,ts,js} example/**/*.{ts,js}",
+    "format:check": "prettier --check README.md packages/**/*.{js,ts,svelte} extension/**/*.{js,ts,svelte} example-svelte/**/*.{js,ts,svelte} example-react/**/*.{tsx,ts,js} example-vue/**/*.{vue,ts,js} example/**/*.{ts,js}",
     "prepare": "husky install",
     "semantic-release": "semantic-release"
   },

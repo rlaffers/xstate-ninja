@@ -364,6 +364,9 @@ importers:
       concurrently:
         specifier: ^7.3.0
         version: 7.3.0
+      eslint:
+        specifier: '8'
+        version: 8.49.0
       tslib:
         specifier: ^2.4.0
         version: 2.4.0

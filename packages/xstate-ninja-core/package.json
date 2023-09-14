@@ -29,10 +29,15 @@
   "scripts": {
     "dev": "concurrently \"tsc --watch --noEmit false --emitDeclarationOnly true\" \"vite build --watch\"",
     "build": "vite build && tsc --noEmit false --emitDeclarationOnly true",
-    "preview": "vite preview"
+    "check": "tsc --noEmit",
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix src/",
+    "preview": "vite preview",
+    "prepublish": "pnpm check && pnpm lint"
   },
   "devDependencies": {
     "concurrently": "^7.3.0",
+    "eslint": "8",
     "tslib": "^2.4.0",
     "typescript": "^5.2.2",
     "vite": "^3.0.0",
