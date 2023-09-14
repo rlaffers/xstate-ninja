@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
@@ -19,8 +19,8 @@
     "declarationDir": "dist",
     "declarationMap": false,
     "noEmitOnError": true,
-    "noEmit": true,
-    "emitDeclarationOnly": false
+    "noEmit": false,
+    "emitDeclarationOnly": true
   },
-  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "lib/**/*.ts", "lib/**/*.svelte"]
+  "include": ["lib/**/*.ts", "lib/**/*.svelte"]
 }

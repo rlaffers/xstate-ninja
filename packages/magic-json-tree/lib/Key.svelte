@@ -2,6 +2,7 @@
   import { defaultFormatter, type Formatter } from './utils'
 
   export let key: any = null
+  // eslint-disable-next-line @typescript-eslint/ban-types
   export let value: string | number | boolean | symbol | Function | undefined
   export let path: (number | string)[] = []
   export let format: Formatter = defaultFormatter

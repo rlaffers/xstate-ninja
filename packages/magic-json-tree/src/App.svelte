@@ -11,8 +11,7 @@
       purse: 'coins',
       belt: ['knife', 1, { name: 'bottle' }],
       backpack: null,
-      // @ts-ignore
-      map: new Map([
+      map: new Map<any, any>([
         ['foo', 123],
         [[456], ['one', 'two', 'three']],
         ['food', { taste: 'apple', smell: 'banana' }],

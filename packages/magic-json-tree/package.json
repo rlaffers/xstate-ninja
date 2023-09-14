@@ -27,10 +27,12 @@
   "sideEffects": false,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && tsc -p tsconfig.build.json",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "lint": "svelte-check"
+    "lint": "eslint lib/ src/",
+    "lint:fix": "eslint --fix lib/ src/",
+    "prepublish": "pnpm check"
   },
   "peerDependencies": {
     "svelte": "^3.0.0"
@@ -38,6 +40,7 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.1.0",
     "@tsconfig/svelte": "^5.0.2",
+    "eslint": "8",
     "svelte": "^3.59.2",
     "svelte-check": "^3.5.1",
     "svelte-preprocess": "^5.0.4",
@@ -51,5 +54,8 @@
   },
   "volta": {
     "node": "18.17.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }

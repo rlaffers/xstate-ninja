@@ -63,7 +63,7 @@
     }
   }
 
-  let expanded = Array.isArray(expand) ? true : expand >= 1 ? true : false
+  let expanded = Array.isArray(expand) ? true : expand >= 1
   function toggleExpanded(event: Event) {
     expanded = !expanded
     event.preventDefault()

@@ -12,14 +12,14 @@
   export let key: any
   export let value: any
   export let path: (number | string)[] = []
-  export let formatKey: Formatter | undefined = undefined
-  export let formatValue: Formatter | undefined = undefined
-  export let formatSummary: Formatter | undefined = undefined
+  export let formatKey: Formatter | undefined
+  export let formatValue: Formatter | undefined
+  export let formatSummary: Formatter | undefined
   export let level: number = 2
   export let expand: number | (string | number)[]
   export let sorted: boolean = false
 
-  let expanded = Array.isArray(expand) ? true : expand >= level ? true : false
+  let expanded = Array.isArray(expand) ? true : expand >= level
   function toggleExpanded(event: Event) {
     expanded = !expanded
     event.preventDefault()

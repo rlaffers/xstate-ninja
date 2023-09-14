@@ -1,10 +1,11 @@
 <script lang="ts">
   import { getType, type Formatter } from './utils'
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   export let value: string | number | boolean | symbol | Function | undefined
   export let key: any = null
   export let path: (number | string)[] = []
-  export let format: Formatter = ([, value]) => `"${value}"`
+  export let format: Formatter = ([, value]) => `"${String(value)}"`
 </script>
 
 <div class="magic-json-tree-value magic-json-tree-value-{getType(value)}">
