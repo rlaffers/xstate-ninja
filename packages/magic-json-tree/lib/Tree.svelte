@@ -2,35 +2,39 @@
   import Item from './Item.svelte'
   import Value from './Value.svelte'
   import Summary from './Summary.svelte'
-  import { getEntries, getSortedEntries } from './utils'
+  import { getEntries, getSortedEntries, type Formatter } from './utils'
 
   export let value: any
   export let expand: number | (string | number)[] = 0
-  export let formatKey: (entry: [any, any], path: any[]) => any = null
-  export let formatValue: (entry: [any, any], path: any[]) => any = null
-  export let formatSummary: (entry: [any, any], path: any[]) => any = null
+  export let formatKey: Formatter | undefined = undefined
+  export let formatValue: Formatter | undefined = undefined
+  export let formatSummary: Formatter | undefined = undefined
   export let sorted: boolean = false
 
-  let safeFormatKey = null
-  $: safeFormatKey = formatKey
-    ? (entry: [any, any], p: any[]) => {
+  let safeFormatKey: Formatter | undefined
+  $: {
+    if (typeof formatKey === 'function') {
+      safeFormatKey = (entry: [any, any], p: any[]) => {
         try {
-          return formatKey(entry, p)
+          return formatKey!(entry, p)
         } catch (e) {
           console.error(
             'The passed `formatKey` function threw an error. An unformatted key will be rendered.\n',
             e,
           )
-          return entry[0]
+          const head = entry[0]
+          return head
         }
       }
-    : null
+    }
+  }
 
-  let safeFormatValue = null
-  $: safeFormatValue = formatValue
-    ? (entry: [any, any], p: any[]) => {
+  let safeFormatValue: Formatter | undefined
+  $: {
+    if (typeof formatValue === 'function') {
+      safeFormatValue = (entry: [any, any], p: any[]) => {
         try {
-          return formatValue(entry, p)
+          return formatValue!(entry, p)
         } catch (e) {
           console.error(
             'The passed `formatValue` function threw an error. An unformatted value will be rendered.\n',
@@ -39,13 +43,15 @@
           return entry[1]
         }
       }
-    : null
+    }
+  }
 
-  let safeFormatSummary = null
-  $: safeFormatSummary = formatSummary
-    ? (entry: [any, any], p: any[]) => {
+  let safeFormatSummary: Formatter | undefined
+  $: {
+    if (typeof formatSummary === 'function') {
+      safeFormatSummary = (entry: [any, any], p: any[]) => {
         try {
-          return formatSummary(entry, p)
+          return formatSummary!(entry, p)
         } catch (e) {
           console.error(
             'The passed `formatSummary` function threw an error. A default summary will be rendered.\n',
@@ -54,7 +60,8 @@
           return entry[1]
         }
       }
-    : null
+    }
+  }
 
   let expanded = Array.isArray(expand) ? true : expand >= 1 ? true : false
   function toggleExpanded(event: Event) {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getTypeSummary } from './utils'
+  import { getTypeSummary, type Formatter } from './utils'
 
   type ValueType =
     | Record<string, unknown>
@@ -10,7 +10,7 @@
   export let value: ValueType
 
   export let onClick: (event: MouseEvent) => void
-  export let format: (entry: [any, any], path: any[]) => any = null
+  export let format: Formatter | undefined
   export let key: any = null
   export let path: (number | string)[] = []
 </script>

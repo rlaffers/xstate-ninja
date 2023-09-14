@@ -18,10 +18,7 @@ export function getType(value: any): string {
 export function getEntries(
   obj: Record<string, unknown> | any[] | Map<any, any> | Set<any>,
 ): [any, any][] {
-  if (Array.isArray(obj)) {
-    return Object.keys(obj).map((k) => [k, obj[k]])
-  }
-  if ('entries' in obj && typeof obj.entries === 'function') {
+  if (Array.isArray(obj) || obj instanceof Map || obj instanceof Set) {
     return [...obj.entries()]
   }
   return Object.entries(obj)
@@ -47,4 +44,10 @@ export function getSortedEntries(
   obj: Record<string, unknown> | any[] | Map<any, any> | Set<any>,
 ) {
   return getEntries(obj).sort(([k1], [k2]) => ('' + k1).localeCompare(k2))
+}
+
+export type Formatter = (entry: [any, any], path: any[]) => string
+
+export const defaultFormatter: Formatter = ([k]) => {
+  return String(k)
 }

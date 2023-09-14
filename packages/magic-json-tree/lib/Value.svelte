@@ -1,19 +1,17 @@
 <script lang="ts">
-  import { getType } from './utils'
+  import { getType, type Formatter } from './utils'
 
   export let value: string | number | boolean | symbol | Function | undefined
   export let key: any = null
   export let path: (number | string)[] = []
-  export let format: (entry: [any, any], path: any[]) => any = null
+  export let format: Formatter = ([, value]) => `"${value}"`
 </script>
 
 <div class="magic-json-tree-value magic-json-tree-value-{getType(value)}">
   {#if typeof value === 'string'}
-    {format ? format([key, value], path) : `"${value}"`}
-  {:else if format}
-    {String(format([key, value], path))}
+    {format([key, value], path)}
   {:else}
-    {String(value)}
+    {format([key, value], path)}
   {/if}
 </div>
 

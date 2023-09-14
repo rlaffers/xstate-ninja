@@ -2,14 +2,19 @@
   import Key from './Key.svelte'
   import Value from './Value.svelte'
   import Summary from './Summary.svelte'
-  import { getEntries, getSortedEntries, getType } from './utils'
+  import {
+    getEntries,
+    getSortedEntries,
+    getType,
+    type Formatter,
+  } from './utils'
 
   export let key: any
   export let value: any
   export let path: (number | string)[] = []
-  export let formatKey: (entry: [any, any], path: any[]) => any = null
-  export let formatValue: (entry: [any, any], path: any[]) => any = null
-  export let formatSummary: (entry: [any, any], path: any[]) => any = null
+  export let formatKey: Formatter | undefined = undefined
+  export let formatValue: Formatter | undefined = undefined
+  export let formatSummary: Formatter | undefined = undefined
   export let level: number = 2
   export let expand: number | (string | number)[]
   export let sorted: boolean = false

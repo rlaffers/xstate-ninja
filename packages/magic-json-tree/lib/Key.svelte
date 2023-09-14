@@ -1,12 +1,14 @@
 <script lang="ts">
+  import { defaultFormatter, type Formatter } from './utils'
+
   export let key: any = null
   export let value: string | number | boolean | symbol | Function | undefined
   export let path: (number | string)[] = []
-  export let format: (entry: [any, any], path: any[]) => any = null
+  export let format: Formatter = defaultFormatter
 </script>
 
 <div class="magic-json-tree-key">
-  {format ? format([key, value], path) : String(key)}
+  {format([key, value], path)}
 </div>
 
 <style>
