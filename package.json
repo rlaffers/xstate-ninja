@@ -6,16 +6,20 @@
   "scripts": {
     "build": "pnpm -r run build",
     "dev": "pnpm -r --parallel --filter=./packages/* --filter=./example --filter=./extension run dev",
-    "lint": "eslint --no-error-on-unmatched-pattern --cache packages/ example/ example-react/ example-svelte/ example-vue/ extension/",
-    "lint:fix": "eslint --fix --no-error-on-unmatched-pattern packages/ example/ example-svelte/ example-react/ example-vue/ extension/ packages/",
-    "check": "pnpm -r -F xstate-ninja -F magic-json-tree -F example-svelte -F xstate-ninja-extension check",
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix",
+    "check": "pnpm -r check",
     "test": "pnpm test -r",
     "format": "prettier --write README.md packages/**/*.{js,ts,svelte} extension/**/*.{js,ts,svelte} example/**/*.{ts,js} example-svelte/**/*.{js,ts,svelte} example-react/**/*.{ts,js} example-vue/**/*.{vue,ts,js}",
     "format:check": "prettier --check README.md packages/**/*.{js,ts,svelte} extension/**/*.{js,ts,svelte} example-svelte/**/*.{js,ts,svelte} example-react/**/*.{tsx,ts,js} example-vue/**/*.{vue,ts,js} example/**/*.{ts,js}",
     "prepare": "husky install",
     "semantic-release": "semantic-release"
   },
-  "keywords": ["xstate", "state machines", "fsm"],
+  "keywords": [
+    "xstate",
+    "state machines",
+    "fsm"
+  ],
   "author": "Richard Laffers",
   "license": "ICS",
   "devDependencies": {
@@ -34,6 +38,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-svelte": "^2.33.1",
+    "eslint-plugin-vue": "^9.17.0",
     "husky": "^7.0.0",
     "prettier": "^2.5.1",
     "prettier-plugin-svelte": "^2.7.0",

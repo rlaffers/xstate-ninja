@@ -22,12 +22,16 @@
   "scripts": {
     "dev": "concurrently \"tsc --watch --noEmit false --emitDeclarationOnly true\" \"vite build --watch\"",
     "build": "vite build && tsc --noEmit false --emitDeclarationOnly true",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix src/",
+    "check": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",
     "@xstate/react": "^3.0.1",
     "concurrently": "^7.3.0",
+    "eslint": "8",
     "react": "^18.2.0",
     "tslib": "^2.4.0",
     "typescript": "^5.2.2",
