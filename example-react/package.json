@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix src/",
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "@xstate-ninja/react": "workspace:^1.1.2",
@@ -22,6 +25,7 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.1.0",
+    "eslint": "8",
     "typescript": "^5.2.2",
     "vite": "^3.1.0"
   },
