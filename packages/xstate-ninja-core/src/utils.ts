@@ -226,6 +226,48 @@ function getIterator<T>(x: Record<string, T> | T[] | Map<string, T>) {
   return Object.entries(x).values()
 }
 
+const equalsArray = (x: unknown[]) => (y: unknown[]): boolean => {
+  if (x.length !== y.length) {
+    return false
+  }
+  return x.every((e, i) => e === y[i])
+}
+
+function isCircularRef(
+  value: object | unknown[],
+  path: (string | number)[],
+  seen: WeakMap<object, (string | number)[][]>,
+): boolean {
+  const seenPaths = seen.get(value)
+  if (!seenPaths) {
+    return false
+  }
+  let toCheck = path
+  while (true) {
+    if (seenPaths.some(equalsArray(toCheck))) {
+      return true
+    }
+    if (toCheck.length > 0) {
+      toCheck = toCheck.slice(0, -1)
+    } else {
+      return false
+    }
+  }
+}
+
+function saveRefPath(
+  value: object | unknown[],
+  path: (string | number)[],
+  seen: WeakMap<object, (string | number)[][]>,
+): void {
+  const currentPaths = seen.get(value)
+  if (currentPaths) {
+    seen.set(value, [...currentPaths, path])
+  } else {
+    seen.set(value, [path])
+  }
+}
+
 /**
  * Sanitizes an object by removing circular references and pre-formatting unserializable properties.
  * If the passed object is AnyEventObject, this function will return a sanitized object. Returns a new object,
@@ -236,7 +278,12 @@ export function sanitizeObject<T extends Record<string, unknown>>(
 ): T extends AnyEventObject ? Record<keyof T, unknown> & AnyEventObject
   : Record<keyof T, unknown> {
   const queue: IterationQueueItem[] = [[[], unsafeObject]]
-  const seen = new WeakSet()
+  const seen = new WeakMap<object, (string | number)[][]>([
+    [
+      unsafeObject,
+      [[]],
+    ],
+  ])
 
   const sanitized: Record<string, unknown> = {}
 
@@ -272,22 +319,21 @@ export function sanitizeObject<T extends Record<string, unknown>>(
         // Maps should be converted to plain objects but only if they use string keys
         mutateObject([...path, key], {}, sanitized)
       } else if (Array.isArray(val)) {
-        // TODO make a smarter circular ref detection (only if the object is the same ref as higher up the current hierarchy)
-        if (seen.has(val)) {
+        if (isCircularRef(val, path, seen)) {
           mutateObject([...path, key], '<circular>', sanitized)
         } else {
-          seen.add(val)
+          saveRefPath(val, [...path, key], seen)
           queue.push([[...path, key], val])
           mutateObject([...path, key], [], sanitized)
         }
       } else if (typeof val === 'object' && val !== null) {
-        if (seen.has(val)) {
+        if (isCircularRef(val, path, seen)) {
           mutateObject([...path, key], '<circular>', sanitized)
         } else {
           const sanitizedVal = isEventObject(val)
             ? sanitizeBrowserEvent(val)
             : val
-          seen.add(sanitizedVal)
+          saveRefPath(sanitizedVal, [...path, key], seen)
           queue.push([[...path, key], sanitizedVal as Record<string, unknown>])
           mutateObject([...path, key], {}, sanitized)
         }
