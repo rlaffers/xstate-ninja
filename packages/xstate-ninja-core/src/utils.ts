@@ -205,6 +205,9 @@ function isJSONSafe(
   )
 }
 
+/**
+ * A tuple where first item is a path to a value in the object, and the second item is a object (or array).
+ */
 type IterationQueueItem = [
   (string | number)[],
   Record<string, unknown> | unknown[],
@@ -233,8 +236,8 @@ function getIterator<T>(x: Record<string, T> | T[] | Map<string, T>) {
 
 /**
  * Sanitizes an object by removing circular references and pre-formatting unserializable properties.
- * If the passed object is AnyEventObject, this function will return a sanitized AnyEventObject (the "type" property is
- * guaranteed to remain an unchanged string).
+ * If the passed object is AnyEventObject, this function will return a sanitized object. Returns a new object,
+ * does not mutate the passed object.
  */
 export function sanitizeObject<T extends Record<string, unknown>>(
   unsafeObject: T,
@@ -312,15 +315,19 @@ export function serializeSnapshot(snapshot?: unknown): string | undefined {
   }
   // synthetic react events and events with circular refs must be sanitized because they are not serializable
   if (typeof snapshot === 'object' && snapshot !== null) {
-    if ('event' in snapshot && isEventObject(snapshot.event)) {
-      snapshot.event = sanitizeObject(snapshot.event)
+    const sanitized = {
+      ...snapshot,
     }
-    if ('_event' in snapshot && isEventObject(snapshot._event)) {
-      snapshot._event = sanitizeObject(snapshot._event)
+    if ('event' in sanitized && isEventObject(sanitized.event)) {
+      sanitized.event = sanitizeObject(sanitized.event)
     }
-    if ('context' in snapshot && isContextObject(snapshot.context)) {
-      snapshot.context = sanitizeObject(snapshot.context)
+    if ('_event' in sanitized && isEventObject(sanitized._event)) {
+      sanitized._event = sanitizeObject(sanitized._event)
     }
+    if ('context' in sanitized && isContextObject(sanitized.context)) {
+      sanitized.context = sanitizeObject(sanitized.context)
+    }
+    return stringifySafely(sanitized)
   }
   return stringifySafely(snapshot)
 }
