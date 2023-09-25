@@ -8,6 +8,7 @@ import {
   InterpreterStatus,
   InvokeDefinition,
   type SCXML,
+  State,
   StateNode,
 } from 'xstate'
 import {
@@ -326,6 +327,9 @@ export function serializeSnapshot(snapshot?: unknown): string | undefined {
     }
     if ('context' in sanitized && isContextObject(sanitized.context)) {
       sanitized.context = sanitizeObject(sanitized.context)
+    }
+    if ('history' in sanitized && sanitized.history instanceof State) {
+      sanitized.history = {}
     }
     return stringifySafely(sanitized)
   }
