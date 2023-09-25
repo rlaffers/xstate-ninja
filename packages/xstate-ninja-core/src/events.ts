@@ -8,12 +8,10 @@ import {
 } from './types'
 import {
   createInspectedEventObject,
-  isContextObject,
   isInterpreterLike,
-  sanitizeObject,
   serializeInspectedActor,
+  serializeMachine,
   serializeSnapshot,
-  stringifySafely,
 } from './utils'
 
 // client -> inspector
@@ -135,22 +133,17 @@ export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
   type: EventTypes.actor = EventTypes.actor
 
   constructor(actor: InspectedActorObject) {
-    if (
-      isInterpreterLike(actor.actorRef) &&
-      isContextObject(actor.actorRef.machine.context)
-    ) {
-      ;(actor.actorRef.machine as any)._context = sanitizeObject(
-        actor.actorRef.machine.context,
-      )
+    let machine: string | undefined = undefined
+    if (actor.machine != null) {
+      machine = serializeMachine(actor.machine)
     }
+
     super(EventTypes.actor, {
       detail: {
         type: EventTypes.actor,
         sessionId: actor.sessionId,
         createdAt: Date.now(),
-        machine: isInterpreterLike(actor.actorRef)
-          ? stringifySafely(actor.actorRef.machine)
-          : undefined,
+        machine,
         inspectedActor: serializeInspectedActor(actor),
       },
     })
@@ -272,7 +265,9 @@ export class ActorsEvent extends CustomEvent<XStateInspectActorsEvent> {
             result[actor.sessionId] = {
               sessionId: actor.sessionId,
               parent: actor.parent,
-              machine: stringifySafely(actor.machine),
+              machine: actor.machine != null
+                ? serializeMachine(actor.machine)
+                : undefined,
               snapshot: serializeSnapshot(actor.snapshot),
               createdAt: actor.createdAt,
             }

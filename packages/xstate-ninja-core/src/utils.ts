@@ -10,6 +10,7 @@ import {
   type SCXML,
   State,
   StateNode,
+  StateNodeDefinition,
 } from 'xstate'
 import {
   ActorTypes,
@@ -111,45 +112,35 @@ function getStateNodeId(stateNode: StateNode): string {
   return `#${stateNode.id}`
 }
 
-export function omit(
-  names: (string | number)[],
-  obj: { [k: string]: any },
-): { [k: string]: any } {
-  const result: { [k: string]: any } = {}
-  const index: Record<string, 1> = {}
-  let idx = 0
-  const len = names.length
-
-  while (idx < len) {
-    index[names[idx]] = 1
-    idx += 1
+export function omit<
+  O extends { [k: string]: any },
+  K extends Extract<keyof O, string>,
+>(
+  names: K[],
+  obj: O,
+): Omit<O, K> {
+  const result: Record<keyof typeof obj, any> = {
+    ...obj,
   }
-
-  for (const prop in obj) {
-    if (!Object.prototype.hasOwnProperty.call(index, prop)) {
-      result[prop] = obj[prop]
-    }
-  }
+  names.forEach((prop) => {
+    delete result[prop]
+  })
   return result
 }
 
 export function serializeInspectedActor(
   actor: InspectedActorObject,
 ): SerializedExtendedInspectedActorObject {
-  const serialized = omit(['actorRef', 'subscription'], actor)
-  serialized.snapshot = serializeSnapshot(serialized.snapshot)
-  serialized.actorId = actor.actorRef.id
-  if (serialized.machine !== undefined) {
-    if (
-      typeof serialized.machine === 'object' &&
-      isContextObject(serialized.machine.context)
-    ) {
-      serialized.machine.context = sanitizeObject(serialized.machine.context)
-    }
-
-    serialized.machine = stringifySafely(serialized.machine)
+  const serialized: SerializedExtendedInspectedActorObject = {
+    ...omit(['actorRef', 'subscription'], actor),
+    snapshot: serializeSnapshot(actor.snapshot),
+    actorId: actor.actorRef.id,
+    machine: undefined,
   }
-  return serialized as SerializedExtendedInspectedActorObject
+  if (actor.machine !== undefined) {
+    serialized.machine = serializeMachine(actor.machine)
+  }
+  return serialized
 }
 
 function mutateObject<T extends Record<string | symbol, unknown>>(
@@ -281,6 +272,7 @@ export function sanitizeObject<T extends Record<string, unknown>>(
         // Maps should be converted to plain objects but only if they use string keys
         mutateObject([...path, key], {}, sanitized)
       } else if (Array.isArray(val)) {
+        // TODO make a smarter circular ref detection (only if the object is the same ref as higher up the current hierarchy)
         if (seen.has(val)) {
           mutateObject([...path, key], '<circular>', sanitized)
         } else {
@@ -331,9 +323,33 @@ export function serializeSnapshot(snapshot?: unknown): string | undefined {
     if ('history' in sanitized && sanitized.history instanceof State) {
       sanitized.history = {}
     }
+    if (
+      'configuration' in sanitized && Array.isArray(sanitized.configuration)
+    ) {
+      sanitized.configuration = []
+    }
+    if (
+      'machine' in sanitized && (sanitized.machine instanceof StateNode)
+    ) {
+      sanitized.machine = {}
+    }
     return stringifySafely(sanitized)
   }
   return stringifySafely(snapshot)
+}
+
+export function serializeMachine(
+  machine: StateNodeDefinition<any, any, AnyEventObject>,
+): string | undefined {
+  if (isContextObject(machine.context)) {
+    return stringifySafely({
+      ...machine,
+      context: sanitizeObject(
+        machine.context,
+      ),
+    })
+  }
+  return stringifySafely(machine)
 }
 
 /**
