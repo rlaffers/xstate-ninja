@@ -336,37 +336,25 @@ export function serializeSnapshot(snapshot?: unknown): string | undefined {
  * Strips unserializable props from native events and React events wrapping native events
  */
 function sanitizeBrowserEvent(event: AnyEventObject): AnyEventObject {
-  if (event instanceof Event) {
-    const cloned: AnyEventObject = {
-      type: event.type,
-    }
-    const skippedKeys = [
-      'view',
-      'target',
-      'currentTarget',
-      'relatedTarget',
-      'srcElement',
-    ]
-    for (const key in event) {
-      if (
-        !skippedKeys.includes(key) &&
-        !(event[key as keyof typeof event] instanceof Element)
-      ) {
-        cloned[key] = event[key as keyof typeof event]
-      }
-    }
-    return cloned
+  const cloned: AnyEventObject = {
+    type: event.type,
   }
-  for (const k in event) {
-    const v = event[k]
-    if (v instanceof Event || v?.nativeEvent instanceof Event) {
-      v.view = undefined
-      v.target = undefined
-      v.currentTarget = undefined
-      v.relatedTarget = undefined
+  const skippedKeys = [
+    'view',
+    'target',
+    'currentTarget',
+    'relatedTarget',
+    'srcElement',
+  ]
+  for (const key in event) {
+    if (
+      !skippedKeys.includes(key) &&
+      !(event[key as keyof typeof event] instanceof Element)
+    ) {
+      cloned[key] = event[key as keyof typeof event]
     }
   }
-  return event
+  return cloned
 }
 
 export function isEventObject(x: any): x is AnyEventObject {
