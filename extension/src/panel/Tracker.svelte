@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { type State } from 'xstate'
   import { afterUpdate } from 'svelte'
   import type {
     DeserializedExtendedInspectedActorObject,
@@ -9,13 +10,13 @@
   } from './StateNodeFrame.svelte'
   import EventFrameComponent, { type EventFrame } from './EventFrame.svelte'
   import ArrowDown from './ArrowDown.svelte'
-  import { last, debounce } from '../utils'
+  import { last, debounce, isMachineSnapshot } from '../utils'
 
-  export let actor: DeserializedExtendedInspectedActorObject = null
-  export let onSelectFrame: (frame: EventFrame | StateNodeFrame) => void
+  export let actor: DeserializedExtendedInspectedActorObject
+  export let onSelectFrame: (frame: EventFrame | StateNodeFrame | null) => void
   export let active = false
 
-  let activeFrame: EventFrame | StateNodeFrame
+  let activeFrame: EventFrame | StateNodeFrame | null
 
   // clear activeFrame if parent swimlane stopped being active
   $: {
@@ -54,35 +55,41 @@
       changed: snapshot?.changed,
       snapshot: update.snapshot,
       final: snapshot?.done,
-      startedInvocation: didStartInvocation(snapshot),
-      stoppedInvocation: didStopInvocation(snapshot),
+      startedInvocation: isMachineSnapshot(snapshot)
+        ? didStartInvocation(snapshot)
+        : false,
+      stoppedInvocation: isMachineSnapshot(snapshot)
+        ? didStopInvocation(snapshot)
+        : false,
       historyIndex,
     }
   }
 
-  function didStartInvocation(snapshot: any): boolean {
-    if (!snapshot || !snapshot.actions || !Array.isArray(snapshot.actions)) {
+  function didStartInvocation(snapshot: State<any>): boolean {
+    const actions = snapshot.actions
+    if (!Array.isArray(actions)) {
       return false
     }
-    return snapshot.actions.some((x) => x.type === 'xstate.start')
+    return actions.some((x) => x.type === 'xstate.start')
   }
 
-  function didStopInvocation(snapshot: any): boolean {
-    if (!snapshot || !snapshot.actions || !Array.isArray(snapshot.actions)) {
+  function didStopInvocation(snapshot: State<any>): boolean {
+    const actions = snapshot.actions
+    if (!Array.isArray(actions)) {
       return false
     }
-    return snapshot.actions.some((x) => x.type === 'xstate.stop')
+    return actions.some((x) => x.type === 'xstate.stop')
   }
 
   function updateIntoFrames(
     update: XStateInspectUpdateEvent,
     historyIndex: number,
-  ): Array<EventFrame> {
-    const frames = []
-    const snapshot =
+  ): (EventFrame | StateNodeFrame)[] {
+    const frames: (EventFrame | StateNodeFrame)[] = []
+    const snapshot: unknown =
       update.snapshot != null ? JSON.parse(update.snapshot) : undefined
     frames.push(createEventFrame(update, historyIndex, snapshot))
-    if (snapshot?.changed) {
+    if (isMachineSnapshot(snapshot) && snapshot?.changed) {
       frames.push(createStateNodeFrame(update, historyIndex, snapshot))
     }
     return frames
@@ -90,22 +97,22 @@
 
   // Array of EventFrame or StateFrame
   interface FrameList extends Array<EventFrame | StateNodeFrame> {
-    sessionId?: string
     historySize: number
+    sessionId?: string
     createdAt?: number
   }
 
   function createFrameList(
-    actor?: DeserializedExtendedInspectedActorObject,
+    actr: DeserializedExtendedInspectedActorObject,
   ): FrameList {
-    const frames = [] as FrameList
+    const frames: FrameList = [] as unknown as FrameList
     // these props serve for tracking when the reactive statements below need to run
-    frames.sessionId = actor?.sessionId
-    frames.historySize = actor?.history?.length ?? 0
-    frames.createdAt = actor?.createdAt
+    frames.sessionId = actr?.sessionId
+    frames.historySize = actr?.history?.length ?? 0
+    frames.createdAt = actr?.createdAt
     // populate frames from the selected actor's history
-    if (actor?.history?.length > 0) {
-      actor.history.forEach((update, index) => {
+    if (actr && actr.history?.length > 0) {
+      actr.history.forEach((update, index) => {
         frames.push(...updateIntoFrames(update, index))
       })
     }
@@ -154,8 +161,13 @@
           trackerElement.scrollHeight - 20
     }, 100)
     node.addEventListener('scroll', updateAutoscroll)
-    return () => {
-      node.removeEventListener('scroll', updateAutoscroll)
+    // return () => {
+    //   node.removeEventListener('scroll', updateAutoscroll)
+    // }
+    return {
+      destroy: () => {
+        node.removeEventListener('scroll', updateAutoscroll)
+      },
     }
   }
 
@@ -189,6 +201,7 @@
   })
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 {#if actor != null}
   <div
     class="tracker nice-scroll"

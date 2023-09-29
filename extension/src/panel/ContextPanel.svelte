@@ -1,9 +1,8 @@
 <script lang="ts">
   import Resizer from './Resizer.svelte'
-  import Tree, { getTypeSummary } from 'magic-json-tree'
+  import Tree, { getTypeSummary, type Formatter } from 'magic-json-tree'
   import diff from 'microdiff'
-  import assocPath from '@ramda/assocpath'
-  import getPath from '@ramda/path'
+  import { path as getPath, assocPath } from 'rambda'
 
   export let context: any = null
   export let previousContext: any = null
@@ -25,9 +24,10 @@
   }
 
   let contextDiff = context
-  let formatValue: (entry: [any, any], path: any[]) => any = null
-  let formatKey: (entry: [any, any], path: any[]) => any = null
-  let formatSummary: (entry: [any, any], path: any[]) => any = null
+  // let formatValue: (entry: [any, any], path: any[]) => any = null
+  let formatValue: Formatter | null
+  let formatKey: Formatter | null
+  let formatSummary: Formatter | null
   $: {
     if (diffMode && !previousContext) {
       contextDiff = context
@@ -42,14 +42,20 @@
         formatSummary = null
         contextDiff = null
       } else {
-        const deltas = changes.reduce(
-          (result, { type, path, oldValue, value }) => {
+        interface Delta {
+          contextDiff: object
+          byPath: Record<string, { type: string; oldValue: [typeof changes[0]['type'], any] }>
+          extendedOrShrinkedPaths: string[]
+        }
+        const deltas = changes.reduce<Delta>(
+          (result, change) => {
+            const { type, path } = change
             result.contextDiff = assocPath(
               path,
-              type === 'REMOVE' ? oldValue : value,
+              type === 'REMOVE' ? change.oldValue : change.value,
               result.contextDiff,
             )
-            result.byPath[serializePath(path)] = { type, oldValue }
+            result.byPath[serializePath(path)] = change.type === 'CHANGE' ? { type, oldValue: change.oldValue } : { type, oldValue: undefined }
             if (type === 'CREATE' || type === 'REMOVE') {
               result.extendedOrShrinkedPaths.push(
                 serializePath(path.slice(0, -1)),

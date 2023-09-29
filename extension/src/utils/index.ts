@@ -1,9 +1,9 @@
-import { InterpreterStatus } from 'xstate'
+import { InterpreterStatus, type State } from 'xstate'
 import type { StateValue } from 'xstate'
 import { ActorTypes } from 'xstate-ninja'
 import type {
-  SerializedExtendedInspectedActorObject,
   DeserializedExtendedInspectedActorObject,
+  SerializedExtendedInspectedActorObject,
   XStateInspectUpdateEvent,
 } from 'xstate-ninja'
 import { MessageTypes } from '../messages'
@@ -56,7 +56,7 @@ export function isCompoundState(stateName: string): boolean {
 }
 
 export function pick(names: string[], obj: Record<string, any>) {
-  const result = {}
+  const result: Record<string, any> = {}
   let idx = 0
   while (idx < names.length) {
     if (names[idx] in obj) {
@@ -68,7 +68,7 @@ export function pick(names: string[], obj: Record<string, any>) {
 }
 
 export function debounce(f: (...args: any[]) => any, timeout: number) {
-  let id: NodeJS.Timeout
+  let id: number
   return (...args: any[]) => {
     clearTimeout(id)
     id = setTimeout(() => {
@@ -91,22 +91,21 @@ export function deserializeInspectedActor(
 ): DeserializedExtendedInspectedActorObject {
   return {
     ...serializedActor,
-    snapshot:
-      serializedActor.snapshot != null
-        ? JSON.parse(serializedActor.snapshot)
-        : undefined,
-    machine:
-      serializedActor.machine != null
-        ? JSON.parse(serializedActor.machine)
-        : undefined,
+    snapshot: serializedActor.snapshot != null
+      ? JSON.parse(serializedActor.snapshot)
+      : undefined,
+    machine: serializedActor.machine != null
+      ? JSON.parse(serializedActor.machine)
+      : undefined,
   } as DeserializedExtendedInspectedActorObject
 }
 
 export function createActorFromUpdateEvent(
   event: XStateInspectUpdateEvent,
 ): DeserializedExtendedInspectedActorObject {
-  const snapshot =
-    event.snapshot != null ? JSON.parse(event.snapshot) : undefined
+  const snapshot = event.snapshot != null
+    ? JSON.parse(event.snapshot)
+    : undefined
   const actor = {
     sessionId: event.sessionId,
     parent: undefined,
@@ -129,8 +128,9 @@ export function updateActorFromUpdateEvent(
   actor: DeserializedExtendedInspectedActorObject,
   event: XStateInspectUpdateEvent,
 ): DeserializedExtendedInspectedActorObject {
-  const snapshot =
-    event.snapshot != null ? JSON.parse(event.snapshot) : undefined
+  const snapshot = event.snapshot != null
+    ? JSON.parse(event.snapshot)
+    : undefined
   actor.history.push(event)
   actor.events.push(event.event)
   const updatedActor = {
@@ -162,4 +162,10 @@ export function formatTime(timestamp: number): string {
   const minutes = `${dt.getMinutes()}`.padStart(2, '0')
   const seconds = `${dt.getSeconds()}`.padStart(2, '0')
   return `${hours}:${minutes}:${seconds}`
+}
+
+export function isMachineSnapshot(snapshot: any): snapshot is State<any> {
+  return snapshot != null && typeof snapshot === 'object' &&
+    snapshot.machine != null && typeof snapshot.machine === 'object' &&
+    snapshot.configuration != null && typeof snapshot.configuration === 'object'
 }

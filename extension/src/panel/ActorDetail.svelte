@@ -3,15 +3,15 @@
   import { ActorTypes } from 'xstate-ninja'
 
   /* eslint-disable no-use-before-define */
-  export let actor: DeserializedExtendedInspectedActorObject = null
+  export let actor: DeserializedExtendedInspectedActorObject
 
-  let created: Date = null
+  let created: Date | null = null
   $: created = actor ? new Date(actor.createdAt) : null
 
-  let updated: Date = null
+  let updated: Date | null = null
   $: updated = actor ? new Date(actor.updatedAt) : null
 
-  function formatTime(date?: Date): string {
+  function formatTime(date: Date | null): string {
     if (!date) return 'N/A'
 
     return `${String(date.getHours()).padStart(2, '0')}:${String(
@@ -32,9 +32,9 @@
     }
   }
   function getActorType(
-    actor?: DeserializedExtendedInspectedActorObject,
+    actr: DeserializedExtendedInspectedActorObject,
   ): string {
-    switch (actor.type) {
+    switch (actr.type) {
       case ActorTypes.machine:
         return 'machine'
       case ActorTypes.callback:

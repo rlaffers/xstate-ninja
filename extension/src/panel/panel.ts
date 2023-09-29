@@ -1,13 +1,18 @@
 import Panel from './Panel.svelte'
 
 if (chrome.devtools.panels.themeName === 'dark') {
-  document.querySelector(':root').setAttribute('data-theme', 'dark')
+  document.querySelector(':root')!.setAttribute('data-theme', 'dark')
 } else {
-  document.querySelector(':root').setAttribute('data-theme', 'light')
+  document.querySelector(':root')!.setAttribute('data-theme', 'light')
 }
 
-const mainPanel = new Panel({
-  target: document.getElementById('app'),
-})
+const targetElement = document.getElementById('app')
+let mainPanel: Panel | undefined
+
+if (targetElement) {
+  mainPanel = new Panel({
+    target: targetElement,
+  })
+}
 
 export default mainPanel

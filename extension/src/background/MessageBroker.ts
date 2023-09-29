@@ -1,16 +1,16 @@
 import { ConnectEvent, isXStateNinjaDeadActorsClearedEvent } from 'xstate-ninja'
 import { Tab } from './Tab'
-import { log, error } from '../utils'
+import { error, log } from '../utils'
 import {
+  type AnyMessage,
   isInitMessage,
   isLogMessage,
-  MessageTypes,
-  type AnyMessage,
   type KeepAliveMessage,
+  MessageTypes,
 } from '../messages'
 
 interface IKeptAlivePort extends chrome.runtime.Port {
-  _timer: NodeJS.Timeout
+  _timer: number | null
 }
 
 /**
@@ -27,14 +27,14 @@ export class MessageBroker {
     this.devPorts = new Map()
     this.isKeptAlive = false
 
-    this.onInitMessageFromDevtoolsPanel =
-      this.onInitMessageFromDevtoolsPanel.bind(this)
+    this.onInitMessageFromDevtoolsPanel = this.onInitMessageFromDevtoolsPanel
+      .bind(this)
     this.logDevtoolsMessage = this.logDevtoolsMessage.bind(this)
     this.removeDevPort = this.removeDevPort.bind(this)
     this.removeTab = this.removeTab.bind(this)
     this.keepAlive = this.keepAlive.bind(this)
-    this.forwardDeadActorsClearedMessage =
-      this.forwardDeadActorsClearedMessage.bind(this)
+    this.forwardDeadActorsClearedMessage = this.forwardDeadActorsClearedMessage
+      .bind(this)
   }
 
   start() {
@@ -49,6 +49,10 @@ export class MessageBroker {
       log('connecting port:', port.name)
 
       if (port.name === 'xstate-ninja.page') {
+        if (port.sender?.tab?.id == null) {
+          console.error('Missing sender id in the port object', port)
+          return false
+        }
         const tab = new Tab(
           port.sender.tab.id,
           port,
@@ -76,7 +80,7 @@ export class MessageBroker {
       }
 
       if (!this.isKeptAlive && port.name === 'xstate-ninja.page') {
-        this.keepAlive(port as IKeptAlivePort)
+        this.keepAlive(port)
       }
       log(
         `Connected tabs: ${this.tabs.size}\nDev panels: ${this.devPorts.size}`,
@@ -121,7 +125,7 @@ export class MessageBroker {
   getTab(devPort: chrome.runtime.Port): Tab | null {
     for (const [tabId, value] of this.devPorts.entries()) {
       if (value === devPort) {
-        return this.tabs.get(tabId)
+        return this.tabs.get(tabId) ?? null
       }
     }
     return null
@@ -152,11 +156,11 @@ export class MessageBroker {
   }
 
   // periodically reconnect the page port to keep the background service worker alive
-  keepAlive(port: IKeptAlivePort) {
+  keepAlive(port: chrome.runtime.Port) {
     if (this.isKeptAlive) {
       return
     }
-    port._timer = setInterval(
+    const timer = setInterval(
       () => {
         const msg: KeepAliveMessage = {
           type: MessageTypes.keepAlive,
@@ -167,21 +171,14 @@ export class MessageBroker {
       port,
     )
     // triggered when the tab is closed
-    port.onDisconnect.addListener((disconnectedPort) => {
-      this.deleteTimer(disconnectedPort as IKeptAlivePort)
+    port.onDisconnect.addListener(() => {
+      clearTimeout(timer)
       this.isKeptAlive = false
       if (this.tabs.size > 0) {
         this.keepAlive(this.tabs.values().next().value.port)
       }
     })
     this.isKeptAlive = true
-  }
-
-  deleteTimer(port: IKeptAlivePort) {
-    if (port._timer) {
-      clearTimeout(port._timer)
-      delete port._timer
-    }
   }
 
   logDevtoolsMessage(message: AnyMessage, port: chrome.runtime.Port) {

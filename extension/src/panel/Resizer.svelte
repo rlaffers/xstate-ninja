@@ -1,7 +1,7 @@
 <script lang="ts">
   export let direction: 'horizontal' | 'vertical' = 'horizontal'
-  export let previousTarget: HTMLElement = null
-  export let nextTarget: HTMLElement = null
+  export let previousTarget: HTMLElement | null = null
+  export let nextTarget: HTMLElement | null = null
 
   // The current position of mouse
   let x = 0
@@ -13,7 +13,7 @@
   let scrollbarWidth1 = 0
   // The dimension of the next element
   let w2 = 0
-  let h2 = 0
+  // let h2 = 0
   let scrollbarWidth2 = 0
 
   function getScrollbarWidth(element: HTMLElement): number {
@@ -43,7 +43,7 @@
     if (nextTarget) {
       const computedStyle = window.getComputedStyle(nextTarget)
       w2 = parseInt(computedStyle.width, 10)
-      h2 = parseInt(computedStyle.height, 10)
+      // h2 = parseInt(computedStyle.height, 10)
       scrollbarWidth2 = getScrollbarWidth(nextTarget)
       nextTarget.classList.add('custom-sized')
     }

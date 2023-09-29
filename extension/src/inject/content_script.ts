@@ -1,10 +1,10 @@
 import {
-  EventTypes,
   ActorEvent,
   ActorsEvent,
-  UpdateEvent,
   ConnectedEvent,
+  EventTypes,
   UnregisterEvent,
+  UpdateEvent,
   type XStateInspectAnyEvent,
 } from 'xstate-ninja'
 
@@ -13,7 +13,9 @@ const s = document.createElement('script')
 s.type = 'text/javascript'
 s.src = chrome.runtime.getURL('inject/xstate_ninja.js')
 s.onload = function () {
-  this.parentNode.removeChild(this)
+  if (s.parentNode) {
+    s.parentNode.removeChild(s)
+  }
 }
 ;(document.head || document.documentElement).appendChild(s)
 
@@ -35,8 +37,8 @@ connect()
 
 function forwardEvent(eventName: string) {
   window.addEventListener(
-    eventName,
-    (
+    eventName as keyof WindowEventMap,
+    ((
       event: CustomEvent<
         | ActorEvent
         | ActorsEvent
@@ -56,7 +58,7 @@ function forwardEvent(eventName: string) {
       //   event,
       // )
       port.postMessage(event.detail)
-    },
+    }) as EventListener,
   )
 }
 forwardEvent(EventTypes.actor)

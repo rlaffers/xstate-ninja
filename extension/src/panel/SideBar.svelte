@@ -10,23 +10,21 @@
   import Resizer from './Resizer.svelte'
 
   /* eslint-disable no-use-before-define */
-  export let actor: DeserializedExtendedInspectedActorObject = null
-  export let activeFrame: EventFrame | StateNodeFrame = null
+  export let actor: DeserializedExtendedInspectedActorObject | null = null
+  export let activeFrame: EventFrame | StateNodeFrame | null = null
 
   let selectedSnapshot: any = null
   let previousSnapshot: any = null
   $: {
     if (activeFrame?.snapshot != null) {
       selectedSnapshot = JSON.parse(activeFrame.snapshot)
-      previousSnapshot = JSON.parse(
-        actor?.history?.[activeFrame.historyIndex - 1]?.snapshot ?? null,
-      )
+      const previousSerialized: string | null = actor?.history?.[activeFrame.historyIndex - 1]?.snapshot ?? null
+      previousSnapshot = previousSerialized != null ? JSON.parse(previousSerialized) : null
     } else {
       selectedSnapshot = actor?.snapshot
       const historySize = actor?.history?.length ?? 0
-      previousSnapshot = JSON.parse(
-        actor?.history?.[historySize - 2]?.snapshot ?? null,
-      )
+      const previousSerialized: string | null = actor?.history?.[historySize - 2]?.snapshot ?? null
+      previousSnapshot = previousSerialized != null ? JSON.parse(previousSerialized) : null
     }
   }
 

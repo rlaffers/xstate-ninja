@@ -1,7 +1,13 @@
 <script lang="ts">
-  import { ActorTypes, type ExtensionSettings } from 'xstate-ninja'
+  import { ActorTypes, isActorType } from 'xstate-ninja'
 
   export let close: () => void
+
+  interface ExtensionSettings {
+    trackedActorTypes: ActorTypes[]
+    deadHistorySize: number
+    showTimestamps: boolean
+  }
 
   let currentSettings: ExtensionSettings
 
@@ -18,9 +24,10 @@
   function saveSettings(event: Event) {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
-    const trackedActorTypes = formData
+    const trackedActorTypes: ActorTypes[] = formData
       .getAll('trackedActorTypes')
-      .map((v) => ActorTypes[v])
+      .filter((v) => isActorType(v))
+      .map((v): ActorTypes => ActorTypes[v as keyof typeof ActorTypes])
     const deadHistorySize = Number(formData.get('deadHistorySize'))
     close()
     chrome.storage.sync.get('settings', ({ settings }) => {
@@ -37,6 +44,7 @@
   }
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="modal-background" on:click={close}>
   <dialog open class="settings" on:click={(event) => event.stopPropagation()}>
     <form method="dialog" on:submit={saveSettings}>

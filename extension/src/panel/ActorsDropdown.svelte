@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { DeserializedExtendedInspectedActorObject } from 'xstate-ninja'
 
-  export let actors: Map<string, DeserializedExtendedInspectedActorObject>
+  export let actors: Map<string, DeserializedExtendedInspectedActorObject> | null
   let className = ''
   export { className as class }
   export let selectedActor: DeserializedExtendedInspectedActorObject
@@ -22,8 +22,8 @@
   const root = Symbol('root')
   const levelKey = Symbol('level')
 
-  function sortByParent(list) {
-    const result = {}
+  function sortByParent(list: DeserializedExtendedInspectedActorObject[]) {
+    const result: Record<string|symbol, DeserializedExtendedInspectedActorObject[]> = {}
     for (const item of list) {
       if (item.parent == null) {
         if (!result[root]) {
@@ -39,32 +39,36 @@
     }
     return result
   }
+  type DeserializedExtendedInspectedActorObjectWithLevel = (DeserializedExtendedInspectedActorObject & { [levelKey]: number })
 
-  function getOrderedChildren(list, parentId, level = 0) {
-    const children = []
+  function getOrderedChildren(list: Record<string|symbol, DeserializedExtendedInspectedActorObject[]>, parentId: symbol | string, level: number = 0) {
+    const children: DeserializedExtendedInspectedActorObjectWithLevel[] = []
     if (!list[parentId]) {
       return children
     }
     for (const child of list[parentId]) {
-      child[levelKey] = level
-      children.push(child)
+      const childWithLevel: DeserializedExtendedInspectedActorObjectWithLevel = { ...child, [levelKey]: level }
+      children.push(childWithLevel)
       children.push(...getOrderedChildren(list, child.sessionId, level + 1))
     }
     return children
   }
 
-  function sortActors(actors) {
-    if (!actors) {
-      return actors
+  function sortActors(actorsMap: Map<string, DeserializedExtendedInspectedActorObject> | null): DeserializedExtendedInspectedActorObjectWithLevel[] {
+    if (!actorsMap) {
+      return []
     }
-    const sortedByParent = sortByParent(Array.from(actors.values()))
+    const sortedByParent = sortByParent(Array.from(actorsMap.values()))
     return getOrderedChildren(sortedByParent, root)
   }
 
-  let sortedActors = []
+  let sortedActors: DeserializedExtendedInspectedActorObjectWithLevel[] = []
   $: sortedActors = sortActors(actors)
 
   function onChange(event: Event) {
+    if (!actors) {
+      return
+    }
     const sessionId = (event.currentTarget as HTMLSelectElement).value
     const nextSelectedActor = actors.get(sessionId)
     if (

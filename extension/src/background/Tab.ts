@@ -1,14 +1,14 @@
 import {
-  SettingsChangedEvent,
+  ConnectEvent,
   isXStateInspectConnectedEvent,
   isXStateNinjaInspectorCreatedEvent,
-  ConnectEvent,
+  SettingsChangedEvent,
 } from 'xstate-ninja'
 import type {
-  XStateInspectAnyEvent,
-  XStateInspectSendEvent,
-  XStateInspectReadEvent,
   ExtensionSettings,
+  XStateInspectAnyEvent,
+  XStateInspectReadEvent,
+  XStateInspectSendEvent,
 } from 'xstate-ninja'
 import { isInitMessage, isLogMessage } from '../messages'
 import type { AnyMessage } from '../messages'
@@ -16,7 +16,7 @@ import type { AnyMessage } from '../messages'
 export class Tab {
   id: number
   port: chrome.runtime.Port
-  devPort?: chrome.runtime.Port
+  devPort: chrome.runtime.Port | null = null
 
   constructor(
     id: number,
@@ -82,7 +82,9 @@ export class Tab {
   }
 
   unsetDevPort() {
-    this.devPort.onMessage.removeListener(this.forwardMessageToTab)
-    this.devPort = null
+    if (this.devPort) {
+      this.devPort.onMessage.removeListener(this.forwardMessageToTab)
+      this.devPort = null
+    }
   }
 }

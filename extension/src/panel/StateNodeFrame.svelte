@@ -30,7 +30,7 @@
   export let data: StateNodeFrame
   export let onSelectFrame: (frame: StateNodeFrame) => void
   export let isSelected = false
-  export let actorSessionId: string = null
+  export let actorSessionId: string
 
   function hideStateName(event: MouseEvent) {
     const btn = event.currentTarget
@@ -57,6 +57,7 @@
   const flatStateNames = flattenState(data.stateValue)
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <article
   class:selected={isSelected}
   class:final={data?.final}

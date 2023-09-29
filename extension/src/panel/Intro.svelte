@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
   import logo from '../assets/logo_256.png'
 
-  function openHomePage(event) {
+  function openHomePage(event: MouseEvent) {
     event.preventDefault()
     chrome.tabs.create({
       url: 'https://github.com/rlaffers/xstate-ninja',

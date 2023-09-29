@@ -14,7 +14,7 @@
   }
 
   export function isEventFrame(
-    frame: StateNodeFrame | EventFrame,
+    frame: StateNodeFrame | EventFrame | null | undefined,
   ): frame is EventFrame {
     return frame == null ? false : frame.type === 'event'
   }
@@ -58,6 +58,7 @@
 </script>
 
 <div class="timestamp">{formatTime(data.event.createdAt)}</div>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
   class:selected={isSelected}
   class="event-frame {className}"

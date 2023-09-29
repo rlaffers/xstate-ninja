@@ -5,12 +5,12 @@ import { resolve } from 'path'
 import pluginWebExtension, { readJsonFile } from 'vite-plugin-web-extension'
 
 const webExtension = pluginWebExtension.default
-const manifestFile =
-  process.env.TARGET_BROWSER === 'firefox'
-    ? 'src/manifest.firefox.json'
-    : 'src/manifest.chrome.json'
-const outDir =
-  process.env.TARGET_BROWSER === 'firefox' ? 'dist-firefox' : 'dist'
+const manifestFile = process.env.TARGET_BROWSER === 'firefox'
+  ? 'src/manifest.firefox.json'
+  : 'src/manifest.chrome.json'
+const outDir = process.env.TARGET_BROWSER === 'firefox'
+  ? 'dist-firefox'
+  : 'dist'
 
 // https://vitejs.dev/config/
 export default defineConfig({

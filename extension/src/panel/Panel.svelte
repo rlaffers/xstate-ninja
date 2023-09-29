@@ -70,17 +70,17 @@
       {},
     )
 
-    const deadActors = Object.values(actorsById).flatMap((deadActorsPerId) => {
-      const sorted = sortByFirstItem(deadActorsPerId)
+    const deadActors: [string, DeserializedExtendedInspectedActorObject][] = Object.values(actorsById).flatMap((deadActorsWithTimestamp) => {
+      const sorted = sortByFirstItem(deadActorsWithTimestamp)
       return sorted
         .slice(deadHistorySize > 0 ? -1 * deadHistorySize : sorted.length)
-        .map(([, actor]) => [actor.sessionId, actor])
+        .map(([, actor]): [string, DeserializedExtendedInspectedActorObject] => [actor.sessionId, actor])
     })
 
     return new Map([...liveActors, ...deadActors])
   }
 
-  let actors: ActorList = null
+  let actors: ActorList | null = null
 
   function messageListener(event: XStateInspectAnyEvent) {
     log(event.type, { event })
@@ -145,13 +145,13 @@
   }
 
   // -----------------------------
-  let activeActor: DeserializedExtendedInspectedActorObject
+  let activeActor: DeserializedExtendedInspectedActorObject | null
 
   let swimlanes: DeserializedExtendedInspectedActorObject[] = []
   let activeSwimlane: number | null = null
 
   // if activeFrame=null, then the latest actor's snapshot is implied
-  let activeFrame: EventFrame | StateNodeFrame = null
+  let activeFrame: EventFrame | StateNodeFrame | null = null
 
   chrome.devtools.network.onNavigated.addListener(() => {
     actors = new Map()
@@ -220,7 +220,7 @@
   }
 
   function activateFrame(
-    frame: EventFrame | StateNodeFrame,
+    frame: EventFrame | StateNodeFrame | null,
     swimlaneIndex: number,
   ) {
     if (swimlaneIndex !== activeSwimlane) {
@@ -230,9 +230,9 @@
   }
 
   function addSwimlane() {
-    const preselectedActor =
-      [...actors.values()].find((x) => x.parent == null) ??
-      actors.values().next().value
+    const preselectedActor: DeserializedExtendedInspectedActorObject | null = actors !== null
+      ? [...actors.values()].find((x) => x.parent == null) ??  actors.values().next().value
+      : null
     if (preselectedActor) {
       swimlanes = [...swimlanes, preselectedActor]
     }
@@ -245,7 +245,7 @@
     swimlanes[index] = actor
     swimlanes = swimlanes
     if (index === activeSwimlane) {
-      if (activeFrame && actor.sessionId !== activeActor.sessionId) {
+      if (activeFrame && activeActor && actor.sessionId !== activeActor.sessionId) {
         activeFrame = null
       }
       activeActor = actor

@@ -10,16 +10,16 @@
   import UnhideIcon from './icons/UnhideIcon.svelte'
 
   export let selectedActor: DeserializedExtendedInspectedActorObject
-  export let actors: Map<string, DeserializedExtendedInspectedActorObject> =
+  export let actors: Map<string, DeserializedExtendedInspectedActorObject> | null =
     null
   export let active = false
   export let onSelectSwimlane: () => void
   export let onActorChanged: (
     actor: DeserializedExtendedInspectedActorObject,
   ) => void
-  export let onSelectFrame: (frame: EventFrame | StateNodeFrame) => void
+  export let onSelectFrame: (frame: EventFrame | StateNodeFrame | null) => void
   export let closeSwimlane: () => void
-  export let previousSwimlane: HTMLElement
+  export let previousSwimlane: HTMLElement | null
   export let onMount: (node: HTMLElement) => void
 
   function onActorSelected(actor: DeserializedExtendedInspectedActorObject) {
@@ -55,6 +55,7 @@
   }
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <section
   class="swim-lane"
   class:active
