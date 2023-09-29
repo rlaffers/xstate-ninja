@@ -318,49 +318,49 @@ export class InspectorCreatedEvent
 }
 
 export function isXStateInspectActorsEvent(
-  event: XStateInspectAnyEvent,
+  event: AnyEventObject,
 ): event is XStateInspectActorsEvent {
   return event.type === EventTypes.actors
 }
 
 export function isXStateInspectActorEvent(
-  event: XStateInspectAnyEvent,
+  event: AnyEventObject,
 ): event is XStateInspectActorEvent {
   return event.type === EventTypes.actor
 }
 
 export function isXStateNinjaUnregisterEvent(
-  event: XStateInspectAnyEvent,
+  event: AnyEventObject,
 ): event is XStateNinjaUnregisterEvent {
   return event.type === EventTypes.unregister
 }
 
 export function isXStateInspectUpdateEvent(
-  event: XStateInspectAnyEvent,
+  event: AnyEventObject,
 ): event is XStateInspectUpdateEvent {
   return event.type === EventTypes.update
 }
 
 export function isXStateNinjaDeadActorsClearedEvent(
-  event: XStateInspectAnyEvent,
+  event: AnyEventObject,
 ): event is XStateNinjaDeadActorsClearedEvent {
   return event.type === EventTypes.deadActorsCleared
 }
 
 export function isXStateNinjaSettingsChangedEvent(
-  event: XStateInspectAnyEvent,
+  event: AnyEventObject,
 ): event is XStateNinjaSettingsChangedEvent {
   return event.type === EventTypes.settingsChanged
 }
 
 export function isXStateInspectConnectedEvent(
-  event: XStateInspectAnyEvent,
+  event: AnyEventObject,
 ): event is XStateInspectConnectedEvent {
   return event.type === EventTypes.connected
 }
 
 export function isXStateNinjaInspectorCreatedEvent(
-  event: XStateInspectAnyEvent,
+  event: AnyEventObject,
 ): event is XStateNinjaInspectorCreatedEvent {
   return event.type === EventTypes.inspectorCreated
 }
