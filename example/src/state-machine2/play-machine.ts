@@ -1,4 +1,4 @@
-import { createMachine, actions, EventObject } from 'xstate'
+import { actions, createMachine, EventObject } from 'xstate'
 
 const { choose, sendParent, respond, send, raise, assign } = actions
 
@@ -7,12 +7,22 @@ interface ContextType {
   tickCount: number
 }
 
+type EventType =
+  | { type: 'PLAY' }
+  | { type: 'TICK' }
+  | { type: 'ROGER_THAT'; subject: string }
+  | { type: 'FASTER' }
+  | { type: 'SLOWER' }
+  | { type: 'PAUSE' }
+  | { type: 'STARTED_FAST' }
+
 export default createMachine(
   {
     id: 'play',
     predictableActionArguments: true,
     schema: {
       context: {} as ContextType,
+      events: {} as EventType,
     },
     context: { latestEvent: null, tickCount: 0 },
     type: 'parallel',
@@ -42,7 +52,7 @@ export default createMachine(
             },
           },
           Fast: {
-            entry: raise('STARTED_FAST'),
+            entry: raise({ type: 'STARTED_FAST' }),
             invoke: {
               src: 'fastPlay',
               id: 'fastPlay',
@@ -61,11 +71,11 @@ export default createMachine(
               'increaseCount',
               choose([
                 {
-                  cond: ({ tickCount }) => tickCount % 5 === 0,
-                  actions: sendParent(({ tickCount }) => ({
+                  cond: 'isDivisibleByFive',
+                  actions: [sendParent((context: ContextType) => ({
                     type: 'PROGRESS',
-                    value: tickCount,
-                  })),
+                    value: context.tickCount,
+                  }))],
                 },
               ]),
             ],
@@ -78,12 +88,12 @@ export default createMachine(
           Active: {
             on: {
               '*': {
-                actions: choose([
+                actions: [choose([
                   {
-                    cond: (c, e) => e.type !== 'ROGER_THAT',
+                    cond: (_, e) => e.type !== 'ROGER_THAT',
                     actions: ['setLatestEvent', 'rogerThat'],
                   },
-                ]),
+                ])],
               },
             },
           },
@@ -109,12 +119,20 @@ export default createMachine(
     },
     actions: {
       setLatestEvent: assign({
-        latestEvent: (c, e) => e,
+        latestEvent: (_, e) => e,
       }),
-      rogerThat: respond((c, e) => ({ type: 'ROGER_THAT', subject: e.type })),
+      rogerThat: respond((_, e) => {
+        if (e.type !== 'ROGER_THAT') {
+          throw new Error('incorrect event type')
+        }
+        return ({ type: 'ROGER_THAT', subject: e.type })
+      }),
       increaseCount: assign({
         tickCount: ({ tickCount }) => tickCount + 1,
       }),
+    },
+    guards: {
+      isDivisibleByFive: ({ tickCount }) => tickCount % 5 === 0,
     },
   },
 )

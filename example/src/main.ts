@@ -79,22 +79,24 @@ document.querySelector('#faster-btn')?.addEventListener('mousedown', () => {
 document.querySelector('#slower-btn')?.addEventListener('mousedown', () => {
   service.send('SLOWER')
 })
-document.querySelector('#send-circular-object-btn')?.addEventListener(
-  'mousedown',
-  (event) => {
+const emptyArray: unknown[] = []
+document
+  .querySelector('#send-circular-object-btn')
+  ?.addEventListener('mousedown', (event) => {
     service.send({
       type: 'DISPATCHED_CIRCULAR_DATA',
       data: {
         description: 'this object contains circular data',
         complexObject,
         browserEvent: event,
+        emptyArray,
+        shouldNotBeSanitized: emptyArray,
         actorRef: service,
         someMap: new Map([['foo', 'one']]),
         someSet: new Set([1, 1, 2, 3]),
       },
     })
-  },
-)
+  })
 document
   .querySelector('#guarded-event-btn')
   ?.addEventListener('mousedown', () => {

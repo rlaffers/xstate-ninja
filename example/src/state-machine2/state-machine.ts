@@ -12,10 +12,31 @@ const complex = {
 }
 circular.ref = complex
 
-export default createMachine(
+type ContextType = {
+  progress: number
+  circular: Record<string, any>
+}
+
+type Events =
+  | { type: 'POWER' }
+  | { type: 'PLAY' }
+  | { type: 'PAUSE' }
+  | { type: 'STOP' }
+  | { type: 'PROGRESS'; value: number }
+  | { type: 'FASTER' }
+  | { type: 'SLOWER' }
+  | { type: 'PURE_ACTION' }
+  | { type: 'ALWAYS' }
+  | { type: 'GUARDED_EVENT'; randomValue: number }
+
+export default createMachine<ContextType, Events>(
   {
     id: 'root',
     predictableActionArguments: true,
+    schema: {
+      context: {} as ContextType,
+      events: {} as Events,
+    },
     context: {
       progress: 0,
       circular,
@@ -77,7 +98,7 @@ export default createMachine(
             actions: forwardTo('play'),
           },
           SLOWER: {
-            actions: send((c, e) => e, { to: 'play' }),
+            actions: send((_, e) => e, { to: 'play' }),
           },
         },
       },
@@ -97,7 +118,7 @@ export default createMachine(
     on: {
       GUARDED_EVENT: [
         {
-          cond: (c, e) => e.randomValue % 3 === 0,
+          cond: (_, e) => e.randomValue % 3 === 0,
           actions: send('MULTIPLE_OF_THREE_RECEIVED'),
         },
       ],
@@ -119,7 +140,12 @@ export default createMachine(
         progress: 0,
       }),
       updateProgress: assign({
-        progress: (c, { value }) => value,
+        progress: (_, event) => {
+          if (event.type !== 'PROGRESS') {
+            throw new Error('invalid event type')
+          }
+          return event.value
+        },
       }),
     },
   },
