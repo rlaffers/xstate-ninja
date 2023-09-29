@@ -100,6 +100,8 @@ Controls how much stuff is logged into console by XState Ninja.
 - ~~bug: it fails when event with synthetic react event is sent~~
 - ~~bug: when event panel takes too much space, the context panel is hidden~~
 - ~~improve: send events with "to" should display that in the summary (e.g. "xstate.send -> otherActor"). To can be object or a string.~~
+- bug: broken scrolling of overflowing side panel sections
+- add tests
 - improve how lower level parallel states are visualized
 - add timestamps to events (display on hover/selection?)
 - the extension should detect whether the on-page xstate-ninja version is compatible with it
