@@ -153,10 +153,7 @@ export class ActorEvent extends CustomEvent<XStateInspectActorEvent> {
 export class UpdateEvent extends CustomEvent<XStateInspectUpdateEvent> {
   type: EventTypes.update = EventTypes.update
 
-  constructor(
-    actor: InspectedActorObject,
-    scxmlEvent: SCXML.Event<AnyEventObject>,
-  ) {
+  constructor(actor: InspectedActorObject, scxmlEvent: SCXML.Event<AnyEventObject>) {
     super(EventTypes.update, {
       detail: {
         type: EventTypes.update,
@@ -240,8 +237,7 @@ export class SendEvent extends CustomEvent<XStateInspectSendEvent> {
   }
 }
 
-export class DeadActorsClearedEvent
-  extends CustomEvent<XStateNinjaDeadActorsClearedEvent> {
+export class DeadActorsClearedEvent extends CustomEvent<XStateNinjaDeadActorsClearedEvent> {
   type: EventTypes.deadActorsCleared = EventTypes.deadActorsCleared
 
   constructor() {
@@ -260,26 +256,18 @@ export class ActorsEvent extends CustomEvent<XStateInspectActorsEvent> {
     super(EventTypes.actors, {
       detail: {
         type: EventTypes.actors,
-        actors: actors.reduce(
-          (result: Record<string, SerializedInspectedActorObject>, actor) => {
-            result[actor.sessionId] = {
-              sessionId: actor.sessionId,
-              parent: actor.parent,
-              machine: actor.machine != null
-                ? serializeMachine(actor.machine)
-                : undefined,
-              snapshot: serializeSnapshot(actor.snapshot),
-              createdAt: actor.createdAt,
-            }
-            return result
-          },
-          {},
-        ),
+        actors: actors.reduce((result: Record<string, SerializedInspectedActorObject>, actor) => {
+          result[actor.sessionId] = {
+            sessionId: actor.sessionId,
+            parent: actor.parent,
+            machine: actor.machine != null ? serializeMachine(actor.machine) : undefined,
+            snapshot: serializeSnapshot(actor.snapshot),
+            createdAt: actor.createdAt,
+          }
+          return result
+        }, {}),
         inspectedActors: actors.reduce(
-          (
-            result: Record<string, SerializedExtendedInspectedActorObject>,
-            actor,
-          ) => {
+          (result: Record<string, SerializedExtendedInspectedActorObject>, actor) => {
             result[actor.sessionId] = serializeInspectedActor(actor)
             return result
           },
@@ -290,8 +278,7 @@ export class ActorsEvent extends CustomEvent<XStateInspectActorsEvent> {
   }
 }
 
-export class SettingsChangedEvent
-  extends CustomEvent<XStateNinjaSettingsChangedEvent> {
+export class SettingsChangedEvent extends CustomEvent<XStateNinjaSettingsChangedEvent> {
   type: EventTypes.settingsChanged = EventTypes.settingsChanged
 
   constructor(settings: ExtensionSettings) {
@@ -304,8 +291,7 @@ export class SettingsChangedEvent
   }
 }
 
-export class InspectorCreatedEvent
-  extends CustomEvent<XStateNinjaInspectorCreatedEvent> {
+export class InspectorCreatedEvent extends CustomEvent<XStateNinjaInspectorCreatedEvent> {
   type: EventTypes.inspectorCreated = EventTypes.inspectorCreated
 
   constructor() {
@@ -323,9 +309,7 @@ export function isXStateInspectActorsEvent(
   return event.type === EventTypes.actors
 }
 
-export function isXStateInspectActorEvent(
-  event: AnyEventObject,
-): event is XStateInspectActorEvent {
+export function isXStateInspectActorEvent(event: AnyEventObject): event is XStateInspectActorEvent {
   return event.type === EventTypes.actor
 }
 

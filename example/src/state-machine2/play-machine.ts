@@ -72,10 +72,12 @@ export default createMachine(
               choose([
                 {
                   cond: 'isDivisibleByFive',
-                  actions: [sendParent((context: ContextType) => ({
-                    type: 'PROGRESS',
-                    value: context.tickCount,
-                  }))],
+                  actions: [
+                    sendParent((context: ContextType) => ({
+                      type: 'PROGRESS',
+                      value: context.tickCount,
+                    })),
+                  ],
                 },
               ]),
             ],
@@ -88,12 +90,14 @@ export default createMachine(
           Active: {
             on: {
               '*': {
-                actions: [choose([
-                  {
-                    cond: (_, e) => e.type !== 'ROGER_THAT',
-                    actions: ['setLatestEvent', 'rogerThat'],
-                  },
-                ])],
+                actions: [
+                  choose([
+                    {
+                      cond: (_, e) => e.type !== 'ROGER_THAT',
+                      actions: ['setLatestEvent', 'rogerThat'],
+                    },
+                  ]),
+                ],
               },
             },
           },
@@ -125,7 +129,7 @@ export default createMachine(
         if (e.type !== 'ROGER_THAT') {
           throw new Error('incorrect event type')
         }
-        return ({ type: 'ROGER_THAT', subject: e.type })
+        return { type: 'ROGER_THAT', subject: e.type }
       }),
       increaseCount: assign({
         tickCount: ({ tickCount }) => tickCount + 1,

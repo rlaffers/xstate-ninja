@@ -102,9 +102,7 @@ export interface ActorRegistration {
 export interface XStateNinjaInterface {
   register: (actorRef: AnyActorRef) => void
   unregister: (actorRef: AnyActorRef) => void
-  onRegister: (
-    listener: (actorRegistration: ActorRegistration) => void,
-  ) => Subscription | void
+  onRegister: (listener: (actorRegistration: ActorRegistration) => void) => Subscription | void
   actors: {
     [sessionId: string]: InspectedActorObject
   }
@@ -136,9 +134,7 @@ type TransitionsConfigArray<TContext, TEvent extends EventObject> = Array<
     })
 >
 
-export function isTransitionConfig(
-  entity: any,
-): entity is TransitionConfig<any, EventObject> {
+export function isTransitionConfig(entity: any): entity is TransitionConfig<any, EventObject> {
   return (
     (entity as TransitionConfig<any, EventObject>).target != null ||
     (entity as TransitionConfig<any, EventObject>).actions != null

@@ -49,9 +49,7 @@
   </p>
 
   <p>
-    <code
-      >&lt;Tree &lbrace;value&rbrace; expand=&lbrace;['inventory', 'belt',
-      2]&rbrace; /&gt;</code
+    <code>&lt;Tree &lbrace;value&rbrace; expand=&lbrace;['inventory', 'belt', 2]&rbrace; /&gt;</code
     >
     <Tree {value} expand={['inventory', 'belt', 2]} />
   </p>

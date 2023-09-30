@@ -24,9 +24,7 @@ import {
   TransitionTypes,
 } from './types'
 
-export function isInterpreterLike(
-  entity: AnyActorRef | AnyInterpreter,
-): entity is AnyInterpreter {
+export function isInterpreterLike(entity: AnyActorRef | AnyInterpreter): entity is AnyInterpreter {
   return (entity as AnyInterpreter).machine !== undefined
 }
 
@@ -58,9 +56,7 @@ interface StateNodeConfig {
 export function machineToJSON(stateNode: StateNode): StateNodeConfig {
   const config = {
     type: stateNode.type,
-    initial: stateNode.initial === undefined
-      ? undefined
-      : String(stateNode.initial),
+    initial: stateNode.initial === undefined ? undefined : String(stateNode.initial),
     id: stateNode.id,
     key: stateNode.key,
     entry: stateNode.onEntry,
@@ -112,10 +108,7 @@ function getStateNodeId(stateNode: StateNode): string {
   return `#${stateNode.id}`
 }
 
-export function omit<
-  O extends { [k: string]: any },
-  K extends Extract<keyof O, string>,
->(
+export function omit<O extends { [k: string]: any }, K extends Extract<keyof O, string>>(
   names: K[],
   obj: O,
 ): Omit<O, K> {
@@ -176,16 +169,7 @@ const safeBuiltins = [Promise, Date, RegExp]
 
 function isJSONSafe(
   value: unknown,
-): value is
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | bigint
-  | Date
-  | Promise<any>
-  | RegExp {
+): value is string | number | boolean | null | undefined | bigint | Date | Promise<any> | RegExp {
   return (
     typeof value === 'string' ||
     typeof value === 'number' ||
@@ -200,10 +184,7 @@ function isJSONSafe(
 /**
  * A tuple where first item is a path to a value in the object, and the second item is a object (or array).
  */
-type IterationQueueItem = [
-  (string | number)[],
-  Record<string, unknown> | unknown[],
-]
+type IterationQueueItem = [(string | number)[], Record<string, unknown> | unknown[]]
 
 function isActorRef(x: unknown): x is Interpreter<any> {
   return x instanceof Interpreter
@@ -226,12 +207,14 @@ function getIterator<T>(x: Record<string, T> | T[] | Map<string, T>) {
   return Object.entries(x).values()
 }
 
-const equalsArray = (x: unknown[]) => (y: unknown[]): boolean => {
-  if (x.length !== y.length) {
-    return false
+const equalsArray =
+  (x: unknown[]) =>
+  (y: unknown[]): boolean => {
+    if (x.length !== y.length) {
+      return false
+    }
+    return x.every((e, i) => e === y[i])
   }
-  return x.every((e, i) => e === y[i])
-}
 
 function isCircularRef(
   value: object | unknown[],
@@ -275,15 +258,9 @@ function saveRefPath(
  */
 export function sanitizeObject<T extends Record<string, unknown>>(
   unsafeObject: T,
-): T extends AnyEventObject ? Record<keyof T, unknown> & AnyEventObject
-  : Record<keyof T, unknown> {
+): T extends AnyEventObject ? Record<keyof T, unknown> & AnyEventObject : Record<keyof T, unknown> {
   const queue: IterationQueueItem[] = [[[], unsafeObject]]
-  const seen = new WeakMap<object, (string | number)[][]>([
-    [
-      unsafeObject,
-      [[]],
-    ],
-  ])
+  const seen = new WeakMap<object, (string | number)[][]>([[unsafeObject, [[]]]])
 
   const sanitized: Record<string, unknown> = {}
 
@@ -294,17 +271,9 @@ export function sanitizeObject<T extends Record<string, unknown>>(
       if (isJSONSafe(val)) {
         mutateObject([...path, key], val, sanitized)
       } else if (typeof val === 'function') {
-        mutateObject(
-          [...path, key],
-          '<function>: ' + truncate(val.toString(), 20),
-          sanitized,
-        )
+        mutateObject([...path, key], '<function>: ' + truncate(val.toString(), 20), sanitized)
       } else if (typeof val === 'symbol') {
-        mutateObject(
-          [...path, key],
-          '<symbol>: ' + truncate(val.toString(), 20),
-          sanitized,
-        )
+        mutateObject([...path, key], '<symbol>: ' + truncate(val.toString(), 20), sanitized)
       } else if (isActorRef(val)) {
         // actor refs need to be simplified, otherwise they are not going to be passed through window.dispatchEvent
         const simplifiedActor = {
@@ -330,9 +299,7 @@ export function sanitizeObject<T extends Record<string, unknown>>(
         if (isCircularRef(val, path, seen)) {
           mutateObject([...path, key], '<circular>', sanitized)
         } else {
-          const sanitizedVal = isEventObject(val)
-            ? sanitizeBrowserEvent(val)
-            : val
+          const sanitizedVal = isEventObject(val) ? sanitizeBrowserEvent(val) : val
           saveRefPath(sanitizedVal, [...path, key], seen)
           queue.push([[...path, key], sanitizedVal as Record<string, unknown>])
           mutateObject([...path, key], {}, sanitized)
@@ -369,14 +336,10 @@ export function serializeSnapshot(snapshot?: unknown): string | undefined {
     if ('history' in sanitized && sanitized.history instanceof State) {
       sanitized.history = {}
     }
-    if (
-      'configuration' in sanitized && Array.isArray(sanitized.configuration)
-    ) {
+    if ('configuration' in sanitized && Array.isArray(sanitized.configuration)) {
       sanitized.configuration = []
     }
-    if (
-      'machine' in sanitized && (sanitized.machine instanceof StateNode)
-    ) {
+    if ('machine' in sanitized && sanitized.machine instanceof StateNode) {
       sanitized.machine = {}
     }
     return stringifySafely(sanitized)
@@ -390,9 +353,7 @@ export function serializeMachine(
   if (isContextObject(machine.context)) {
     return stringifySafely({
       ...machine,
-      context: sanitizeObject(
-        machine.context,
-      ),
+      context: sanitizeObject(machine.context),
     })
   }
   return stringifySafely(machine)
@@ -405,18 +366,9 @@ function sanitizeBrowserEvent(event: AnyEventObject): AnyEventObject {
   const cloned: AnyEventObject = {
     type: event.type,
   }
-  const skippedKeys = [
-    'view',
-    'target',
-    'currentTarget',
-    'relatedTarget',
-    'srcElement',
-  ]
+  const skippedKeys = ['view', 'target', 'currentTarget', 'relatedTarget', 'srcElement']
   for (const key in event) {
-    if (
-      !skippedKeys.includes(key) &&
-      !(event[key as keyof typeof event] instanceof Element)
-    ) {
+    if (!skippedKeys.includes(key) && !(event[key as keyof typeof event] instanceof Element)) {
       cloned[key] = event[key as keyof typeof event]
     }
   }
@@ -428,11 +380,7 @@ export function isEventObject(x: any): x is AnyEventObject {
 }
 
 export function isContextObject(x: any): x is Record<string, unknown> {
-  return (
-    typeof x === 'object' &&
-    x != null &&
-    Object.keys(x).every((k) => typeof k === 'string')
-  )
+  return typeof x === 'object' && x != null && Object.keys(x).every((k) => typeof k === 'string')
 }
 
 export function findChildBySessionId(
@@ -453,11 +401,7 @@ const ARGUMENT_NAMES = /([^\s,]+)/g
 // eslint-disable-next-line @typescript-eslint/ban-types
 function getParamNames(func: Function) {
   const fnStr = func.toString().replace(STRIP_COMMENTS, '')
-  return (
-    fnStr
-      .slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')'))
-      .match(ARGUMENT_NAMES) ?? []
-  )
+  return fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES) ?? []
 }
 
 export function getActorType(actor: AnyActorRefWithParent): ActorTypes {
@@ -480,10 +424,7 @@ export function getActorType(actor: AnyActorRefWithParent): ActorTypes {
     }
     return ActorTypes.unknown
   } catch (e) {
-    console.error(
-      'Failed to introspect the subscribe method on an actor',
-      actor,
-    )
+    console.error('Failed to introspect the subscribe method on an actor', actor)
     return ActorTypes.unknown
   }
 }
@@ -498,9 +439,7 @@ export function createInspectedActorObject(
     actorRef: actor,
     sessionId: '',
     parent: undefined,
-    snapshot: (isInterpreter && actor.initialized) || !isInterpreter
-      ? actor.getSnapshot()
-      : null,
+    snapshot: (isInterpreter && actor.initialized) || !isInterpreter ? actor.getSnapshot() : null,
     machine: undefined,
     events: [],
     createdAt: Date.now(),
@@ -510,22 +449,19 @@ export function createInspectedActorObject(
     type: ActorTypes.unknown,
     dead: isInterpreterLike(actor)
       ? actor.initialized &&
-        (actor.getSnapshot?.().done ||
-          actor.status === InterpreterStatus.Stopped)
+        (actor.getSnapshot?.().done || actor.status === InterpreterStatus.Stopped)
       : false,
   }
 
-  inspectedActor.parent = actor.parent
-    ? actor.parent?.sessionId
-    : parent?.sessionId
+  inspectedActor.parent = actor.parent ? actor.parent?.sessionId : parent?.sessionId
   if (isInterpreterLike(actor)) {
     inspectedActor.sessionId = actor.sessionId
     inspectedActor.status = actor.status
     inspectedActor.machine = actor.machine.definition
     inspectedActor.type = ActorTypes.machine
   } else {
-    inspectedActor.sessionId = globalThis.crypto?.randomUUID() ??
-      String(Math.round(Math.random() * 1e6))
+    inspectedActor.sessionId =
+      globalThis.crypto?.randomUUID() ?? String(Math.round(Math.random() * 1e6))
     inspectedActor.type = getActorType(actor)
   }
   return inspectedActor
@@ -544,9 +480,7 @@ export function createInspectedEventObject(
   }
 }
 
-function getTransitionInfo(
-  actor: AnyInterpreter | AnyActorRef,
-): TransitionTypes {
+function getTransitionInfo(actor: AnyInterpreter | AnyActorRef): TransitionTypes {
   if (isInterpreterLike(actor)) {
     // TODO how does configuration look for parallel states?
     const { configuration, event } = actor.state
@@ -578,17 +512,13 @@ function isTransitionGuarded(eventType: string, sortedStateNodes: StateNode[]) {
     const transitionsConfig = stateNode.config.on
     if (isTransitionsConfigArray(transitionsConfig)) {
       const transitions = transitionsConfig.filter((x) => x.event === eventType)
-      return (
-        transitions.length > 0 && transitions.every((x) => x.cond !== undefined)
-      )
+      return transitions.length > 0 && transitions.every((x) => x.cond !== undefined)
     } else if (transitionsConfig[eventType] !== undefined) {
       const transition = transitionsConfig[eventType]
       if (typeof transition === 'string') {
         return false
       } else if (Array.isArray(transition)) {
-        return transition.every(
-          (x) => isTransitionConfig(x) && x.cond !== undefined,
-        )
+        return transition.every((x) => isTransitionConfig(x) && x.cond !== undefined)
       } else if (isTransitionConfig(transition)) {
         return transition.cond !== undefined
       }
@@ -603,10 +533,7 @@ function isTransitionGuarded(eventType: string, sortedStateNodes: StateNode[]) {
   return false
 }
 
-function isTransitionForbidden(
-  eventType: string,
-  sortedStateNodes: StateNode[],
-) {
+function isTransitionForbidden(eventType: string, sortedStateNodes: StateNode[]) {
   for (const stateNode of sortedStateNodes) {
     const transitionsConfig = stateNode.config.on
     if (transitionsConfig === undefined) {

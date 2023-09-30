@@ -23,14 +23,12 @@ export class MessageBroker {
     this.devPorts = new Map()
     this.isKeptAlive = false
 
-    this.onInitMessageFromDevtoolsPanel =
-      this.onInitMessageFromDevtoolsPanel.bind(this)
+    this.onInitMessageFromDevtoolsPanel = this.onInitMessageFromDevtoolsPanel.bind(this)
     this.logDevtoolsMessage = this.logDevtoolsMessage.bind(this)
     this.removeDevPort = this.removeDevPort.bind(this)
     this.removeTab = this.removeTab.bind(this)
     this.keepAlive = this.keepAlive.bind(this)
-    this.forwardDeadActorsClearedMessage =
-      this.forwardDeadActorsClearedMessage.bind(this)
+    this.forwardDeadActorsClearedMessage = this.forwardDeadActorsClearedMessage.bind(this)
   }
 
   start() {
@@ -49,11 +47,7 @@ export class MessageBroker {
           console.error('Missing sender id in the port object', port)
           return false
         }
-        const tab = new Tab(
-          port.sender.tab.id,
-          port,
-          this.devPorts.get(port.sender.tab.id),
-        )
+        const tab = new Tab(port.sender.tab.id, port, this.devPorts.get(port.sender.tab.id))
         this.tabs.set(tab.id, tab)
         port.onDisconnect.addListener(this.removeTab)
 
@@ -78,16 +72,11 @@ export class MessageBroker {
       if (!this.isKeptAlive && port.name === 'xstate-ninja.page') {
         this.keepAlive(port)
       }
-      log(
-        `Connected tabs: ${this.tabs.size}\nDev panels: ${this.devPorts.size}`,
-      )
+      log(`Connected tabs: ${this.tabs.size}\nDev panels: ${this.devPorts.size}`)
     })
   }
 
-  onInitMessageFromDevtoolsPanel(
-    message: AnyMessage,
-    devPort: chrome.runtime.Port,
-  ) {
+  onInitMessageFromDevtoolsPanel(message: AnyMessage, devPort: chrome.runtime.Port) {
     if (devPort.name !== 'xstate-ninja.panel') {
       error(`Invalid port.name: ${devPort.name}`)
       return
@@ -103,10 +92,7 @@ export class MessageBroker {
     }
   }
 
-  forwardDeadActorsClearedMessage(
-    message: AnyMessage,
-    devPort: chrome.runtime.Port,
-  ) {
+  forwardDeadActorsClearedMessage(message: AnyMessage, devPort: chrome.runtime.Port) {
     if (isXStateNinjaDeadActorsClearedEvent(message)) {
       const tab = this.getTab(devPort)
       if (tab) {

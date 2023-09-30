@@ -29,20 +29,13 @@ export function getTypeSummary(v: any): string {
   if (type === 'string') {
     return `${type}[v.length]`
   }
-  if (
-    type === 'array' ||
-    type === 'map' ||
-    type === 'set' ||
-    type === 'object'
-  ) {
+  if (type === 'array' || type === 'map' || type === 'set' || type === 'object') {
     return `${type}[${getEntries(v).length}]`
   }
   return type
 }
 
-export function getSortedEntries(
-  obj: Record<string, unknown> | any[] | Map<any, any> | Set<any>,
-) {
+export function getSortedEntries(obj: Record<string, unknown> | any[] | Map<any, any> | Set<any>) {
   return getEntries(obj).sort(([k1], [k2]) => ('' + k1).localeCompare(k2))
 }
 

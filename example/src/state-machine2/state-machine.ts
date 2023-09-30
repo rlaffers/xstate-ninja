@@ -123,10 +123,7 @@ export default createMachine<ContextType, Events>(
         },
       ],
       PURE_ACTION: {
-        actions: pure(() => [
-          log('pure action triggered'),
-          send('PURE_ACTION_TRIGGERED'),
-        ]),
+        actions: pure(() => [log('pure action triggered'), send('PURE_ACTION_TRIGGERED')]),
       },
       ALWAYS: '.Deciding',
     },

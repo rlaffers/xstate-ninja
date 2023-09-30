@@ -70,18 +70,17 @@
       {},
     )
 
-    const deadActors: [string, DeserializedExtendedInspectedActorObject][] =
-      Object.values(actorsById).flatMap((deadActorsWithTimestamp) => {
-        const sorted = sortByFirstItem(deadActorsWithTimestamp)
-        return sorted
-          .slice(deadHistorySize > 0 ? -1 * deadHistorySize : sorted.length)
-          .map(
-            ([, actor]): [string, DeserializedExtendedInspectedActorObject] => [
-              actor.sessionId,
-              actor,
-            ],
-          )
-      })
+    const deadActors: [string, DeserializedExtendedInspectedActorObject][] = Object.values(
+      actorsById,
+    ).flatMap((deadActorsWithTimestamp) => {
+      const sorted = sortByFirstItem(deadActorsWithTimestamp)
+      return sorted
+        .slice(deadHistorySize > 0 ? -1 * deadHistorySize : sorted.length)
+        .map(([, actor]): [string, DeserializedExtendedInspectedActorObject] => [
+          actor.sessionId,
+          actor,
+        ])
+    })
 
     return new Map([...liveActors, ...deadActors])
   }
@@ -93,10 +92,7 @@
 
     if (isXStateInspectActorsEvent(event)) {
       actors = new Map(
-        Object.entries(event.inspectedActors).map(([k, v]) => [
-          k,
-          deserializeInspectedActor(v),
-        ]),
+        Object.entries(event.inspectedActors).map(([k, v]) => [k, deserializeInspectedActor(v)]),
       )
     }
 
@@ -104,10 +100,7 @@
       if (!actors) {
         actors = new Map()
       }
-      actors.set(
-        event.sessionId,
-        deserializeInspectedActor(event.inspectedActor),
-      )
+      actors.set(event.sessionId, deserializeInspectedActor(event.inspectedActor))
       actors = actors
       return false
     }
@@ -116,11 +109,7 @@
       if (!actors) return
       const actor = actors.get(event.sessionId)
       if (!actor) {
-        log(
-          `The stopped actor ${event.sessionId} is not in the list of actors.`,
-          undefined,
-          'red',
-        )
+        log(`The stopped actor ${event.sessionId} is not in the list of actors.`, undefined, 'red')
         return false
       }
       actors.set(actor.sessionId, {
@@ -182,8 +171,7 @@
   $: {
     if (actors && actors.size > 0 && swimlanes.length === 0) {
       const preselectedActor =
-        [...actors.values()].find((x) => x.parent == null) ??
-        actors.values().next().value
+        [...actors.values()].find((x) => x.parent == null) ?? actors.values().next().value
       swimlanes = [preselectedActor]
       activeSwimlane = 0
       activeActor = swimlanes[0]
@@ -225,10 +213,7 @@
     activeFrame = null
   }
 
-  function activateFrame(
-    frame: EventFrame | StateNodeFrame | null,
-    swimlaneIndex: number,
-  ) {
+  function activateFrame(frame: EventFrame | StateNodeFrame | null, swimlaneIndex: number) {
     if (swimlaneIndex !== activeSwimlane) {
       activateSwimlane(swimlaneIndex)
     }
@@ -238,26 +223,18 @@
   function addSwimlane() {
     const preselectedActor: DeserializedExtendedInspectedActorObject | null =
       actors !== null
-        ? [...actors.values()].find((x) => x.parent == null) ??
-          actors.values().next().value
+        ? [...actors.values()].find((x) => x.parent == null) ?? actors.values().next().value
         : null
     if (preselectedActor) {
       swimlanes = [...swimlanes, preselectedActor]
     }
   }
 
-  function onActorChanged(
-    actor: DeserializedExtendedInspectedActorObject,
-    index: number,
-  ) {
+  function onActorChanged(actor: DeserializedExtendedInspectedActorObject, index: number) {
     swimlanes[index] = actor
     swimlanes = swimlanes
     if (index === activeSwimlane) {
-      if (
-        activeFrame &&
-        activeActor &&
-        actor.sessionId !== activeActor.sessionId
-      ) {
+      if (activeFrame && activeActor && actor.sessionId !== activeActor.sessionId) {
         activeFrame = null
       }
       activeActor = actor

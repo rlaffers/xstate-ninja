@@ -14,9 +14,10 @@
   function formatTime(date: Date | null): string {
     if (!date) return 'N/A'
 
-    return `${String(date.getHours()).padStart(2, '0')}:${String(
-      date.getMinutes(),
-    ).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(
+      2,
+      '0',
+    )}:${String(date.getSeconds()).padStart(2, '0')}`
   }
   function getStatus(actor?: DeserializedExtendedInspectedActorObject): string {
     if (actor == null) return 'N/A'
@@ -31,9 +32,7 @@
         return actor.dead ? 'Unsubscribed' : 'N/A'
     }
   }
-  function getActorType(
-    actr: DeserializedExtendedInspectedActorObject,
-  ): string {
+  function getActorType(actr: DeserializedExtendedInspectedActorObject): string {
     switch (actr.type) {
       case ActorTypes.machine:
         return 'machine'

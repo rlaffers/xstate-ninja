@@ -11,10 +11,7 @@
     <div class="on-off-led">on</div>
     <div class="other-leds">
       <div class="low-fuel-led" class:on={$state.context.lowFuelWarning} />
-      <div
-        class="low-battery-led"
-        class:on={$state.context.lowBatteryWarning}
-      />
+      <div class="low-battery-led" class:on={$state.context.lowBatteryWarning} />
     </div>
   </div>
   <div

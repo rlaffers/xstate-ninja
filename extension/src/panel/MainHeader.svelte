@@ -40,21 +40,13 @@
 </script>
 
 <header class="main-header">
-  <button
-    title="Add another swim lane"
-    class="add-swim-lane-btn"
-    on:click={addSwimlane}>+</button
-  >
-  <button
-    on:click={clearDeadActors}
-    title="Clear dead actors"
-    class="clear-dead-btn"><TrashBinIcon /></button
+  <button title="Add another swim lane" class="add-swim-lane-btn" on:click={addSwimlane}>+</button>
+  <button on:click={clearDeadActors} title="Clear dead actors" class="clear-dead-btn"
+    ><TrashBinIcon /></button
   >
   <div class="separator" />
   <div class="middle-bar">
-    <button title="Settings" class="config-btn" on:click={openSettings}
-      ><CogwheelIcon /></button
-    >
+    <button title="Settings" class="config-btn" on:click={openSettings}><CogwheelIcon /></button>
   </div>
 
   <div class="separator" />
@@ -79,12 +71,7 @@
     on:click={openHelpUkraine}
     title="Please support Ukraine"
     class="help-ukraine"
-    ><img
-      src={ukraineHeart}
-      alt="Please help Ukraine"
-      width="20"
-      height="20"
-    /></a
+    ><img src={ukraineHeart} alt="Please help Ukraine" width="20" height="20" /></a
   >
 </header>
 {#if settingsShown}

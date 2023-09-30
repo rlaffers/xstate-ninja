@@ -1,11 +1,7 @@
 <script lang="ts">
   import { getTypeSummary, type Formatter } from './utils'
 
-  type ValueType =
-    | Record<string, unknown>
-    | Array<any>
-    | Map<any, any>
-    | Set<any>
+  type ValueType = Record<string, unknown> | Array<any> | Map<any, any> | Set<any>
 
   export let value: ValueType
 
@@ -42,8 +38,7 @@
     text-align: center;
     margin-right: 0.2rem;
   }
-  :global(:is(.magic-json-tree-item.expanded
-        > .key-line, .magic-json-tree-root.expanded)
+  :global(:is(.magic-json-tree-item.expanded > .key-line, .magic-json-tree-root.expanded)
       > .magic-json-tree-summary
       > .arrow) {
     transform: rotate(90deg);

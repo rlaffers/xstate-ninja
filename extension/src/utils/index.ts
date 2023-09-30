@@ -137,7 +137,8 @@ export function updateActorFromUpdateEvent(
 }
 
 export const createLogger =
-  (port: chrome.runtime.Port) => (text: string, data: any, color = 'cornflowerblue') => {
+  (port: chrome.runtime.Port) =>
+  (text: string, data: any, color = 'cornflowerblue') => {
     const msg: any = {
       type: MessageTypes.log,
       text,

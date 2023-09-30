@@ -39,13 +39,7 @@ function forwardEvent(eventName: string) {
   window.addEventListener(
     eventName as keyof WindowEventMap,
     ((
-      event: CustomEvent<
-        | ActorEvent
-        | ActorsEvent
-        | UpdateEvent
-        | ConnectedEvent
-        | UnregisterEvent
-      >,
+      event: CustomEvent<ActorEvent | ActorsEvent | UpdateEvent | ConnectedEvent | UnregisterEvent>,
     ) => {
       if (event.target !== window) {
         return

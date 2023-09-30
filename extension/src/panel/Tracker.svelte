@@ -5,9 +5,7 @@
     DeserializedExtendedInspectedActorObject,
     XStateInspectUpdateEvent,
   } from 'xstate-ninja'
-  import StateNodeFrameComponent, {
-    type StateNodeFrame,
-  } from './StateNodeFrame.svelte'
+  import StateNodeFrameComponent, { type StateNodeFrame } from './StateNodeFrame.svelte'
   import EventFrameComponent, { type EventFrame } from './EventFrame.svelte'
   import ArrowDown from './ArrowDown.svelte'
   import { last, debounce, isMachineSnapshot } from '../utils'
@@ -55,12 +53,8 @@
       changed: snapshot?.changed,
       snapshot: update.snapshot,
       final: snapshot?.done,
-      startedInvocation: isMachineSnapshot(snapshot)
-        ? didStartInvocation(snapshot)
-        : false,
-      stoppedInvocation: isMachineSnapshot(snapshot)
-        ? didStopInvocation(snapshot)
-        : false,
+      startedInvocation: isMachineSnapshot(snapshot) ? didStartInvocation(snapshot) : false,
+      stoppedInvocation: isMachineSnapshot(snapshot) ? didStopInvocation(snapshot) : false,
       historyIndex,
     }
   }
@@ -86,8 +80,7 @@
     historyIndex: number,
   ): (EventFrame | StateNodeFrame)[] {
     const frames: (EventFrame | StateNodeFrame)[] = []
-    const snapshot: unknown =
-      update.snapshot != null ? JSON.parse(update.snapshot) : undefined
+    const snapshot: unknown = update.snapshot != null ? JSON.parse(update.snapshot) : undefined
     frames.push(createEventFrame(update, historyIndex, snapshot))
     if (isMachineSnapshot(snapshot) && snapshot?.changed) {
       frames.push(createStateNodeFrame(update, historyIndex, snapshot))
@@ -102,9 +95,7 @@
     createdAt?: number
   }
 
-  function createFrameList(
-    actr: DeserializedExtendedInspectedActorObject,
-  ): FrameList {
+  function createFrameList(actr: DeserializedExtendedInspectedActorObject): FrameList {
     const frames: FrameList = [] as unknown as FrameList
     // these props serve for tracking when the reactive statements below need to run
     frames.sessionId = actr?.sessionId
@@ -127,10 +118,7 @@
   }
 
   $: if (actor) {
-    if (
-      actor.sessionId !== frames.sessionId ||
-      actor.createdAt !== frames.createdAt
-    ) {
+    if (actor.sessionId !== frames.sessionId || actor.createdAt !== frames.createdAt) {
       const newFrames: FrameList = createFrameList(actor)
       frames = newFrames
       clearSelectedFrame()
@@ -157,8 +145,7 @@
     const updateAutoscroll = debounce(function updateAutoscroll() {
       autoscroll =
         trackerElement &&
-        trackerElement.offsetHeight + trackerElement.scrollTop >
-          trackerElement.scrollHeight - 20
+        trackerElement.offsetHeight + trackerElement.scrollTop > trackerElement.scrollHeight - 20
     }, 100)
     node.addEventListener('scroll', updateAutoscroll)
     // return () => {

@@ -18,11 +18,7 @@ export class Tab {
   port: chrome.runtime.Port
   devPort: chrome.runtime.Port | null = null
 
-  constructor(
-    id: number,
-    port: chrome.runtime.Port,
-    devPort?: chrome.runtime.Port,
-  ) {
+  constructor(id: number, port: chrome.runtime.Port, devPort?: chrome.runtime.Port) {
     if (port.name !== 'xstate-ninja.page') {
       throw new Error(`Invalid port.name: ${port.name}`)
     }
@@ -71,9 +67,7 @@ export class Tab {
     this.devPort.onMessage.addListener(this.forwardMessageToTab)
   }
 
-  forwardMessageToTab(
-    message: AnyMessage | XStateInspectSendEvent | XStateInspectReadEvent,
-  ) {
+  forwardMessageToTab(message: AnyMessage | XStateInspectSendEvent | XStateInspectReadEvent) {
     if (isInitMessage(message) || isLogMessage(message)) {
       // these events are handled by the MessageBroker
       return

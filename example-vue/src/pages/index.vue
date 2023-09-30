@@ -13,33 +13,18 @@ const battery = useSelector(service, (state) => state.context.battery)
 const fuel = useSelector(service, (state) => state.context.fuel)
 const fuelPercent = computed(() => (fuel.value * 100) / 60)
 
-const isRunning = useSelector(service, (state) =>
-  state.matches('EngineRunning'),
-)
+const isRunning = useSelector(service, (state) => state.matches('EngineRunning'))
 const isLowFuel = useSelector(service, (state) => state.context.lowFuelWarning)
-const isLowBattery = useSelector(
-  service,
-  (state) => state.context.lowBatteryWarning,
-)
-const isRunningSlow = useSelector(service, (state) =>
-  state.matches('EngineRunning.SlowSpeed'),
-)
-const isRunningFast = useSelector(service, (state) =>
-  state.matches('EngineRunning.FastSpeed'),
-)
-const isRunningInReverse = useSelector(service, (state) =>
-  state.matches('EngineRunning.Reverse'),
-)
+const isLowBattery = useSelector(service, (state) => state.context.lowBatteryWarning)
+const isRunningSlow = useSelector(service, (state) => state.matches('EngineRunning.SlowSpeed'))
+const isRunningFast = useSelector(service, (state) => state.matches('EngineRunning.FastSpeed'))
+const isRunningInReverse = useSelector(service, (state) => state.matches('EngineRunning.Reverse'))
 
 const canShiftUp = useSelector(service, (state) => state.can('SHIFT_UP'))
 const canShiftDown = useSelector(service, (state) => state.can('SHIFT_DOWN'))
-const canShiftReverse = useSelector(service, (state) =>
-  state.can('SHIFT_REVERSE'),
-)
+const canShiftReverse = useSelector(service, (state) => state.can('SHIFT_REVERSE'))
 const canAddFuel = useSelector(service, (state) => state.can('FUEL_ADDED'))
-const canChargeBattery = useSelector(service, (state) =>
-  state.can('CHARGED_BATTERY'),
-)
+const canChargeBattery = useSelector(service, (state) => state.can('CHARGED_BATTERY'))
 
 const speed = computed(() => {
   if (isRunningSlow.value) return 'slow'
@@ -89,22 +74,9 @@ const speed = computed(() => {
         >{{ isRunning ? 'stop' : 'start' }}</v-btn
       >
 
-      <v-btn
-        class="ma-2"
-        :disabled="!canShiftUp"
-        @click="service.send('SHIFT_UP')"
-        >⬆</v-btn
-      >
-      <v-btn
-        class="ma-2"
-        :disabled="!canShiftDown"
-        @click="service.send('SHIFT_DOWN')"
-        >⬇</v-btn
-      >
-      <v-btn
-        class="ma-2"
-        :disabled="!canShiftReverse"
-        @click="service.send('SHIFT_REVERSE')"
+      <v-btn class="ma-2" :disabled="!canShiftUp" @click="service.send('SHIFT_UP')">⬆</v-btn>
+      <v-btn class="ma-2" :disabled="!canShiftDown" @click="service.send('SHIFT_DOWN')">⬇</v-btn>
+      <v-btn class="ma-2" :disabled="!canShiftReverse" @click="service.send('SHIFT_REVERSE')"
         >Ⓡ</v-btn
       >
       <v-btn

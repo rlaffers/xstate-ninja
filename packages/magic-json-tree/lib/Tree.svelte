@@ -90,11 +90,7 @@
             formatSummary={safeFormatSummary}
             level={2}
             {sorted}
-            expand={!Array.isArray(expand)
-              ? expand
-              : firstExpandItem === key
-              ? restExpand
-              : 0}
+            expand={!Array.isArray(expand) ? expand : firstExpandItem === key ? restExpand : 0}
           />
         {/each}
       </div>

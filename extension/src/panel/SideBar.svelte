@@ -20,15 +20,12 @@
       selectedSnapshot = JSON.parse(activeFrame.snapshot)
       const previousSerialized: string | null =
         actor?.history?.[activeFrame.historyIndex - 1]?.snapshot ?? null
-      previousSnapshot =
-        previousSerialized != null ? JSON.parse(previousSerialized) : null
+      previousSnapshot = previousSerialized != null ? JSON.parse(previousSerialized) : null
     } else {
       selectedSnapshot = actor?.snapshot
       const historySize = actor?.history?.length ?? 0
-      const previousSerialized: string | null =
-        actor?.history?.[historySize - 2]?.snapshot ?? null
-      previousSnapshot =
-        previousSerialized != null ? JSON.parse(previousSerialized) : null
+      const previousSerialized: string | null = actor?.history?.[historySize - 2]?.snapshot ?? null
+      previousSnapshot = previousSerialized != null ? JSON.parse(previousSerialized) : null
     }
   }
 
@@ -38,10 +35,7 @@
 <aside class="sidebar" bind:this={node}>
   <Resizer direction="horizontal" nextTarget={node} />
   {#if actor?.machine !== undefined}
-    <ContextPanel
-      context={selectedSnapshot?.context}
-      previousContext={previousSnapshot?.context}
-    />
+    <ContextPanel context={selectedSnapshot?.context} previousContext={previousSnapshot?.context} />
     {#if isEventFrame(activeFrame)}
       <EventPanel snapshot={selectedSnapshot} />
     {/if}

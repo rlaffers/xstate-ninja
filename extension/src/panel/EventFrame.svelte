@@ -42,8 +42,7 @@
 
     case TransitionTypes.guardedAndNoChange:
       className = 'guard-not-passed'
-      description =
-        'A guard prevented this event from triggering a state transition'
+      description = 'A guard prevented this event from triggering a state transition'
       break
 
     case TransitionTypes.forbidden:

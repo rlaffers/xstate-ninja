@@ -1,9 +1,6 @@
 import { interpret as xstateInterpret } from 'xstate'
 import type { AnyStateMachine, InterpreterOptions } from 'xstate'
-import {
-  XStateNinjaInspector,
-  XStateNinjaOptions,
-} from './XStateNinjaInspector'
+import { XStateNinjaInspector, XStateNinjaOptions } from './XStateNinjaInspector'
 
 export * from './events'
 export * from './types'
@@ -29,10 +26,7 @@ export default function createXStateNinjaInspector(
   return inspector
 }
 
-export function interpret(
-  machine: AnyStateMachine,
-  options?: Partial<InterpreterOptions>,
-) {
+export function interpret(machine: AnyStateMachine, options?: Partial<InterpreterOptions>) {
   const service = xstateInterpret(machine, options)
   if (options?.devTools) {
     createXStateNinjaInspector().register(service)

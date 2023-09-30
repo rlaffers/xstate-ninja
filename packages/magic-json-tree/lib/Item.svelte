@@ -2,12 +2,7 @@
   import Key from './Key.svelte'
   import Value from './Value.svelte'
   import Summary from './Summary.svelte'
-  import {
-    getEntries,
-    getSortedEntries,
-    getType,
-    type Formatter,
-  } from './utils'
+  import { getEntries, getSortedEntries, getType, type Formatter } from './utils'
 
   export let key: any
   export let value: any
@@ -30,10 +25,7 @@
   $: entries = sorted ? getSortedEntries : getEntries
 </script>
 
-<div
-  class="magic-json-tree-item magic-json-tree-item-{getType(value)}"
-  class:expanded
->
+<div class="magic-json-tree-item magic-json-tree-item-{getType(value)}" class:expanded>
   {#if typeof value === 'object' && value !== null}
     <div class="key-line">
       <Key {key} {value} {path} format={formatKey} />:<Summary
@@ -55,11 +47,7 @@
             {formatKey}
             {formatValue}
             {formatSummary}
-            expand={!Array.isArray(expand)
-              ? expand
-              : firstExpandItem === k
-              ? restExpand
-              : 0}
+            expand={!Array.isArray(expand) ? expand : firstExpandItem === k ? restExpand : 0}
           />
         {/each}
       </div>

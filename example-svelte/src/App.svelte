@@ -76,13 +76,8 @@
       >
 
       <label class="fuel-indicator"
-        >Fuel: <meter
-          min="0"
-          max="60"
-          low="10"
-          high="20"
-          optimum="60"
-          value={$animatedFuelProgress}>{$state.context.fuel}</meter
+        >Fuel: <meter min="0" max="60" low="10" high="20" optimum="60" value={$animatedFuelProgress}
+          >{$state.context.fuel}</meter
         >
       </label>
     </div>
@@ -91,8 +86,7 @@
     <button
       type="button"
       class="start-stop-btn"
-      class:start={$service.matches('EngineStopped') ||
-        $service.matches('Igniting')}
+      class:start={$service.matches('EngineStopped') || $service.matches('Igniting')}
       class:stop={$service.matches('EngineRunning')}
       on:mousedown={() => service.send('START_BUTTON_PRESSED')}
       on:mouseup={() => service.send('START_BUTTON_RELEASED')}
@@ -100,15 +94,11 @@
     >
 
     <div class="shifting-controls">
-      <button
-        type="button"
-        class="speed-shifting-btn"
-        on:click={() => service.send('SHIFT_UP')}>⬆</button
+      <button type="button" class="speed-shifting-btn" on:click={() => service.send('SHIFT_UP')}
+        >⬆</button
       >
-      <button
-        type="button"
-        class="speed-shifting-btn"
-        on:click={() => service.send('SHIFT_DOWN')}>⬇</button
+      <button type="button" class="speed-shifting-btn" on:click={() => service.send('SHIFT_DOWN')}
+        >⬇</button
       >
       <button
         type="button"
@@ -117,21 +107,16 @@
       >
     </div>
 
-    <button
-      class="fuel-btn"
-      on:click={() => service.send({ type: 'FUEL_ADDED', amount: 15 })}
+    <button class="fuel-btn" on:click={() => service.send({ type: 'FUEL_ADDED', amount: 15 })}
       >Add fuel</button
     >
 
     <button
       class="battery-btn"
-      on:click={() => service.send({ type: 'CHARGED_BATTERY', amount: 15 })}
-      >Charge battery</button
+      on:click={() => service.send({ type: 'CHARGED_BATTERY', amount: 15 })}>Charge battery</button
     >
 
-    <button type="button" on:click={resetMachine} class="reset-btn">
-      💀 Reset
-    </button>
+    <button type="button" on:click={resetMachine} class="reset-btn"> 💀 Reset </button>
   </section>
 </main>
 
@@ -153,8 +138,8 @@
     --blue: #268bd2;
     --cyan: #2aa198;
     --green: #859900;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+      'Open Sans', 'Helvetica Neue', sans-serif;
     background-color: var(--base03);
     color: var(--base1);
   }

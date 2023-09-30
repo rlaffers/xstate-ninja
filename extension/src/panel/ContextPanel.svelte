@@ -17,8 +17,7 @@
 
   function serializePath(path: any[]): string {
     return path.reduce(
-      (result, item) =>
-        `${result}${result.length > 0 ? '·' : ''}${String(item)}`,
+      (result, item) => `${result}${result.length > 0 ? '·' : ''}${String(item)}`,
       '',
     )
   }
@@ -44,10 +43,7 @@
       } else {
         interface Delta {
           contextDiff: object
-          byPath: Record<
-            string,
-            { type: string; oldValue: [typeof changes[0]['type'], any] }
-          >
+          byPath: Record<string, { type: string; oldValue: [typeof changes[0]['type'], any] }>
           extendedOrShrinkedPaths: string[]
         }
         const deltas = changes.reduce<Delta>(
@@ -63,9 +59,7 @@
                 ? { type, oldValue: change.oldValue }
                 : { type, oldValue: undefined }
             if (type === 'CREATE' || type === 'REMOVE') {
-              result.extendedOrShrinkedPaths.push(
-                serializePath(path.slice(0, -1)),
-              )
+              result.extendedOrShrinkedPaths.push(serializePath(path.slice(0, -1)))
             }
             return result
           },
@@ -96,9 +90,9 @@
         formatSummary = ([, value], path: any[]) => {
           const serializedPath = serializePath(path)
           if (deltas.extendedOrShrinkedPaths.includes(serializedPath)) {
-            return `${getTypeSummary(
-              getPath(path, previousContext),
-            )} ⇨ ${getTypeSummary(getPath(path, context))}`
+            return `${getTypeSummary(getPath(path, previousContext))} ⇨ ${getTypeSummary(
+              getPath(path, context),
+            )}`
           }
           return getTypeSummary(value)
         }
@@ -113,24 +107,13 @@
 <div class="wrapper" bind:this={container}>
   <div class="context-container nice-scroll">
     <div class="buttons">
-      <button type="button" disabled={!diffMode} on:click={setFullMode}
-        >Full</button
-      >
-      <button type="button" disabled={diffMode} on:click={setDiffMode}
-        >Diff</button
-      >
+      <button type="button" disabled={!diffMode} on:click={setFullMode}>Full</button>
+      <button type="button" disabled={diffMode} on:click={setDiffMode}>Diff</button>
     </div>
     {#if diffMode && contextDiff === null}
       <p class="no-changes">No changes</p>
     {:else if diffMode}
-      <Tree
-        value={contextDiff}
-        expand={1}
-        {formatValue}
-        {formatKey}
-        {formatSummary}
-        sorted
-      />
+      <Tree value={contextDiff} expand={1} {formatValue} {formatKey} {formatSummary} sorted />
     {:else}
       <Tree value={context} expand={1} sorted />
     {/if}

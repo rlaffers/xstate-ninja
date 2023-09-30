@@ -1,8 +1,5 @@
 import { useEffect } from 'react'
-import {
-  useInterpret as useInterpretXState,
-  useMachine as useMachineXState,
-} from '@xstate/react'
+import { useInterpret as useInterpretXState, useMachine as useMachineXState } from '@xstate/react'
 import type {
   InterpreterOptions,
   AnyStateMachine,
@@ -24,9 +21,7 @@ export function useInterpret<TMachine extends AnyStateMachine>(
       TMachine['__TEvent'],
       TMachine['__TResolvedTypesMeta']
     >,
-  observerOrListener?:
-    | Observer<StateFrom<TMachine>>
-    | ((value: StateFrom<TMachine>) => void),
+  observerOrListener?: Observer<StateFrom<TMachine>> | ((value: StateFrom<TMachine>) => void),
 ) {
   const service = useInterpretXState(getMachine, options, observerOrListener)
   useEffect(() => {

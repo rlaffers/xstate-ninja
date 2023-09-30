@@ -56,11 +56,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
   actors: Record<string, InspectedActorObject>
   logLevel: LogLevels = LogLevels.error
   enabled = true
-  trackedActorTypes: ActorTypes[] = [
-    ActorTypes.machine,
-    ActorTypes.callback,
-    ActorTypes.observable,
-  ]
+  trackedActorTypes: ActorTypes[] = [ActorTypes.machine, ActorTypes.callback, ActorTypes.observable]
 
   constructor({ logLevel, enabled }: XStateNinjaOptions = {}) {
     this.actors = {}
@@ -84,10 +80,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
       this.enabled = !!(globalThis as WindowWithXStateNinja)?.__xstate_ninja__
     }
 
-    globalThis.addEventListener(
-      EventTypes.connect,
-      this.onConnect as EventListener,
-    )
+    globalThis.addEventListener(EventTypes.connect, this.onConnect as EventListener)
     globalThis.addEventListener(EventTypes.read, this.onRead as EventListener)
     globalThis.addEventListener(EventTypes.send, this.onSend as EventListener)
 
@@ -96,10 +89,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
       this.onDeadActorsCleared as EventListener,
     )
 
-    globalThis.addEventListener(
-      EventTypes.settingsChanged,
-      this.onSettingsChanged as EventListener,
-    )
+    globalThis.addEventListener(EventTypes.settingsChanged, this.onSettingsChanged as EventListener)
 
     globalThis.dispatchEvent(new InspectorCreatedEvent())
   }
@@ -115,8 +105,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
   }
 
   setEnabled(enabled: boolean) {
-    this.enabled = !!(globalThis as WindowWithXStateNinja).__xstate_ninja__ &&
-      enabled
+    this.enabled = !!(globalThis as WindowWithXStateNinja).__xstate_ninja__ && enabled
   }
 
   isActorTypeTracked(type: ActorTypes): boolean {
@@ -138,9 +127,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
     const actorEvent = new ActorEvent(inspectedActor)
     globalThis.dispatchEvent(actorEvent)
 
-    const notSubscribed = (
-      childActor: AnyActorRef | AnyInterpreter,
-    ): boolean => {
+    const notSubscribed = (childActor: AnyActorRef | AnyInterpreter): boolean => {
       if (isInterpreterLike(childActor)) {
         return this.actors[childActor.sessionId] === undefined
       }
@@ -156,10 +143,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
     inspectedActor.subscription = actor.subscribe((stateOrValue: any) => {
       // TODO missing assign actions.
       // TODO test how pure/choose/sendParent/raise/log actions are displayed
-      this.log(
-        `----- actor updated (${inspectedActor.actorRef.id}) -----`,
-        stateOrValue,
-      )
+      this.log(`----- actor updated (${inspectedActor.actorRef.id}) -----`, stateOrValue)
 
       inspectedActor.updatedAt = Date.now()
       if (stateOrValue?.done && !inspectedActor.dead) {
@@ -172,10 +156,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
       if (isInterpreterLike(inspectedActor.actorRef)) {
         scxmlEvent = inspectedActor.actorRef.state._event
         if (scxmlEvent.origin != null && scxmlEvent.origin.match(/^x:\d/)) {
-          const originId = findChildBySessionId(
-            inspectedActor.actorRef,
-            scxmlEvent.origin,
-          )?.id
+          const originId = findChildBySessionId(inspectedActor.actorRef, scxmlEvent.origin)?.id
           if (originId != null) {
             scxmlEvent.origin = `${originId} (${scxmlEvent.origin})`
           }
@@ -187,14 +168,12 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
           stateOrValue.actions
             .filter((x: ActionObject<any, any>) => x.type === 'xstate.start')
             .forEach((startAction: ActionObject<any, any>) => {
-              const startedChildActor =
-                stateOrValue.children[startAction.activity.id]
+              const startedChildActor = stateOrValue.children[startAction.activity.id]
               if (startedChildActor) {
                 // check that we are not listening to it yet
                 if (
                   startedChildActor.sessionId != null &&
-                  this.actors[startedChildActor.sessionId]?.actorRef?.id ===
-                    startedChildActor.id
+                  this.actors[startedChildActor.sessionId]?.actorRef?.id === startedChildActor.id
                 ) {
                   return
                 }
@@ -236,10 +215,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
               id: inspectedActor.actorRef.id,
               sessionId: inspectedActor.sessionId,
             }
-            if (
-              childActor.parent === undefined &&
-              Object.isExtensible(childActor)
-            ) {
+            if (childActor.parent === undefined && Object.isExtensible(childActor)) {
               childActor.parent = parent
             }
             this.register(childActor, parent)
@@ -291,9 +267,8 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
       return
     }
     this.log('unregister actor', actor)
-    const [sessionId, inspectedActor] = Object.entries(this.actors).find(
-      ([, { actorRef }]) => actorRef === actor,
-    ) ?? []
+    const [sessionId, inspectedActor] =
+      Object.entries(this.actors).find(([, { actorRef }]) => actorRef === actor) ?? []
     if (sessionId === undefined || inspectedActor === undefined) {
       return
     }
@@ -330,9 +305,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
   }
 
   // TODO implement onRegister
-  onRegister(
-    listener: (actorRegistration: ActorRegistration) => void,
-  ): Subscription | void {
+  onRegister(listener: (actorRegistration: ActorRegistration) => void): Subscription | void {
     if (!this.enabled) {
       return
     }

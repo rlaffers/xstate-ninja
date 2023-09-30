@@ -15,9 +15,7 @@
     historyIndex: number
   }
 
-  export function isStateNodeFrame(
-    frame: StateNodeFrame | EventFrame,
-  ): frame is StateNodeFrame {
+  export function isStateNodeFrame(frame: StateNodeFrame | EventFrame): frame is StateNodeFrame {
     return frame == null ? false : frame.type === 'stateNode'
   }
 </script>
@@ -89,17 +87,10 @@
   {/key}
   <div class="info-icons">
     {#if data.startedInvocation}
-      <div class="icon-started-invocation" title="A service was invoked here">
-        ⊕
-      </div>
+      <div class="icon-started-invocation" title="A service was invoked here">⊕</div>
     {/if}
     {#if data.stoppedInvocation}
-      <div
-        class="icon-stopped-invocation"
-        title="An invoked service was stopped here"
-      >
-        ⊖
-      </div>
+      <div class="icon-stopped-invocation" title="An invoked service was stopped here">⊖</div>
     {/if}
   </div>
 </article>

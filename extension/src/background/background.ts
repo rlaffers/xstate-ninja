@@ -4,11 +4,7 @@ import { MessageBroker } from './MessageBroker'
 chrome.storage.sync.get('settings', ({ settings }) => {
   if (!settings) {
     const defaultSettings: ExtensionSettings = {
-      trackedActorTypes: [
-        ActorTypes.machine,
-        ActorTypes.callback,
-        ActorTypes.observable,
-      ],
+      trackedActorTypes: [ActorTypes.machine, ActorTypes.callback, ActorTypes.observable],
       deadHistorySize: 1,
       showTimestamps: true,
     }

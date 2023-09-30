@@ -56,9 +56,7 @@
             type="checkbox"
             name="trackedActorTypes"
             value="machine"
-            checked={currentSettings?.trackedActorTypes?.includes?.(
-              ActorTypes.machine,
-            )}
+            checked={currentSettings?.trackedActorTypes?.includes?.(ActorTypes.machine)}
           />
           State machines
         </label>
@@ -67,9 +65,7 @@
             type="checkbox"
             name="trackedActorTypes"
             value="callback"
-            checked={currentSettings?.trackedActorTypes?.includes?.(
-              ActorTypes.callback,
-            )}
+            checked={currentSettings?.trackedActorTypes?.includes?.(ActorTypes.callback)}
           />
           Callbacks
         </label>
@@ -78,9 +74,7 @@
             type="checkbox"
             name="trackedActorTypes"
             value="observable"
-            checked={currentSettings?.trackedActorTypes?.includes?.(
-              ActorTypes.observable,
-            )}
+            checked={currentSettings?.trackedActorTypes?.includes?.(ActorTypes.observable)}
           />
           Observables
         </label>
@@ -89,9 +83,7 @@
             type="checkbox"
             name="trackedActorTypes"
             value="promise"
-            checked={currentSettings?.trackedActorTypes?.includes?.(
-              ActorTypes.promise,
-            )}
+            checked={currentSettings?.trackedActorTypes?.includes?.(ActorTypes.promise)}
           />
           Promises
         </label>

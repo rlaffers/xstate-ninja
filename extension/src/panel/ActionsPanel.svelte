@@ -25,9 +25,7 @@
             {#if action.type === 'xstate.send'}
               <span class="send-action-event">{action.event?.type}</span>
               {#if action.to != null}
-                <span class="send-action-target"
-                  >{getSendTargetName(action.to)}</span
-                >
+                <span class="send-action-target">{getSendTargetName(action.to)}</span>
               {/if}
             {/if}
           </summary>
@@ -95,10 +93,7 @@
     margin-right: 5px;
   }
 
-  .actions-panel
-    .action
-    > :global(.magic-json-tree-root)
-    > :global(.magic-json-tree-summary) {
+  .actions-panel .action > :global(.magic-json-tree-root) > :global(.magic-json-tree-summary) {
     display: none;
   }
 

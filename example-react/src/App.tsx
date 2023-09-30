@@ -20,9 +20,7 @@ function App() {
     service,
     (state) => state.matches('EngineStopped') || state.matches('Igniting'),
   )
-  const isRunning = useSelector(service, (state) =>
-    state.matches('EngineRunning'),
-  )
+  const isRunning = useSelector(service, (state) => state.matches('EngineRunning'))
 
   function resetMachine(event) {
     service.send({ type: 'RESET_CLICKED', event })
@@ -31,8 +29,7 @@ function App() {
   return (
     <main>
       <div className="logos">
-        <img src={logo} alt="XState Ninja" />{' '}
-        <span style={{ fontSize: '10rem' }}>+</span>{' '}
+        <img src={logo} alt="XState Ninja" /> <span style={{ fontSize: '10rem' }}>+</span>{' '}
         <img src={reactLogo} alt="Reactlogo" />
       </div>
       <h1>XState Ninja React Demo</h1>
@@ -42,28 +39,14 @@ function App() {
         <div className="battery-and-fuel">
           <label className="battery-indicator">
             Battery:{' '}
-            <meter
-              min="0"
-              max="100"
-              low="10"
-              high="25"
-              optimum="100"
-              value={battery}
-            >
+            <meter min="0" max="100" low="10" high="25" optimum="100" value={battery}>
               {battery}
             </meter>
           </label>
 
           <label className="fuel-indicator">
             Fuel:{' '}
-            <meter
-              min="0"
-              max="60"
-              low="10"
-              high="20"
-              optimum="60"
-              value={fuel}
-            >
+            <meter min="0" max="60" low="10" high="20" optimum="60" value={fuel}>
               {fuel}
             </meter>
           </label>

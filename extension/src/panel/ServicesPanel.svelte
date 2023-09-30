@@ -3,9 +3,7 @@
 
   export let snapshot: any = null
 
-  function isActivityActionObject(
-    activity: any,
-  ): activity is ActivityActionObject<any, any> {
+  function isActivityActionObject(activity: any): activity is ActivityActionObject<any, any> {
     if (!activity || typeof activity !== 'object') {
       return false
     }
@@ -13,21 +11,20 @@
     return typeof type === 'string' && type !== ''
   }
 
-  function getActivitySourceType(
-    activity: ActivityActionObject<any, any>,
-  ): string {
+  function getActivitySourceType(activity: ActivityActionObject<any, any>): string {
     const { activity: activityDefinition } = activity
     if (!activityDefinition) {
       return '<unknown>'
     }
     if (activityDefinition.type === 'xstate.invoke') {
       if (
-        typeof activityDefinition.src?.type === 'string' &&
-        activityDefinition.src.type.match(/:invocation\[\d+\]$/)
+        'src' in activityDefinition &&
+        typeof (activityDefinition as any).src?.type === 'string' &&
+        (activityDefinition as any).src.type.match(/:invocation\[\d+\]$/)
       ) {
         return '<inlined>'
       }
-      return activityDefinition.src?.type ?? '<unknown>'
+      return (activityDefinition as any).src?.type ?? '<unknown>'
     } else {
       return activityDefinition.type ?? '<unknown>'
     }
@@ -48,9 +45,7 @@
 
               <dt>type:</dt>
               <dd>
-                "{activity.activity?.type === 'xstate.invoke'
-                  ? 'invoked'
-                  : 'activity'}"
+                "{activity.activity?.type === 'xstate.invoke' ? 'invoked' : 'activity'}"
               </dd>
             </dl>
           </details>

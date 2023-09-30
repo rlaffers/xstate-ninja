@@ -1,16 +1,11 @@
 <script lang="ts">
   import type { DeserializedExtendedInspectedActorObject } from 'xstate-ninja'
 
-  export let actors: Map<
-    string,
-    DeserializedExtendedInspectedActorObject
-  > | null
+  export let actors: Map<string, DeserializedExtendedInspectedActorObject> | null
   let className = ''
   export { className as class }
   export let selectedActor: DeserializedExtendedInspectedActorObject
-  export let onActorSelected: (
-    actor: DeserializedExtendedInspectedActorObject,
-  ) => void
+  export let onActorSelected: (actor: DeserializedExtendedInspectedActorObject) => void
 
   let selectedActorSessionId: string = selectedActor?.sessionId
 
@@ -26,10 +21,7 @@
   const levelKey = Symbol('level')
 
   function sortByParent(list: DeserializedExtendedInspectedActorObject[]) {
-    const result: Record<
-      string | symbol,
-      DeserializedExtendedInspectedActorObject[]
-    > = {}
+    const result: Record<string | symbol, DeserializedExtendedInspectedActorObject[]> = {}
     for (const item of list) {
       if (item.parent == null) {
         if (!result[root]) {
@@ -58,8 +50,10 @@
       return children
     }
     for (const child of list[parentId]) {
-      const childWithLevel: DeserializedExtendedInspectedActorObjectWithLevel =
-        { ...child, [levelKey]: level }
+      const childWithLevel: DeserializedExtendedInspectedActorObjectWithLevel = {
+        ...child,
+        [levelKey]: level,
+      }
       children.push(childWithLevel)
       children.push(...getOrderedChildren(list, child.sessionId, level + 1))
     }
@@ -85,10 +79,7 @@
     }
     const sessionId = (event.currentTarget as HTMLSelectElement).value
     const nextSelectedActor = actors.get(sessionId)
-    if (
-      nextSelectedActor &&
-      nextSelectedActor.sessionId !== selectedActorSessionId
-    ) {
+    if (nextSelectedActor && nextSelectedActor.sessionId !== selectedActorSessionId) {
       selectedActorSessionId = nextSelectedActor.sessionId
       selectedActor = nextSelectedActor
       onActorSelected(selectedActor)

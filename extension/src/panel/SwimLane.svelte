@@ -10,15 +10,10 @@
   import UnhideIcon from './icons/UnhideIcon.svelte'
 
   export let selectedActor: DeserializedExtendedInspectedActorObject
-  export let actors: Map<
-    string,
-    DeserializedExtendedInspectedActorObject
-  > | null = null
+  export let actors: Map<string, DeserializedExtendedInspectedActorObject> | null = null
   export let active = false
   export let onSelectSwimlane: () => void
-  export let onActorChanged: (
-    actor: DeserializedExtendedInspectedActorObject,
-  ) => void
+  export let onActorChanged: (actor: DeserializedExtendedInspectedActorObject) => void
   export let onSelectFrame: (frame: EventFrame | StateNodeFrame | null) => void
   export let closeSwimlane: () => void
   export let previousSwimlane: HTMLElement | null
@@ -44,13 +39,10 @@
 
   let container: HTMLElement
 
-  let hiddenParallelActorStates = selectedActor
-    ? $hiddenStates[selectedActor.sessionId]
-    : new Set()
+  let hiddenParallelActorStates = selectedActor ? $hiddenStates[selectedActor.sessionId] : new Set()
   $: {
     if (selectedActor) {
-      hiddenParallelActorStates =
-        $hiddenStates[selectedActor.sessionId] ?? new Set()
+      hiddenParallelActorStates = $hiddenStates[selectedActor.sessionId] ?? new Set()
     } else {
       hiddenParallelActorStates = new Set()
     }
@@ -68,12 +60,7 @@
   <div class="swim-lane-content">
     <header class="swim-lane-header">
       <div class="first-row">
-        <ActorsDropdown
-          class="actors-dropdown"
-          {actors}
-          {selectedActor}
-          {onActorSelected}
-        />
+        <ActorsDropdown class="actors-dropdown" {actors} {selectedActor} {onActorSelected} />
         {#if hiddenParallelActorStates.size > 0}
           <button
             type="button"
@@ -86,16 +73,11 @@
         {/if}
       </div>
       <ActorDetail actor={selectedActor} />
-      <button type="button" class="close-btn" on:click={closeSwimlane}>⨯</button
-      >
+      <button type="button" class="close-btn" on:click={closeSwimlane}>⨯</button>
     </header>
     <Tracker actor={selectedActor} {onSelectFrame} {active} />
   </div>
-  <Resizer
-    nextTarget={container}
-    previousTarget={previousSwimlane}
-    direction="horizontal"
-  />
+  <Resizer nextTarget={container} previousTarget={previousSwimlane} direction="horizontal" />
 </section>
 
 <style>
