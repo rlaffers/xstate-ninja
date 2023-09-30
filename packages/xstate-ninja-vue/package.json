@@ -35,7 +35,7 @@
     "typescript": "^5.2.2",
     "vite": "^3.0.0",
     "vue": "^3.3.4",
-    "xstate": "^4.34.0",
+    "xstate": "^4.38.2",
     "xstate-ninja": "workspace:^1.2.0"
   },
   "peerDependencies": {

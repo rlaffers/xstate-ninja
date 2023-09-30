@@ -110,7 +110,7 @@ importers:
         version: link:../packages/xstate-ninja-react
       '@xstate/react':
         specifier: ^3.0.1
-        version: 3.0.1(@types/react@18.0.20)(react@18.2.0)(xstate@4.34.0)
+        version: 3.0.1(@types/react@18.0.20)(react@18.2.0)(xstate@4.38.2)
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
@@ -124,8 +124,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       xstate:
-        specifier: ^4.34.0
-        version: 4.34.0
+        specifier: ^4.38.2
+        version: 4.38.2
       xstate-ninja:
         specifier: workspace:^1.1.1
         version: link:../packages/xstate-ninja-core
@@ -153,10 +153,10 @@ importers:
     dependencies:
       '@xstate/svelte':
         specifier: ^2.0.0
-        version: 2.0.0(svelte@3.59.2)(xstate@4.33.6)
+        version: 2.0.0(svelte@3.59.2)(xstate@4.38.2)
       xstate:
-        specifier: ^4.33.6
-        version: 4.33.6
+        specifier: ^4.38.2
+        version: 4.38.2
       xstate-ninja:
         specifier: workspace:^1.1.1
         version: link:../packages/xstate-ninja-core
@@ -202,7 +202,7 @@ importers:
         version: link:../packages/xstate-ninja-vue
       '@xstate/vue':
         specifier: ^2.0.0
-        version: 2.0.0(vue@3.3.4)(xstate@4.34.0)
+        version: 2.0.0(vue@3.3.4)(xstate@4.38.2)
       vite-plugin-vuetify:
         specifier: ^1.0.2
         version: 1.0.2(vite@4.3.9)(vue@3.3.4)(vuetify@3.3.12)
@@ -216,8 +216,8 @@ importers:
         specifier: ^3.3.12
         version: 3.3.12(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
       xstate:
-        specifier: ^4.34.0
-        version: 4.34.0
+        specifier: ^4.38.2
+        version: 4.38.2
       xstate-ninja:
         specifier: workspace:^1.1.1
         version: link:../packages/xstate-ninja-core
@@ -298,10 +298,10 @@ importers:
         specifier: ^8.4.0
         version: 8.4.0
       xstate:
-        specifier: ^4.33.6
-        version: 4.33.6
+        specifier: ^4.38.2
+        version: 4.38.2
       xstate-ninja:
-        specifier: workspace:^
+        specifier: workspace:^1.3.10
         version: link:../packages/xstate-ninja-core
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -398,8 +398,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.2
       xstate:
-        specifier: ^4.34.0
-        version: 4.34.0
+        specifier: ^4.38.2
+        version: 4.38.2
 
   packages/xstate-ninja-react:
     devDependencies:
@@ -408,7 +408,7 @@ importers:
         version: 18.0.20
       '@xstate/react':
         specifier: ^3.0.1
-        version: 3.0.1(@types/react@18.0.20)(react@18.2.0)(xstate@4.34.0)
+        version: 3.0.1(@types/react@18.0.20)(react@18.2.0)(xstate@4.38.2)
       concurrently:
         specifier: ^7.3.0
         version: 7.3.0
@@ -428,8 +428,8 @@ importers:
         specifier: ^3.0.0
         version: 3.1.0
       xstate:
-        specifier: ^4.34.0
-        version: 4.34.0
+        specifier: ^4.38.2
+        version: 4.38.2
       xstate-ninja:
         specifier: workspace:^1.2.0
         version: link:../xstate-ninja-core
@@ -440,7 +440,7 @@ importers:
     devDependencies:
       '@xstate/vue':
         specifier: ^2.0.0
-        version: 2.0.0(vue@3.3.4)(xstate@4.34.0)
+        version: 2.0.0(vue@3.3.4)(xstate@4.38.2)
       concurrently:
         specifier: ^7.3.0
         version: 7.3.0
@@ -460,8 +460,8 @@ importers:
         specifier: ^3.3.4
         version: 3.3.4
       xstate:
-        specifier: ^4.34.0
-        version: 4.34.0
+        specifier: ^4.38.2
+        version: 4.38.2
       xstate-ninja:
         specifier: workspace:^1.2.0
         version: link:../xstate-ninja-core
@@ -2138,7 +2138,7 @@ packages:
   /@types/decompress@4.2.5:
     resolution: {integrity: sha512-LdL+kbcKGs9TzvB/K+OBGzPfDoP6gwwTsykYjodlzUJUUYp/43c1p1jE5YTtz3z4Ml90iruvBXbJ6+kDvb3WSQ==}
     dependencies:
-      '@types/node': 20.7.2
+      '@types/node': 20.8.0
     dev: true
 
   /@types/download@8.0.1:
@@ -2146,7 +2146,7 @@ packages:
     dependencies:
       '@types/decompress': 4.2.5
       '@types/got': 8.3.6
-      '@types/node': 20.7.2
+      '@types/node': 20.8.0
     dev: true
 
   /@types/estree@1.0.1:
@@ -2170,7 +2170,7 @@ packages:
   /@types/got@8.3.6:
     resolution: {integrity: sha512-nvLlj+831dhdm4LR2Ly+HTpdLyBaMynoOr6wpIxS19d/bPeHQxFU5XQ6Gp6ohBpxvCWZM1uHQIC2+ySRH1rGrQ==}
     dependencies:
-      '@types/node': 20.7.2
+      '@types/node': 20.8.0
     dev: true
 
   /@types/har-format@1.2.8:
@@ -2223,8 +2223,8 @@ packages:
     resolution: {integrity: sha512-LT+OIXpp2kj4E2S/p91BMe+VgGX2+lfO+XTpfXhh+bCk2LkQtHZSub8ewFBMGP5ClysPjTDFa4sMI8Q3n4T0wg==}
     dev: true
 
-  /@types/node@20.7.2:
-    resolution: {integrity: sha512-RcdC3hOBOauLP+r/kRt27NrByYtDjsXyAuSbR87O6xpsvi763WI+5fbSIvYJrXnt9w4RuxhV6eAXfIs7aaf/FQ==}
+  /@types/node@20.8.0:
+    resolution: {integrity: sha512-LzcWltT83s1bthcvjBmiBvGJiiUe84NWRHkw+ZV6Fr41z2FbIzvc815dk2nQ3RAKMuN2fkenM/z3Xv2QzEpYxQ==}
     dev: true
 
   /@types/normalize-package-data@2.4.1:
@@ -2270,7 +2270,7 @@ packages:
   /@types/responselike@1.0.1:
     resolution: {integrity: sha512-TiGnitEDxj2X0j+98Eqk5lv/Cij8oHd32bU4D/Yw6AOq7vvTk0gSD2GPj0G/HkvhMoVsdlhYF4yqqlyPBTM6Sg==}
     dependencies:
-      '@types/node': 20.7.2
+      '@types/node': 20.8.0
     dev: true
 
   /@types/retry@0.12.0:
@@ -3101,7 +3101,7 @@ packages:
       xstate: 4.38.2
     dev: true
 
-  /@xstate/react@3.0.1(@types/react@18.0.20)(react@18.2.0)(xstate@4.34.0):
+  /@xstate/react@3.0.1(@types/react@18.0.20)(react@18.2.0)(xstate@4.38.2):
     resolution: {integrity: sha512-/tq/gg92P9ke8J+yDNDBv5/PAxBvXJf2cYyGDByzgtl5wKaxKxzDT82Gj3eWlCJXkrBg4J5/V47//gRJuVH2fA==}
     peerDependencies:
       '@xstate/fsm': ^2.0.0
@@ -3116,11 +3116,11 @@ packages:
       react: 18.2.0
       use-isomorphic-layout-effect: 1.1.2(@types/react@18.0.20)(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
-      xstate: 4.34.0
+      xstate: 4.38.2
     transitivePeerDependencies:
       - '@types/react'
 
-  /@xstate/svelte@2.0.0(svelte@3.59.2)(xstate@4.33.6):
+  /@xstate/svelte@2.0.0(svelte@3.59.2)(xstate@4.38.2):
     resolution: {integrity: sha512-051btq174/fc0lsFUsl5xLbpzEGF4lg6unV1uimjQwKxYTwF2GZXKlcQx2dW7WYpqeH0CWoKvKtb2qIBsnxq5A==}
     peerDependencies:
       '@xstate/fsm': ^2.0.0
@@ -3133,7 +3133,7 @@ packages:
         optional: true
     dependencies:
       svelte: 3.59.2
-      xstate: 4.33.6
+      xstate: 4.38.2
     dev: false
 
   /@xstate/tools-shared@1.1.7(@babel/core@7.19.1)(prettier@2.8.8)(xstate@4.38.2):
@@ -3149,7 +3149,7 @@ packages:
       - '@babel/core'
     dev: true
 
-  /@xstate/vue@2.0.0(vue@3.3.4)(xstate@4.34.0):
+  /@xstate/vue@2.0.0(vue@3.3.4)(xstate@4.38.2):
     resolution: {integrity: sha512-JlrJ3d+I6rZCcFBuu3O4GP+mGJfd11O9o69wRedzPMqZ+hxcMRBsih9L5kKnJHcU9CTmdJTT172oxTaYF7thzA==}
     peerDependencies:
       '@xstate/fsm': ^2.0.0
@@ -3162,7 +3162,7 @@ packages:
         optional: true
     dependencies:
       vue: 3.3.4
-      xstate: 4.34.0
+      xstate: 4.38.2
 
   /JSONStream@1.3.5:
     resolution: {integrity: sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ==}
@@ -12939,13 +12939,6 @@ packages:
   /xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
     dev: true
-
-  /xstate@4.33.6:
-    resolution: {integrity: sha512-A5R4fsVKADWogK2a43ssu8Fz1AF077SfrKP1ZNyDBD8lNa/l4zfR//Luofp5GSWehOQr36Jp0k2z7b+sH2ivyg==}
-    dev: false
-
-  /xstate@4.34.0:
-    resolution: {integrity: sha512-MFnYz7cJrWuXSZ8IPkcCyLB1a2T3C71kzMeShXKmNaEjBR/JQebKZPHTtxHKZpymESaWO31rA3IQ30TC6LW+sw==}
 
   /xstate@4.38.2:
     resolution: {integrity: sha512-Fba/DwEPDLneHT3tbJ9F3zafbQXszOlyCJyQqqdzmtlY/cwE2th462KK48yaANf98jHlP6lJvxfNtN0LFKXPQg==}
