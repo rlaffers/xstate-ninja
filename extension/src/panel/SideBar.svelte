@@ -18,13 +18,17 @@
   $: {
     if (activeFrame?.snapshot != null) {
       selectedSnapshot = JSON.parse(activeFrame.snapshot)
-      const previousSerialized: string | null = actor?.history?.[activeFrame.historyIndex - 1]?.snapshot ?? null
-      previousSnapshot = previousSerialized != null ? JSON.parse(previousSerialized) : null
+      const previousSerialized: string | null =
+        actor?.history?.[activeFrame.historyIndex - 1]?.snapshot ?? null
+      previousSnapshot =
+        previousSerialized != null ? JSON.parse(previousSerialized) : null
     } else {
       selectedSnapshot = actor?.snapshot
       const historySize = actor?.history?.length ?? 0
-      const previousSerialized: string | null = actor?.history?.[historySize - 2]?.snapshot ?? null
-      previousSnapshot = previousSerialized != null ? JSON.parse(previousSerialized) : null
+      const previousSerialized: string | null =
+        actor?.history?.[historySize - 2]?.snapshot ?? null
+      previousSnapshot =
+        previousSerialized != null ? JSON.parse(previousSerialized) : null
     }
   }
 

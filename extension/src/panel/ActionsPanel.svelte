@@ -49,7 +49,11 @@
   }
 
   .wrapper {
-    position: relative;
+    /* to prevent overflow when the context is too long */
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .actions-panel {

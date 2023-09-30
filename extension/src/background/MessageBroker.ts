@@ -9,10 +9,6 @@ import {
   MessageTypes,
 } from '../messages'
 
-interface IKeptAlivePort extends chrome.runtime.Port {
-  _timer: number | null
-}
-
 /**
  * Connects the devtools script with the page. Keeps the background service worker alive.
  * There is a single message broker for serving all tabs.
@@ -27,14 +23,14 @@ export class MessageBroker {
     this.devPorts = new Map()
     this.isKeptAlive = false
 
-    this.onInitMessageFromDevtoolsPanel = this.onInitMessageFromDevtoolsPanel
-      .bind(this)
+    this.onInitMessageFromDevtoolsPanel =
+      this.onInitMessageFromDevtoolsPanel.bind(this)
     this.logDevtoolsMessage = this.logDevtoolsMessage.bind(this)
     this.removeDevPort = this.removeDevPort.bind(this)
     this.removeTab = this.removeTab.bind(this)
     this.keepAlive = this.keepAlive.bind(this)
-    this.forwardDeadActorsClearedMessage = this.forwardDeadActorsClearedMessage
-      .bind(this)
+    this.forwardDeadActorsClearedMessage =
+      this.forwardDeadActorsClearedMessage.bind(this)
   }
 
   start() {

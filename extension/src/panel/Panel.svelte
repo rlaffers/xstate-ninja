@@ -70,12 +70,18 @@
       {},
     )
 
-    const deadActors: [string, DeserializedExtendedInspectedActorObject][] = Object.values(actorsById).flatMap((deadActorsWithTimestamp) => {
-      const sorted = sortByFirstItem(deadActorsWithTimestamp)
-      return sorted
-        .slice(deadHistorySize > 0 ? -1 * deadHistorySize : sorted.length)
-        .map(([, actor]): [string, DeserializedExtendedInspectedActorObject] => [actor.sessionId, actor])
-    })
+    const deadActors: [string, DeserializedExtendedInspectedActorObject][] =
+      Object.values(actorsById).flatMap((deadActorsWithTimestamp) => {
+        const sorted = sortByFirstItem(deadActorsWithTimestamp)
+        return sorted
+          .slice(deadHistorySize > 0 ? -1 * deadHistorySize : sorted.length)
+          .map(
+            ([, actor]): [string, DeserializedExtendedInspectedActorObject] => [
+              actor.sessionId,
+              actor,
+            ],
+          )
+      })
 
     return new Map([...liveActors, ...deadActors])
   }
@@ -230,9 +236,11 @@
   }
 
   function addSwimlane() {
-    const preselectedActor: DeserializedExtendedInspectedActorObject | null = actors !== null
-      ? [...actors.values()].find((x) => x.parent == null) ??  actors.values().next().value
-      : null
+    const preselectedActor: DeserializedExtendedInspectedActorObject | null =
+      actors !== null
+        ? [...actors.values()].find((x) => x.parent == null) ??
+          actors.values().next().value
+        : null
     if (preselectedActor) {
       swimlanes = [...swimlanes, preselectedActor]
     }
@@ -245,7 +253,11 @@
     swimlanes[index] = actor
     swimlanes = swimlanes
     if (index === activeSwimlane) {
-      if (activeFrame && activeActor && actor.sessionId !== activeActor.sessionId) {
+      if (
+        activeFrame &&
+        activeActor &&
+        actor.sessionId !== activeActor.sessionId
+      ) {
         activeFrame = null
       }
       activeActor = actor

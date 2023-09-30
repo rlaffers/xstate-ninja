@@ -10,8 +10,10 @@
   import UnhideIcon from './icons/UnhideIcon.svelte'
 
   export let selectedActor: DeserializedExtendedInspectedActorObject
-  export let actors: Map<string, DeserializedExtendedInspectedActorObject> | null =
-    null
+  export let actors: Map<
+    string,
+    DeserializedExtendedInspectedActorObject
+  > | null = null
   export let active = false
   export let onSelectSwimlane: () => void
   export let onActorChanged: (

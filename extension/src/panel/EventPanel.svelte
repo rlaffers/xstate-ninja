@@ -38,13 +38,18 @@
   }
 
   .wrapper {
-    position: relative;
+    /* to prevent overflow when the context is too long */
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .event-panel {
     margin: 0;
     padding: 8px;
     overflow: auto;
+    max-height: calc(100% - 5px);
     min-height: 1rem;
   }
   :global(.sidebar:not(.custom-sized) .event-panel) {

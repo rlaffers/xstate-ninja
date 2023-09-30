@@ -44,7 +44,10 @@
       } else {
         interface Delta {
           contextDiff: object
-          byPath: Record<string, { type: string; oldValue: [typeof changes[0]['type'], any] }>
+          byPath: Record<
+            string,
+            { type: string; oldValue: [typeof changes[0]['type'], any] }
+          >
           extendedOrShrinkedPaths: string[]
         }
         const deltas = changes.reduce<Delta>(
@@ -55,7 +58,10 @@
               type === 'REMOVE' ? change.oldValue : change.value,
               result.contextDiff,
             )
-            result.byPath[serializePath(path)] = change.type === 'CHANGE' ? { type, oldValue: change.oldValue } : { type, oldValue: undefined }
+            result.byPath[serializePath(path)] =
+              change.type === 'CHANGE'
+                ? { type, oldValue: change.oldValue }
+                : { type, oldValue: undefined }
             if (type === 'CREATE' || type === 'REMOVE') {
               result.extendedOrShrinkedPaths.push(
                 serializePath(path.slice(0, -1)),
@@ -104,8 +110,8 @@
 </script>
 
 <h1>Context</h1>
-<div class="wrapper nice-scroll" bind:this={container}>
-  <div class="context-container">
+<div class="wrapper" bind:this={container}>
+  <div class="context-container nice-scroll">
     <div class="buttons">
       <button type="button" disabled={!diffMode} on:click={setFullMode}
         >Full</button
@@ -141,8 +147,10 @@
     padding: 0 8px;
   }
   .wrapper {
-    overflow: auto;
     min-height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   :global(.no-changes) {
     font-style: italic;
@@ -164,6 +172,7 @@
     margin: 0;
     padding: 8px;
     min-height: 1rem;
+    overflow: auto;
   }
   :global(.sidebar:not(.custom-sized) .context-container) {
     max-width: 30rem;

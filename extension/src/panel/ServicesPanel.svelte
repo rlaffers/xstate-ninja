@@ -34,7 +34,7 @@
   }
 </script>
 
-<h1>Services</h1>
+<h1>Actors</h1>
 <p class="services-panel nice-scroll">
   {#key snapshot}
     {#if snapshot?.activities && typeof snapshot.activities === 'object'}

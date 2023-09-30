@@ -95,6 +95,7 @@
   .resizer-horizontal {
     cursor: col-resize;
     width: 5px;
+    min-width: 5px;
     height: 100%;
     position: absolute;
     left: 0;
@@ -121,6 +122,7 @@
   .resizer-vertical {
     cursor: row-resize;
     height: 5px;
+    min-height: 5px;
     width: 100%;
     position: sticky;
     left: 0;

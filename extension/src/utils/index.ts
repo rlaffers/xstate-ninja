@@ -91,21 +91,15 @@ export function deserializeInspectedActor(
 ): DeserializedExtendedInspectedActorObject {
   return {
     ...serializedActor,
-    snapshot: serializedActor.snapshot != null
-      ? JSON.parse(serializedActor.snapshot)
-      : undefined,
-    machine: serializedActor.machine != null
-      ? JSON.parse(serializedActor.machine)
-      : undefined,
+    snapshot: serializedActor.snapshot != null ? JSON.parse(serializedActor.snapshot) : undefined,
+    machine: serializedActor.machine != null ? JSON.parse(serializedActor.machine) : undefined,
   } as DeserializedExtendedInspectedActorObject
 }
 
 export function createActorFromUpdateEvent(
   event: XStateInspectUpdateEvent,
 ): DeserializedExtendedInspectedActorObject {
-  const snapshot = event.snapshot != null
-    ? JSON.parse(event.snapshot)
-    : undefined
+  const snapshot = event.snapshot != null ? JSON.parse(event.snapshot) : undefined
   const actor = {
     sessionId: event.sessionId,
     parent: undefined,
@@ -128,9 +122,7 @@ export function updateActorFromUpdateEvent(
   actor: DeserializedExtendedInspectedActorObject,
   event: XStateInspectUpdateEvent,
 ): DeserializedExtendedInspectedActorObject {
-  const snapshot = event.snapshot != null
-    ? JSON.parse(event.snapshot)
-    : undefined
+  const snapshot = event.snapshot != null ? JSON.parse(event.snapshot) : undefined
   actor.history.push(event)
   actor.events.push(event.event)
   const updatedActor = {
@@ -145,8 +137,7 @@ export function updateActorFromUpdateEvent(
 }
 
 export const createLogger =
-  (port: chrome.runtime.Port) =>
-  (text: string, data: any, color = 'cornflowerblue') => {
+  (port: chrome.runtime.Port) => (text: string, data: any, color = 'cornflowerblue') => {
     const msg: any = {
       type: MessageTypes.log,
       text,
@@ -165,7 +156,12 @@ export function formatTime(timestamp: number): string {
 }
 
 export function isMachineSnapshot(snapshot: any): snapshot is State<any> {
-  return snapshot != null && typeof snapshot === 'object' &&
-    snapshot.machine != null && typeof snapshot.machine === 'object' &&
-    snapshot.configuration != null && typeof snapshot.configuration === 'object'
+  return (
+    snapshot != null &&
+    typeof snapshot === 'object' &&
+    snapshot.machine != null &&
+    typeof snapshot.machine === 'object' &&
+    snapshot.configuration != null &&
+    typeof snapshot.configuration === 'object'
+  )
 }

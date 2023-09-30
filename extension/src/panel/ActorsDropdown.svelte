@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { DeserializedExtendedInspectedActorObject } from 'xstate-ninja'
 
-  export let actors: Map<string, DeserializedExtendedInspectedActorObject> | null
+  export let actors: Map<
+    string,
+    DeserializedExtendedInspectedActorObject
+  > | null
   let className = ''
   export { className as class }
   export let selectedActor: DeserializedExtendedInspectedActorObject
@@ -23,7 +26,10 @@
   const levelKey = Symbol('level')
 
   function sortByParent(list: DeserializedExtendedInspectedActorObject[]) {
-    const result: Record<string|symbol, DeserializedExtendedInspectedActorObject[]> = {}
+    const result: Record<
+      string | symbol,
+      DeserializedExtendedInspectedActorObject[]
+    > = {}
     for (const item of list) {
       if (item.parent == null) {
         if (!result[root]) {
@@ -39,22 +45,30 @@
     }
     return result
   }
-  type DeserializedExtendedInspectedActorObjectWithLevel = (DeserializedExtendedInspectedActorObject & { [levelKey]: number })
+  type DeserializedExtendedInspectedActorObjectWithLevel =
+    DeserializedExtendedInspectedActorObject & { [levelKey]: number }
 
-  function getOrderedChildren(list: Record<string|symbol, DeserializedExtendedInspectedActorObject[]>, parentId: symbol | string, level: number = 0) {
+  function getOrderedChildren(
+    list: Record<string | symbol, DeserializedExtendedInspectedActorObject[]>,
+    parentId: symbol | string,
+    level: number = 0,
+  ) {
     const children: DeserializedExtendedInspectedActorObjectWithLevel[] = []
     if (!list[parentId]) {
       return children
     }
     for (const child of list[parentId]) {
-      const childWithLevel: DeserializedExtendedInspectedActorObjectWithLevel = { ...child, [levelKey]: level }
+      const childWithLevel: DeserializedExtendedInspectedActorObjectWithLevel =
+        { ...child, [levelKey]: level }
       children.push(childWithLevel)
       children.push(...getOrderedChildren(list, child.sessionId, level + 1))
     }
     return children
   }
 
-  function sortActors(actorsMap: Map<string, DeserializedExtendedInspectedActorObject> | null): DeserializedExtendedInspectedActorObjectWithLevel[] {
+  function sortActors(
+    actorsMap: Map<string, DeserializedExtendedInspectedActorObject> | null,
+  ): DeserializedExtendedInspectedActorObjectWithLevel[] {
     if (!actorsMap) {
       return []
     }
