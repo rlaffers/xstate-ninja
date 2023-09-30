@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import type { State } from 'xstate'
 import './Gauge.css'
 
-export default function Gauge({ state }: { state: State<any> }) {
+export default function Gauge({ state }: { state: State<any, any, any, any, any> }) {
   return (
     <div className="container">
       <div className="gauge-outer" />

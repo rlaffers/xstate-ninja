@@ -1,4 +1,4 @@
-import { actions, createMachine, EventObject } from 'xstate'
+import { actions, createMachine, type EventObject } from 'xstate'
 
 const { choose, sendParent, respond, send, raise, assign } = actions
 
@@ -130,7 +130,7 @@ export default createMachine(
           throw new Error('incorrect event type')
         }
         return { type: 'ROGER_THAT', subject: e.type }
-      }),
+      }) as any,
       increaseCount: assign({
         tickCount: ({ tickCount }) => tickCount + 1,
       }),

@@ -4,7 +4,7 @@ import path from 'node:path'
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import Pages from 'vite-plugin-pages'
-import Components from 'unplugin-vue-components/vite'
+// import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import VueMacros from 'unplugin-vue-macros/vite'
 
@@ -40,7 +40,6 @@ export default defineConfig({
       ],
       vueTemplate: true,
     }),
-
     // https://github.com/antfu/vite-plugin-components
     /*
     Components({
@@ -48,9 +47,8 @@ export default defineConfig({
     })
     */
   ],
-
   // https://github.com/vitest-dev/vitest
-  test: {
-    environment: 'jsdom',
-  },
+  // test: {
+  //   environment: 'jsdom',
+  // },
 })

@@ -22,8 +22,8 @@ function App() {
   )
   const isRunning = useSelector(service, (state) => state.matches('EngineRunning'))
 
-  function resetMachine(event) {
-    service.send({ type: 'RESET_CLICKED', event })
+  function resetMachine() {
+    service.send({ type: 'RESET_CLICKED' })
   }
 
   return (
@@ -39,14 +39,14 @@ function App() {
         <div className="battery-and-fuel">
           <label className="battery-indicator">
             Battery:{' '}
-            <meter min="0" max="100" low="10" high="25" optimum="100" value={battery}>
+            <meter min="0" max="100" low={10} high={25} optimum={100} value={battery}>
               {battery}
             </meter>
           </label>
 
           <label className="fuel-indicator">
             Fuel:{' '}
-            <meter min="0" max="60" low="10" high="20" optimum="60" value={fuel}>
+            <meter min="0" max="60" low={10} high={20} optimum={60} value={fuel}>
               {fuel}
             </meter>
           </label>

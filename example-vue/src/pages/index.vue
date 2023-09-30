@@ -23,8 +23,8 @@ const isRunningInReverse = useSelector(service, (state) => state.matches('Engine
 const canShiftUp = useSelector(service, (state) => state.can('SHIFT_UP'))
 const canShiftDown = useSelector(service, (state) => state.can('SHIFT_DOWN'))
 const canShiftReverse = useSelector(service, (state) => state.can('SHIFT_REVERSE'))
-const canAddFuel = useSelector(service, (state) => state.can('FUEL_ADDED'))
-const canChargeBattery = useSelector(service, (state) => state.can('CHARGED_BATTERY'))
+const canAddFuel = useSelector(service, (state) => state.can({ type: 'FUEL_ADDED', amount: 0 }))
+const canChargeBattery = useSelector(service, (state) => state.can({ type: 'CHARGED_BATTERY', amount: 0 }))
 
 const speed = computed(() => {
   if (isRunningSlow.value) return 'slow'
