@@ -30,6 +30,7 @@
   .magic-json-tree-summary {
     text-decoration: none;
     margin-left: 0.2rem;
+    white-space: nowrap;
   }
   .magic-json-tree-summary > .summary-content {
     text-transform: capitalize;
