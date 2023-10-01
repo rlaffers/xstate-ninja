@@ -126,9 +126,6 @@ export default createMachine(
         latestEvent: (_, e) => e,
       }),
       rogerThat: respond((_, e) => {
-        if (e.type !== 'ROGER_THAT') {
-          throw new Error('incorrect event type')
-        }
         return { type: 'ROGER_THAT', subject: e.type }
       }) as any,
       increaseCount: assign({
