@@ -5,15 +5,12 @@
   export let value: string | number | boolean | symbol | Function | undefined
   export let key: any = null
   export let path: (number | string)[] = []
-  export let format: Formatter = ([, value]) => `"${String(value)}"`
+  export let format: Formatter = ([, value]) =>
+    typeof value === 'string' ? `"${String(value)}"` : value
 </script>
 
 <div class="magic-json-tree-value magic-json-tree-value-{getType(value)}">
-  {#if typeof value === 'string'}
-    {format([key, value], path)}
-  {:else}
-    {format([key, value], path)}
-  {/if}
+  {format([key, value], path)}
 </div>
 
 <style>
