@@ -15,6 +15,7 @@ circular.ref = complex
 type ContextType = {
   progress: number
   circular: Record<string, any>
+  longText: string
 }
 
 type Events =
@@ -40,6 +41,8 @@ export default createMachine<ContextType, Events>(
     context: {
       progress: 0,
       circular,
+      longText:
+        'lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor.',
     },
     initial: 'Off',
     states: {
