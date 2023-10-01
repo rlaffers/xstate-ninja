@@ -38,7 +38,7 @@
     "typescript": "^5.2.2",
     "unplugin-auto-import": "^0.16.4",
     "unplugin-vue-components": "^0.25.0",
-    "unplugin-vue-macros": "^2.2.1",
+    "unplugin-vue-macros": "^2.6.1",
     "vite": "^4.3.9",
     "vite-plugin-pages": "^0.31.0",
     "vitest": "^0.31.4",

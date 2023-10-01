@@ -6,7 +6,7 @@ import Vue from '@vitejs/plugin-vue'
 import Pages from 'vite-plugin-pages'
 // import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
-import VueMacros from 'unplugin-vue-macros/vite'
+// import VueMacros from 'unplugin-vue-macros/vite'
 
 export default defineConfig({
   resolve: {
@@ -15,16 +15,22 @@ export default defineConfig({
     },
   },
   plugins: [
-    VueMacros({
-      defineOptions: false,
-      defineModels: false,
-      plugins: {
-        vue: Vue({
-          script: {
-            propsDestructure: true,
-            defineModel: true,
-          },
-        }),
+    // VueMacros({
+    //   defineOptions: false,
+    //   defineModels: false,
+    //   plugins: {
+    //     vue: Vue({
+    //       script: {
+    //         propsDestructure: true,
+    //         defineModel: true,
+    //       },
+    //     }),
+    //   },
+    // }),
+    Vue({
+      script: {
+        propsDestructure: true,
+        defineModel: true,
       },
     }),
 
