@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "json-formatter-js": "^2.3.4",
-    "magic-json-tree": "workspace:^2.0.0",
+    "magic-json-tree": "workspace:^2.0.1",
     "microdiff": "^1.3.2",
     "rambda": "^8.4.0",
     "xstate": "^4.38.2",
