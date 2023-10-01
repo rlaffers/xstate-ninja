@@ -1,6 +1,7 @@
 <script lang="ts">
   import Resizer from './Resizer.svelte'
   import Tree, { getTypeSummary, type Formatter } from 'magic-json-tree'
+  /* eslint-disable-next-line import/default,import/no-named-as-default,import/no-named-as-default-member */
   import diff from 'microdiff'
   import { path as getPath, assocPath } from 'rambda'
 

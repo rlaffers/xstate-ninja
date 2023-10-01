@@ -1,4 +1,5 @@
 <script context="module" lang="ts">
+  /* eslint-disable svelte/no-unused-svelte-ignore */
   import { TransitionTypes } from 'xstate-ninja'
   import type { InspectedEventObject } from 'xstate-ninja'
   import type { StateNodeFrame } from './StateNodeFrame.svelte'

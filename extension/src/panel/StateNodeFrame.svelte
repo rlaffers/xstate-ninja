@@ -1,4 +1,5 @@
 <script context="module" lang="ts">
+  /* eslint-disable svelte/no-unused-svelte-ignore */
   import type { StateValue } from 'xstate'
   import type { EventFrame } from './EventFrame.svelte'
   import HideIcon from './icons/HideIcon.svelte'

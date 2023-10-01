@@ -1,4 +1,5 @@
 <script lang="ts">
+  /* eslint-disable svelte/no-unused-svelte-ignore */
   import { ActorTypes, isActorType } from 'xstate-ninja'
 
   export let close: () => void

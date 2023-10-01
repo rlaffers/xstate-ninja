@@ -86,6 +86,7 @@
     }
   }
 
+  /* eslint-disable svelte/no-at-html-tags */
   function padding(level: number) {
     if (level === 0) {
       return ''

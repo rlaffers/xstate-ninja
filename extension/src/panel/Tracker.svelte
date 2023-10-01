@@ -1,4 +1,5 @@
 <script lang="ts">
+  /* eslint-disable svelte/no-unused-svelte-ignore */
   import { type State } from 'xstate'
   import { afterUpdate } from 'svelte'
   import type {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  /* eslint-disable svelte/no-unused-svelte-ignore */
   import type { DeserializedExtendedInspectedActorObject } from 'xstate-ninja'
   import type { EventFrame } from './EventFrame.svelte'
   import type { StateNodeFrame } from './StateNodeFrame.svelte'

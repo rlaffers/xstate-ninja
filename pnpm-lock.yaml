@@ -295,8 +295,8 @@ importers:
         specifier: workspace:^2.0.0
         version: link:../packages/magic-json-tree
       microdiff:
-        specifier: ^1.3.1
-        version: 1.3.1
+        specifier: ^1.3.2
+        version: 1.3.2
       rambda:
         specifier: ^8.4.0
         version: 8.4.0
@@ -8604,8 +8604,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
-  /microdiff@1.3.1:
-    resolution: {integrity: sha512-I7/87bSf15N4nMwkiHFBHksNGDa1ijNQtvWIR09hd5ZJ4+9Y2PS9cGqP8bINB1aKcNmRKwBHKtcwUpGfr+4B/A==}
+  /microdiff@1.3.2:
+    resolution: {integrity: sha512-pKy60S2febliZIbwdfEQKTtL5bLNxOyiRRmD400gueYl9XcHyNGxzHSlJWn9IMHwYXT0yohPYL08+bGozVk8cQ==}
     dev: false
 
   /micromatch@4.0.5:

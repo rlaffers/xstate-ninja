@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import classNames from 'classnames'
 import type { State } from 'xstate'
 import './Gauge.css'
