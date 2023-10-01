@@ -56,12 +56,10 @@ export const batteryMachine = createMachine(
     },
     actions: {
       decreaseBattery: assign({
-        battery: ({ battery }, { amount }) =>
-          battery - amount < 0 ? 0 : battery - amount,
+        battery: ({ battery }, { amount }) => (battery - amount < 0 ? 0 : battery - amount),
       }),
       increaseBattery: assign({
-        battery: ({ battery }, { amount }) =>
-          battery + amount > 100 ? 100 : battery + amount,
+        battery: ({ battery }, { amount }) => (battery + amount > 100 ? 100 : battery + amount),
       }),
       sendLowBatteryWarning: sendParent('LOW_BATTERY_WARNING'),
       sendBatteryOK: sendParent('BATTERY_OK'),

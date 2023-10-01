@@ -61,7 +61,7 @@ export const ignitionMachine = createMachine(
     },
     actions: {
       decreaseBattery: assign({
-        battery: ({ battery }, { amount }) => battery - amount <= 0 ? 0 : battery - amount,
+        battery: ({ battery }, { amount }) => (battery - amount <= 0 ? 0 : battery - amount),
       }),
     },
   },

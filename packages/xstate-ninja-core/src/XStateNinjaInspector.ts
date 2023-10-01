@@ -195,14 +195,15 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
             .filter((x: ActionObject<any, any>) => x.type === 'xstate.stop')
             .forEach((stopAction: ActionObject<any, any>) => {
               const stoppedActorId = (stopAction as any)?.activity.id
-              const stoppedChildActor = stoppedActorId != null
-                ? Object.values(this.actors).find(
-                  (x) =>
-                    x.actorRef.id === stoppedActorId &&
-                    x.parent === inspectedActor.sessionId &&
-                    !x.dead,
-                )
-                : undefined
+              const stoppedChildActor =
+                stoppedActorId != null
+                  ? Object.values(this.actors).find(
+                      (x) =>
+                        x.actorRef.id === stoppedActorId &&
+                        x.parent === inspectedActor.sessionId &&
+                        !x.dead,
+                    )
+                  : undefined
               if (stoppedChildActor) {
                 this.unregister(stoppedChildActor.actorRef)
               }

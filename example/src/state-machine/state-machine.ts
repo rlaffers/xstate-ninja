@@ -21,21 +21,21 @@ type Events =
   | { type: 'START_BUTTON_PRESSED' }
   | { type: 'FUEL_ADDED'; amount: number }
   | {
-    type: 'CHARGED_BATTERY'
-    amount: number
-  }
+      type: 'CHARGED_BATTERY'
+      amount: number
+    }
   | { type: 'START_BUTTON_RELEASED' }
   | { type: 'DISCHARGED_BATTERY'; amount: number }
   | {
-    type: 'LOW_FUEL_WARNING'
-  }
+      type: 'LOW_FUEL_WARNING'
+    }
   | { type: 'FUEL_OK' }
   | { type: 'LOW_BATTERY_WARNING' }
   | { type: 'BATTERY_OK' }
   | {
-    type: 'FUEL_CONSUMED'
-    amount: number
-  }
+      type: 'FUEL_CONSUMED'
+      amount: number
+    }
   | { type: 'FUEL_TANK_EMPTY' }
   | { type: 'SHIFT_DOWN' }
   | { type: 'SHIFT_UP' }
@@ -219,10 +219,7 @@ export default createMachine(
       spawnBatteryWatcher: assign({
         refs: ({ refs, battery }) => ({
           ...refs,
-          batteryWatcher: spawn(
-            batteryMachine.withContext({ battery }),
-            'batteryWatcher',
-          ),
+          batteryWatcher: spawn(batteryMachine.withContext({ battery }), 'batteryWatcher'),
         }),
       }),
 
@@ -235,17 +232,11 @@ export default createMachine(
             )
             sendBack({ type: 'SPAWNED_CB_STARTED' })
             const t1 = setTimeout(() => {
-              console.log(
-                '%cfirst event',
-                'background: deeppink; color: white; padding: 1px 5px',
-              )
+              console.log('%cfirst event', 'background: deeppink; color: white; padding: 1px 5px')
               sendBack('PLAIN_STRING_FROM_SPAWNED_CB')
             }, 100)
             const t2 = setTimeout(() => {
-              console.log(
-                '%csecond event',
-                'background: deeppink; color: white; padding: 1px 5px',
-              )
+              console.log('%csecond event', 'background: deeppink; color: white; padding: 1px 5px')
               sendBack({ type: 'EVENT_OBJ_FROM_SPAWNED_CB 2' })
             }, 1000)
             return () => {
@@ -273,7 +264,9 @@ export default createMachine(
       addFuel: assign({
         fuel: ({ fuel }, event) =>
           event.type === 'FUEL_ADDED'
-            ? (fuel + event.amount > 60 ? 60 : fuel + event.amount)
+            ? fuel + event.amount > 60
+              ? 60
+              : fuel + event.amount
             : fuel,
       }),
 
@@ -293,14 +286,18 @@ export default createMachine(
       increaseBattery: assign({
         battery: ({ battery }, event) =>
           event.type === 'CHARGED_BATTERY'
-            ? (battery + event.amount > 100 ? 100 : battery + event.amount)
+            ? battery + event.amount > 100
+              ? 100
+              : battery + event.amount
             : battery,
       }),
 
       decreaseBattery: assign({
         battery: ({ battery }, event) =>
           event.type === 'DISCHARGED_BATTERY'
-            ? (battery - event.amount < 0 ? 0 : battery - event.amount)
+            ? battery - event.amount < 0
+              ? 0
+              : battery - event.amount
             : battery,
       }),
 
