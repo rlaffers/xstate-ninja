@@ -21,7 +21,7 @@
     "svelte-preprocess": "^5.0.4",
     "tslib": "^2.4.0",
     "typescript": "^5.2.2",
-    "vite": "^3.0.0"
+    "vite": "^3.2.7"
   },
   "dependencies": {
     "@xstate/svelte": "^2.0.0",

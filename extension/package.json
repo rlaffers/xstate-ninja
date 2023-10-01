@@ -31,7 +31,7 @@
     "svelte-preprocess": "^5.0.4",
     "tslib": "^2.4.0",
     "typescript": "^5.2.2",
-    "vite": "^3.0.0",
+    "vite": "^3.2.7",
     "vite-plugin-web-extension": "^1.4.0",
     "wait-on": "^6.0.1"
   },

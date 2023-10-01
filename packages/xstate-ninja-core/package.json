@@ -29,6 +29,7 @@
   "scripts": {
     "dev": "concurrently \"tsc --watch --noEmit false --emitDeclarationOnly true\" \"vite build --watch\"",
     "build": "vite build && tsc --noEmit false --emitDeclarationOnly true",
+    "test": "jest",
     "check": "tsc --noEmit",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
@@ -40,7 +41,7 @@
     "eslint": "8",
     "tslib": "^2.4.0",
     "typescript": "^5.2.2",
-    "vite": "^3.0.0",
+    "vite": "^3.2.7",
     "xstate": "^4.38.2"
   },
   "peerDependencies": {
