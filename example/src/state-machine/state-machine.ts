@@ -272,7 +272,11 @@ export default createMachine(
 
       removeFuel: assign({
         fuel: ({ fuel }, event) =>
-          event.type === 'FUEL_ADDED' ? (fuel - event.amount < 0 ? 0 : fuel - event.amount) : fuel,
+          event.type === 'FUEL_CONSUMED'
+            ? fuel - event.amount < 0
+              ? 0
+              : fuel - event.amount
+            : fuel,
       }),
 
       setFuelEmpty: assign({
