@@ -1,0 +1,41 @@
+name: Main
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read # for checkout
+      
+jobs:
+  check:
+    name: Check code & test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+      - name: Install pnpm
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm clean-install
+      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
+        run: npm audit signatures
+      - name: Check code format
+        run: pnpm format:check
+      - name: Lint code
+        run: npm lint
+      - name: Check TypeScript
+        run: pnpm check
+      - name: Run tests
+        run: pnpm test
