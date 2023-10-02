@@ -30,9 +30,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile=true
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
-        run: npm audit signatures
+        run: npm audit signatures        
       - name: Check code format
         run: pnpm format:check
+      - name: Build all packages
+        run: pnpm build
       - name: Lint code
         run: pnpm lint
       - name: Check TypeScript
