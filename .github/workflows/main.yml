@@ -34,7 +34,7 @@ jobs:
       - name: Check code format
         run: pnpm format:check
       - name: Lint code
-        run: npm lint
+        run: pnpm lint
       - name: Check TypeScript
         run: pnpm check
       - name: Run tests
