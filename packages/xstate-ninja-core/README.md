@@ -20,7 +20,7 @@ To track state machines in your project, do this:
 
 ```javascript
 import { interpret } from 'xstate-ninja'
-const service = interpret(machine)
+const service = interpret(machine, { devTools: true })
 ```
 
 Install the [browser extension](https://github.com/rlaffers/xstate-ninja/tree/master/extension), open browser devtools (F12) and select the XState panel.

@@ -36,13 +36,13 @@
     "vite": "^3.2.7",
     "vue": "^3.3.4",
     "xstate": "^4.38.2",
-    "xstate-ninja": "workspace:^1.2.0"
+    "xstate-ninja": "workspace:^"
   },
   "peerDependencies": {
     "@xstate/vue": "^2.0.0",
     "vue": "^3.3.4",
     "xstate": "^4.33.6",
-    "xstate-ninja": "^1.0.0"
+    "xstate-ninja": "^1.0.0 || ^2.0.0"
   },
   "keywords": [
     "xstate",

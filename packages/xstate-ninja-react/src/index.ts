@@ -8,9 +8,9 @@ import type {
   StateFrom,
 } from 'xstate'
 import { MaybeLazy, UseMachineOptions } from './types'
-import createXStateNinjaSingleton from 'xstate-ninja'
+import createXStateNinjaInspector from 'xstate-ninja'
 
-const ninja = createXStateNinjaSingleton()
+const ninja = createXStateNinjaInspector()
 
 export function useInterpret<TMachine extends AnyStateMachine>(
   getMachine: MaybeLazy<TMachine>,

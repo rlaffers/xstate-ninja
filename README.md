@@ -32,7 +32,7 @@ npm install --save xstate-ninja xstate
 
 ```javascript
 import { interpret } from 'xstate-ninja'
-const service = interpret(machine)
+const actor = interpret(machine, { devTools: true })
 ```
 
 For React integration, check the [@xstate-ninja/react](https://github.com/rlaffers/xstate-ninja/tree/master/packages/xstate-ninja-react) library.
@@ -48,9 +48,9 @@ To change default settings, import the XState Ninja instance in your project's i
 
 ```javascript
 // in your index.ts
-import xstateNinja, { LogLevels } from 'xstate-ninja'
+import { configure, LogLevels } from 'xstate-ninja'
 
-xstateNinja({
+configure({
   enabled: process.env.NODE_ENV !== 'production',
   logLevel: LogLevels.debug,
 })
@@ -73,6 +73,20 @@ Turns XState Ninja on or off. By default, tracking is always on. You may want to
 **Default: `LogLevels.error`**
 
 Controls how much stuff is logged into console by XState Ninja.
+
+## Upgrading from v1 → v2
+
+If you were using the default export to configure XState Ninja, replace it with the `configure` function:
+
+```javascript
+// ❌ DEPRECATED xstate-ninja v1
+import XStateNinja from 'xstate-ninja'
+XStateNinja({ enabled: false })
+
+// ✅ xstate-ninja v2
+import { configure } from 'xstate-ninja'
+configure({ enabled: false })
+```
 
 ## Attribution
 
