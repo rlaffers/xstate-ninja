@@ -1,6 +1,6 @@
 {
   "name": "xstate-ninja",
-  "version": "1.3.10",
+  "version": "2.0.0",
   "description": "XState Ninja core library for vanilla JS in browsers",
   "keywords": [
     "xstate",
@@ -34,7 +34,7 @@
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
     "preview": "vite preview",
-    "prepublish": "pnpm check && pnpm lint"
+    "prepublish": "pnpm check && pnpm lint && pnpm test -- --run"
   },
   "devDependencies": {
     "concurrently": "^7.3.0",
