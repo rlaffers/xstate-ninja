@@ -28,7 +28,7 @@ jobs:
       - name: Install pnpm
         run: corepack enable
       - name: Install dependencies
-        run: pnpm clean-install
+        run: pnpm install --frozen-lockfile=true
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
       - name: Check code format
