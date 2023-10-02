@@ -4,9 +4,9 @@
   <p>A dedicated devtool for XState state machines.</p>
   <p>    
     <a href="https://app.travis-ci.com/github/rlaffers/xstate-ninja">
-      <img src="https://img.shields.io/travis/rlaffers/xstate-ninja" alt="Build (CI)">
+      <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/rlaffers/xstate-ninja/main.yml">
     </a>
-    <a href="https://github.com/support-ukraine/support-ukraine"><img src="https://bit.ly/support-ukraine-now" alt="Support Ukraine" /></a>
+ <a href="https://github.com/support-ukraine/support-ukraine"><img src="https://bit.ly/support-ukraine-now" alt="Support Ukraine" /></a>
     <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="code style: prettier" /></a>
     <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
   </p>
