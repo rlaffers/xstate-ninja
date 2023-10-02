@@ -103,9 +103,6 @@ export interface XStateNinjaInterface {
   register: (actorRef: AnyActorRef) => void
   unregister: (actorRef: AnyActorRef) => void
   onRegister: (listener: (actorRegistration: ActorRegistration) => void) => Subscription | void
-  actors: {
-    [sessionId: string]: InspectedActorObject
-  }
   onUpdate: (listener: (update: ActorUpdate) => void) => Subscription | void
 }
 

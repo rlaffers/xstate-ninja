@@ -11,25 +11,27 @@ let inspector: XStateNinjaInspector
  * Creates a singleton XStateNinjaInspector which can be used to register
  * for updates from actors (e.g. state machines).
  */
-export default function createXStateNinjaInspector(
-  options: XStateNinjaOptions = {},
-): XStateNinjaInspector {
+export default function getXStateNinjaInspector(): XStateNinjaInspector {
   if (inspector === undefined) {
-    inspector = new XStateNinjaInspector(options)
-  }
-  if (options.logLevel != null) {
-    inspector.setLogLevel(options.logLevel)
-  }
-  if (options.enabled != null) {
-    inspector.setEnabled(options.enabled)
+    inspector = new XStateNinjaInspector()
   }
   return inspector
 }
 
 export function interpret(machine: AnyStateMachine, options?: Partial<InterpreterOptions>) {
-  const service = xstateInterpret(machine, options)
+  const actor = xstateInterpret(machine, options)
   if (options?.devTools) {
-    createXStateNinjaInspector().register(service)
+    getXStateNinjaInspector().register(actor)
   }
-  return service
+  return actor
+}
+
+export function configure(options: XStateNinjaOptions = {}) {
+  const ninja = getXStateNinjaInspector()
+  if (options.logLevel != null) {
+    ninja.setLogLevel(options.logLevel)
+  }
+  if (options.enabled != null) {
+    ninja.setEnabled(options.enabled)
+  }
 }

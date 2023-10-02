@@ -53,12 +53,17 @@ export interface XStateNinjaOptions {
 }
 
 export class XStateNinjaInspector implements XStateNinjaInterface {
-  actors: Record<string, InspectedActorObject>
-  logLevel: LogLevels = LogLevels.error
-  enabled = true
-  trackedActorTypes: ActorTypes[] = [ActorTypes.machine, ActorTypes.callback, ActorTypes.observable]
+  private actors: Record<string, InspectedActorObject>
+  private logLevel: LogLevels = LogLevels.error
+  private trackedActorTypes: ActorTypes[] = [
+    ActorTypes.machine,
+    ActorTypes.callback,
+    ActorTypes.observable,
+  ]
 
-  constructor({ logLevel, enabled }: XStateNinjaOptions = {}) {
+  private enabledPreference = true
+
+  constructor() {
     this.actors = {}
     this.register = this.register.bind(this)
     this.unregister = this.unregister.bind(this)
@@ -71,14 +76,6 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
     this.forgetAllChildren = this.forgetAllChildren.bind(this)
     this.isActorTypeTracked = this.isActorTypeTracked.bind(this)
     this.onSettingsChanged = this.onSettingsChanged.bind(this)
-
-    if (logLevel !== undefined) {
-      this.setLogLevel(logLevel)
-    }
-
-    if (enabled === undefined) {
-      this.enabled = !!(globalThis as WindowWithXStateNinja)?.__xstate_ninja__
-    }
 
     globalThis.addEventListener(EventTypes.connect, this.onConnect as EventListener)
     globalThis.addEventListener(EventTypes.read, this.onRead as EventListener)
@@ -105,7 +102,11 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
   }
 
   setEnabled(enabled: boolean) {
-    this.enabled = !!(globalThis as WindowWithXStateNinja).__xstate_ninja__ && enabled
+    this.enabledPreference = enabled
+  }
+
+  get enabled() {
+    return this.enabledPreference && !!(globalThis as WindowWithXStateNinja).__xstate_ninja__
   }
 
   isActorTypeTracked(type: ActorTypes): boolean {
@@ -318,6 +319,9 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
 
   // TODO implement onUpdate
   onUpdate(listener: (update: ActorUpdate) => void): Subscription | void {
+    if (!this.enabled) {
+      return
+    }
     listener({} as ActorUpdate)
     return {} as Subscription
   }
@@ -396,4 +400,6 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
       )
     }
   }
+
+  // TODO add a method for unregistering all subscriptions
 }
