@@ -20,7 +20,7 @@
     "vue-router": "^4.2.2",
     "vuetify": "^3.3.12",
     "xstate": "^4.38.2",
-    "xstate-ninja": "workspace:^1.1.1"
+    "xstate-ninja": "workspace:^"
   },
   "devDependencies": {
     "@iconify-json/carbon": "^1.1.17",

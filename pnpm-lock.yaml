@@ -87,7 +87,7 @@ importers:
         specifier: ^4.38.2
         version: 4.38.2
       xstate-ninja:
-        specifier: workspace:^1.3.9
+        specifier: workspace:^
         version: link:../packages/xstate-ninja-core
     devDependencies:
       '@xstate/cli':
@@ -127,7 +127,7 @@ importers:
         specifier: ^4.38.2
         version: 4.38.2
       xstate-ninja:
-        specifier: workspace:^1.1.1
+        specifier: workspace:^
         version: link:../packages/xstate-ninja-core
     devDependencies:
       '@types/prop-types':
@@ -161,7 +161,7 @@ importers:
         specifier: ^4.38.2
         version: 4.38.2
       xstate-ninja:
-        specifier: workspace:^1.1.1
+        specifier: workspace:^
         version: link:../packages/xstate-ninja-core
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -222,7 +222,7 @@ importers:
         specifier: ^4.38.2
         version: 4.38.2
       xstate-ninja:
-        specifier: workspace:^1.1.1
+        specifier: workspace:^
         version: link:../packages/xstate-ninja-core
     devDependencies:
       '@iconify-json/carbon':
@@ -12308,8 +12308,8 @@ packages:
     dependencies:
       '@types/node': 20.8.0
       esbuild: 0.17.19
-      postcss: 8.4.31
-      rollup: 3.29.4
+      postcss: 8.4.27
+      rollup: 3.28.0
     optionalDependencies:
       fsevents: 2.3.3
     dev: true

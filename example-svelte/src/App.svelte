@@ -1,5 +1,5 @@
 <script lang="ts">
-  import xstateNinja, { interpret, LogLevels } from 'xstate-ninja'
+  import getXStateNinja, { interpret, LogLevels, configure } from 'xstate-ninja'
   import { useSelector } from '@xstate/svelte'
   import { tweened } from 'svelte/motion'
   import { cubicOut } from 'svelte/easing'
@@ -10,7 +10,8 @@
   import machine from '../../example/src/state-machine/state-machine'
   import Gauge from './Gauge.svelte'
 
-  const xNinja = xstateNinja({ logLevel: LogLevels.debug })
+  configure({ logLevel: LogLevels.debug })
+  const ninja = getXStateNinja()
 
   let service = interpret(machine, { devTools: true }).start()
   let state: Readable<State<any>>
@@ -36,7 +37,7 @@
   onDestroy(() => subscription.unsubscribe())
 
   function resetMachine() {
-    xNinja.unregister(service)
+    ninja.unregister(service)
     service.stop()
     subscription.unsubscribe()
     service = interpret(machine).start()

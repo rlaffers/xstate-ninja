@@ -1,10 +1,10 @@
-import xstateNinja, { interpret, LogLevels } from 'xstate-ninja'
+import { interpret, LogLevels, configure } from 'xstate-ninja'
 import type { AnyInterpreter } from 'xstate'
 import logo from './assets/logo_512.png'
 import './style.css'
 import machine from './state-machine2/state-machine'
 
-xstateNinja({ logLevel: LogLevels.debug })
+configure({ logLevel: LogLevels.debug })
 
 const service = interpret(machine, { devTools: true })
 

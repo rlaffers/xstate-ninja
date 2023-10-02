@@ -26,7 +26,7 @@
   "dependencies": {
     "@xstate/svelte": "^2.0.0",
     "xstate": "^4.38.2",
-    "xstate-ninja": "workspace:^1.1.1"
+    "xstate-ninja": "workspace:^"
   },
   "volta": {
     "node": "18.17.0"

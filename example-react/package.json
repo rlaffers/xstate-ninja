@@ -19,7 +19,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "xstate": "^4.38.2",
-    "xstate-ninja": "workspace:^1.1.1"
+    "xstate-ninja": "workspace:^"
   },
   "devDependencies": {
     "@types/prop-types": "^15.7.7",
