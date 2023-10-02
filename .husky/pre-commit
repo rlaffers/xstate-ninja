@@ -4,4 +4,4 @@
 pnpm run lint
 pnpm run check
 pnpm run format:check
-#pnpm run test
+pnpm run test

@@ -9,7 +9,7 @@
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm -r lint:fix",
     "check": "pnpm -r check",
-    "test": "pnpm test -r",
+    "test": "pnpm test -r -- --run",
     "format": "prettier --write README.md packages/**/*.{js,ts,svelte} extension/**/*.{js,ts,svelte} example/**/*.{ts,js} example-svelte/**/*.{js,ts,svelte} example-react/**/*.{ts,js} example-vue/**/*.{vue,ts,js}",
     "format:check": "prettier --check README.md packages/**/*.{js,ts,svelte} extension/**/*.{js,ts,svelte} example-svelte/**/*.{js,ts,svelte} example-react/**/*.{tsx,ts,js} example-vue/**/*.{vue,ts,js} example/**/*.{ts,js}",
     "prepare": "husky install",
