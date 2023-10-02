@@ -2,11 +2,20 @@ import { expect, vi, type Mock } from 'vitest'
 import { createMachine } from 'xstate'
 
 export const machine = createMachine({
+  predictableActionArguments: true,
   id: 'mockMachine',
   initial: 'Idle',
   states: {
-    Idle: {},
-    Busy: {},
+    Idle: {
+      on: {
+        START: 'Busy',
+      },
+    },
+    Busy: {
+      on: {
+        STOP: 'Idle',
+      },
+    },
   },
 })
 
