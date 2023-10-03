@@ -1,8 +1,5 @@
 name: Main
 on:
-  pull_request:
-    branches:
-      - master
   push:
     branches:
       - master
@@ -13,31 +10,4 @@ permissions:
 jobs:
   check:
     name: Check code & test
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "lts/*"
-      - name: Install pnpm
-        run: corepack enable
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile=true
-      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
-        run: npm audit signatures        
-      - name: Check code format
-        run: pnpm format:check
-      - name: Build all packages
-        run: pnpm build
-      - name: Lint code
-        run: pnpm lint
-      - name: Check TypeScript
-        run: pnpm check
-      - name: Run tests
-        run: pnpm test
+    uses: ./.github/workflows/test.yml    
