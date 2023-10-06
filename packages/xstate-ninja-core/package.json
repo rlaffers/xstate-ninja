@@ -12,7 +12,7 @@
   "type": "module",
   "main": "./dist/xstate-ninja.umd.cjs",
   "module": "./dist/xstate-ninja.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "files": [
     "dist/*.js",
     "dist/*.d.ts",

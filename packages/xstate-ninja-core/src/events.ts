@@ -13,6 +13,7 @@ import {
   serializeMachine,
   serializeSnapshot,
 } from './utils'
+import pkg from '../package.json'
 
 // client -> inspector
 export interface XStateInspectConnectEvent {
@@ -22,6 +23,8 @@ export interface XStateInspectConnectEvent {
 // inspector -> client response to connect event
 export interface XStateInspectConnectedEvent {
   type: '@xstate/inspect.connected'
+  // xstate-ninja custom props
+  version: string
 }
 
 // inspector -> client upon connection
@@ -97,6 +100,7 @@ export interface XStateNinjaSettingsChangedEvent {
 
 export interface XStateNinjaInspectorCreatedEvent {
   type: '@xstate-ninja/inspectorCreated'
+  version: string
 }
 
 export type XStateInspectAnyEvent =
@@ -205,6 +209,7 @@ export class ConnectedEvent extends CustomEvent<XStateInspectConnectedEvent> {
     super(EventTypes.connected, {
       detail: {
         type: EventTypes.connected,
+        version: pkg.version,
       },
     })
   }
@@ -298,6 +303,7 @@ export class InspectorCreatedEvent extends CustomEvent<XStateNinjaInspectorCreat
     super(EventTypes.inspectorCreated, {
       detail: {
         type: EventTypes.inspectorCreated,
+        version: pkg.version,
       },
     })
   }

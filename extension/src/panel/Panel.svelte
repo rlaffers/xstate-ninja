@@ -4,6 +4,7 @@
     isXStateInspectActorEvent,
     isXStateInspectUpdateEvent,
     isXStateNinjaUnregisterEvent,
+    isXStateInspectConnectedEvent,
     DeadActorsClearedEvent,
   } from 'xstate-ninja'
   import type {
@@ -86,9 +87,14 @@
   }
 
   let actors: ActorList | null = null
+  let inspectorVersion: string | null = null
 
   function messageListener(event: XStateInspectAnyEvent) {
     log(event.type, { event })
+
+    if (isXStateInspectConnectedEvent(event) && event.version != null) {
+      inspectorVersion = event.version
+    }
 
     if (isXStateInspectActorsEvent(event)) {
       actors = new Map(
@@ -269,7 +275,7 @@
   <Intro />
 {:else}
   <main class="actors-view">
-    <MainHeader {clearDeadActors} {addSwimlane} />
+    <MainHeader {clearDeadActors} {addSwimlane} {inspectorVersion} />
 
     <section class="swim-lanes nice-scroll" class:multi={swimlanes.length > 1}>
       {#each swimlanes as selectedActor, index}

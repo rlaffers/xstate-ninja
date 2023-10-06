@@ -5,9 +5,11 @@
   import githubLogo from '../assets/github_light_32px.png'
   import XStateLogo from './icons/XStateLogo.svelte'
   import Settings from './Settings.svelte'
+  import xstateNinjaLogo from '../assets/icon_32x32.png'
 
   export let clearDeadActors: () => void
   export let addSwimlane: () => void
+  export let inspectorVersion: string | null
 
   function openHelpUkraine(event: MouseEvent) {
     event.preventDefault()
@@ -48,6 +50,14 @@
   <div class="middle-bar">
     <button title="Settings" class="config-btn" on:click={openSettings}><CogwheelIcon /></button>
   </div>
+
+  {#if inspectorVersion != null}
+    <div class="inspector-version">
+      <span title="xstate-ninja detected on this page"
+        ><img src={xstateNinjaLogo} alt="xstate-ninja" /> <strong>{inspectorVersion}</strong></span
+      >
+    </div>
+  {/if}
 
   <div class="separator" />
   <a
@@ -98,6 +108,19 @@
 
   .main-header button:hover {
     color: var(--blue) !important;
+  }
+
+  .inspector-version {
+    cursor: default;
+  }
+
+  .inspector-version img {
+    height: 18px;
+    vertical-align: bottom;
+  }
+
+  .inspector-version > span > strong {
+    vertical-align: bottom;
   }
 
   .main-header a {
