@@ -1,6 +1,6 @@
 {
   "name": "xstate-ninja",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "XState Ninja core library for vanilla JS in browsers",
   "keywords": [
     "xstate",
