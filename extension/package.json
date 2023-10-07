@@ -23,6 +23,7 @@
     "@tsconfig/svelte": "^5.0.2",
     "@types/chrome": "^0.0.193",
     "@types/ramda": "^0.29.5",
+    "@types/semver": "^7.5.3",
     "concurrently": "^7.3.0",
     "eslint": "8",
     "path": "link:@types/@ramda/path",
@@ -40,6 +41,7 @@
     "magic-json-tree": "workspace:^2.0.2",
     "microdiff": "^1.3.2",
     "rambda": "^8.4.0",
+    "semver": "^7.5.4",
     "xstate": "^4.38.2",
     "xstate-ninja": "workspace:^"
   },

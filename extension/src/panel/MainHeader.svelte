@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { satisfies } from 'semver'
   import CogwheelIcon from './icons/CogwheelIcon.svelte'
   import TrashBinIcon from './icons/TrashBinIcon.svelte'
   import ukraineHeart from '../assets/ukraine_heart_64.png'
@@ -6,10 +7,15 @@
   import XStateLogo from './icons/XStateLogo.svelte'
   import Settings from './Settings.svelte'
   import xstateNinjaLogo from '../assets/icon_32x32.png'
+  import config from '../config.json'
 
   export let clearDeadActors: () => void
   export let addSwimlane: () => void
   export let inspectorVersion: string | null
+
+  let inspectorVersionSatisfied = true
+  $: inspectorVersionSatisfied =
+    inspectorVersion == null || satisfies(inspectorVersion, config.inspector)
 
   function openHelpUkraine(event: MouseEvent) {
     event.preventDefault()
@@ -52,8 +58,11 @@
   </div>
 
   {#if inspectorVersion != null}
-    <div class="inspector-version">
-      <span title="xstate-ninja detected on this page"
+    <div class="inspector-version" class:invalid-version={!inspectorVersionSatisfied}>
+      <span
+        title={inspectorVersionSatisfied
+          ? 'xstate-ninja detected on the page is compatible with this extension'
+          : `xstate-ninja detected on the page is not supported by this extension. Upgrade xstate-ninja to ${config.inspector}`}
         ><img src={xstateNinjaLogo} alt="xstate-ninja" /> <strong>{inspectorVersion}</strong></span
       >
     </div>
@@ -121,6 +130,10 @@
 
   .inspector-version > span > strong {
     vertical-align: bottom;
+  }
+
+  .inspector-version.invalid-version span {
+    color: var(--red);
   }
 
   .main-header a {
