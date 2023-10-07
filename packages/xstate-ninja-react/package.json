@@ -20,7 +20,7 @@
   },
   "sideEffects": false,
   "scripts": {
-    "dev": "concurrently \"tsc --watch --noEmit false --emitDeclarationOnly true\" \"vite build --watch\"",
+    "dev": "concurrently \"tsc --watch --noEmit false --emitDeclarationOnly true --pretty\" \"vite build --watch\"",
     "build": "vite build && tsc --noEmit false --emitDeclarationOnly true",
     "preview": "vite preview",
     "lint": "eslint src/",

@@ -19,7 +19,7 @@
     "package:firefox": "cd dist-firefox/ && zip -r xstate-ninja.xpi ./*"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^1.0.1",
+    "@sveltejs/vite-plugin-svelte": "^2.4.6",
     "@tsconfig/svelte": "^5.0.2",
     "@types/chrome": "^0.0.193",
     "@types/ramda": "^0.29.5",
