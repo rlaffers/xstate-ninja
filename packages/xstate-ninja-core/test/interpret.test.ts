@@ -1,13 +1,14 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { Interpreter } from 'xstate'
 import { InterpreterStatus } from 'xstate'
-import getInspector, { interpret, configure, TransitionTypes } from '../src/index'
+import getInspector, { interpret, configure, TransitionTypes, ConnectEvent } from '../src/index'
 import {
   machine,
   spyOnDispatchedEvent,
   expectEventToHaveBeenDispatched,
   expectEventNotToHaveBeenDispatched,
 } from './utils'
+import pkg from '../package.json'
 
 describe('interpret', () => {
   beforeEach(() => {
@@ -16,6 +17,7 @@ describe('interpret', () => {
 
   afterEach(() => {
     delete globalThis.__xstate_ninja__
+    configure({ enabled: true })
   })
 
   it('should be a function ', () => {
@@ -109,5 +111,17 @@ describe('interpret', () => {
     configure({ enabled: false })
     interpret(machine, { devTools: true })
     expectEventNotToHaveBeenDispatched(eventSpy)
+  })
+
+  it('should send the version number with the connected event', () => {
+    interpret(machine, { devTools: true })
+    const eventSpy = spyOnDispatchedEvent('@xstate/inspect.connected')
+    globalThis.dispatchEvent(new ConnectEvent())
+    expectEventToHaveBeenDispatched(eventSpy)
+    const event = eventSpy[1].mock.calls[0][0]
+    expect(event.detail).toMatchObject({
+      type: '@xstate/inspect.connected',
+      version: pkg.version,
+    })
   })
 })
