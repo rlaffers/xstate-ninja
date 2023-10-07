@@ -1,25 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
-    "moduleResolution": "Node",
-    "strict": true,
-    "sourceMap": false,
+    "composite": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "noEmit": true,
-    "outDir": "dist",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "skipLibCheck": true,
-    "declaration": true,
-    "declarationDir": "dist",
-    "declarationMap": false,
-    "emitDeclarationOnly": false
+    "rootDir": ".",
+    "outDir": "."
   },
-  "include": ["src"]
+  "files": ["package.json"]
 }

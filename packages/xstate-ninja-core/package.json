@@ -12,7 +12,7 @@
   "type": "module",
   "main": "./dist/xstate-ninja.umd.cjs",
   "module": "./dist/xstate-ninja.js",
-  "types": "dist/src/index.d.ts",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist/*.js",
     "dist/*.d.ts",
@@ -27,10 +27,10 @@
   },
   "sideEffects": false,
   "scripts": {
-    "dev": "concurrently \"tsc --watch --noEmit false --emitDeclarationOnly true\" \"vite build --watch\"",
-    "build": "vite build && tsc --noEmit false --emitDeclarationOnly true",
+    "dev": "concurrently \"tsc --build src --watch --pretty\" \"vite build --watch\"",
+    "build": "vite build && tsc --build src",
     "test": "vitest",
-    "check": "tsc --noEmit",
+    "check": "tsc --noEmit --emitDeclarationOnly false --project src/tsconfig.json",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
     "preview": "vite preview",
