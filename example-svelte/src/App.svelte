@@ -1,9 +1,9 @@
 <script lang="ts">
   import getXStateNinja, { interpret, LogLevels, configure } from 'xstate-ninja'
-  import { useSelector } from '@xstate/svelte'
   import { tweened } from 'svelte/motion'
   import { cubicOut } from 'svelte/easing'
   import { onDestroy } from 'svelte'
+  import { readonly } from 'svelte/store'
   import type { Readable } from 'svelte/store'
   import type { AnyInterpreter, State } from 'xstate'
   import logo from './assets/logo_512.png'
@@ -14,7 +14,6 @@
   const ninja = getXStateNinja()
 
   let service = interpret(machine, { devTools: true }).start()
-  let state: Readable<State<any>>
 
   function subscribe(actor: AnyInterpreter) {
     const sub = actor.subscribe((s) => {
@@ -24,11 +23,9 @@
         console.log(`»`, s.value)
       }
       console.log(`changed: ${s.changed}`, s.context)
-      /* console.groupEnd(st.event.type) */
       console.groupEnd()
     })
 
-    state = useSelector(actor, (s) => s)
     return sub
   }
 
@@ -54,8 +51,10 @@
     easing: cubicOut,
   })
 
-  $: animatedFuelProgress.set($state.context.fuel)
-  $: animatedBatteryProgress.set($state.context.battery)
+  $: animatedFuelProgress.set($service.context.fuel)
+  $: animatedBatteryProgress.set($service.context.battery)
+
+  const readonlyService = readonly(service as unknown as Readable<State<any>>)
 </script>
 
 <main>
@@ -63,7 +62,7 @@
   <h1>XState Ninja Demo</h1>
 
   <section class="indicators">
-    <Gauge {state} />
+    <Gauge state={readonlyService} />
     <div class="battery-and-fuel">
       <label class="battery-indicator"
         >Battery: <meter
@@ -72,13 +71,13 @@
           low="10"
           high="25"
           optimum="100"
-          value={$animatedBatteryProgress}>{$state.context.battery}</meter
+          value={$animatedBatteryProgress}>{$service.context.battery}</meter
         ></label
       >
 
       <label class="fuel-indicator"
         >Fuel: <meter min="0" max="60" low="10" high="20" optimum="60" value={$animatedFuelProgress}
-          >{$state.context.fuel}</meter
+          >{$service.context.fuel}</meter
         >
       </label>
     </div>
