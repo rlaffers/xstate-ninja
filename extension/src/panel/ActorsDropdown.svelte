@@ -1,7 +1,9 @@
 <script lang="ts">
   import type { DeserializedExtendedInspectedActorObject } from 'xstate-ninja'
+  import { isEmpty } from 'rambda'
+  import type { ActorList } from './machines/rootMachine'
 
-  export let actors: Map<string, DeserializedExtendedInspectedActorObject> | null
+  export let actors: ActorList
   let className = ''
   export { className as class }
   export let selectedActor: DeserializedExtendedInspectedActorObject
@@ -60,13 +62,11 @@
     return children
   }
 
-  function sortActors(
-    actorsMap: Map<string, DeserializedExtendedInspectedActorObject> | null,
-  ): DeserializedExtendedInspectedActorObjectWithLevel[] {
-    if (!actorsMap) {
+  function sortActors(list: ActorList): DeserializedExtendedInspectedActorObjectWithLevel[] {
+    if (isEmpty(list)) {
       return []
     }
-    const sortedByParent = sortByParent(Array.from(actorsMap.values()))
+    const sortedByParent = sortByParent(Object.values(list))
     return getOrderedChildren(sortedByParent, root)
   }
 
@@ -74,11 +74,11 @@
   $: sortedActors = sortActors(actors)
 
   function onChange(event: Event) {
-    if (!actors) {
+    if (isEmpty(actors)) {
       return
     }
     const sessionId = (event.currentTarget as HTMLSelectElement).value
-    const nextSelectedActor = actors.get(sessionId)
+    const nextSelectedActor = actors[sessionId]
     if (nextSelectedActor && nextSelectedActor.sessionId !== selectedActorSessionId) {
       selectedActorSessionId = nextSelectedActor.sessionId
       selectedActor = nextSelectedActor
