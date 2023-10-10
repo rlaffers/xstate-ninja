@@ -12,14 +12,15 @@
     "plugin:svelte/recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",
-    "plugin:vue/vue3-recommended"
+    "plugin:vue/vue3-recommended",
+    "plugin:xstate/recommended"
   ],
   "env": {
     "jest": true,
     "es6": true,
     "browser": true
   },
-  "plugins": ["svelte", "@typescript-eslint"],
+  "plugins": ["svelte", "@typescript-eslint", "xstate"],
   "overrides": [
     {
       "files": ["**/*.svelte"],
@@ -48,6 +49,8 @@
   "rules": {
     "a11y-autofocus": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "no-undef-init": "off"
+    "no-undef-init": "off",
+    "xstate/state-names": ["error", "pascalCase"],
+    "xstate/event-names": "error"
   }
 }
