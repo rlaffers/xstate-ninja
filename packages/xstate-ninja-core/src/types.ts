@@ -106,10 +106,6 @@ export interface XStateNinjaInterface {
   onUpdate: (listener: (update: ActorUpdate) => void) => Subscription | void
 }
 
-export interface WindowWithXStateNinja {
-  __xstate_ninja__?: boolean
-}
-
 export type ParentActor = { id: string | number; sessionId: string }
 
 export type AnyActorRefWithParent = AnyActorRef & {

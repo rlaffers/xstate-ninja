@@ -13,7 +13,6 @@ import type {
   AnyActorRefWithParent,
   InspectedActorObject,
   ParentActor,
-  WindowWithXStateNinja,
   XStateNinjaInterface,
 } from './types'
 import { ActorTypes } from './types'
@@ -50,6 +49,11 @@ export enum LogLevels {
 export interface XStateNinjaOptions {
   logLevel?: LogLevels
   enabled?: boolean
+}
+
+declare global {
+  // eslint-disable-next-line no-var, camelcase
+  var __xstate_ninja__: boolean
 }
 
 export class XStateNinjaInspector implements XStateNinjaInterface {
@@ -106,7 +110,7 @@ export class XStateNinjaInspector implements XStateNinjaInterface {
   }
 
   get enabled() {
-    return this.enabledPreference && !!(globalThis as WindowWithXStateNinja).__xstate_ninja__
+    return this.enabledPreference && !!globalThis.__xstate_ninja__
   }
 
   isActorTypeTracked(type: ActorTypes): boolean {
