@@ -1,1 +1,1 @@
-;(window as any).__xstate_ninja__ = true
+window.__xstate_ninja__ = true
