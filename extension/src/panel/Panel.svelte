@@ -49,8 +49,6 @@
     })
   }
 
-  // TODO use the context in the Tracker and lower components
-
   bkgPort.onMessage.addListener(messageListener)
   bkgPort.onDisconnect.addListener(() => {
     bkgPort.onMessage.removeListener(messageListener)
@@ -68,12 +66,7 @@
   const actors = useSelector(rootActor, (state) => state.context.actors)
 
   // -----------------------------
-  const activeActor = useSelector(rootActor, (state) => state.context.activeActor)
   const swimlanes = useSelector(rootActor, (state) => state.context.swimlanes)
-
-  // if activeFrame=null, then the latest actor's snapshot is implied
-  // let activeFrame: EventFrame | StateNodeFrame | null = null
-  const activeFrame = useSelector(rootActor, (state) => state.context.activeFrame)
 
   chrome.devtools.network.onNavigated.addListener(() => {
     rootActor.send({
@@ -116,7 +109,7 @@
       {/each}
     </section>
 
-    <SideBar actor={$activeActor} activeFrame={$activeFrame} />
+    <SideBar />
   </main>
 {/if}
 
