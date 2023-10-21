@@ -94,8 +94,6 @@ export const rootMachine = createMachine(
       trackerMachineRefs: [],
       inspectorVersion: null,
       deadHistorySize: 0,
-      // TODO this should live within each trackerMachine. If there is at least one swimlanes, there is always one
-      // tracker active
       activeFrame: null,
       bkgPort: null, // must be provided when the machine is created
     },
@@ -151,7 +149,6 @@ export const rootMachine = createMachine(
           actions: [
             'markActorDead',
             'purgeSomeDeadActors',
-            // TODO within each swimlane we may need to select a different actor
             choose([
               {
                 cond: 'hasNoActors',
@@ -246,25 +243,30 @@ export const rootMachine = createMachine(
   // --------------- IMPLEMENTATIONS ----------------
   {
     actions: {
-      updateOrCreateActor: assign({
-        actors: (context, event: TEvent) => {
-          if (event.type !== 'INSPECTOR_EVENT' || !isXStateInspectUpdateEvent(event.event)) {
-            return context.actors
-          }
-          const inspectEvent = event.event
-          const actor = context.actors[inspectEvent.sessionId]
-          if (actor) {
-            return {
-              ...context.actors,
-              [inspectEvent.sessionId]: updateActorFromUpdateEvent(actor, inspectEvent),
-            }
-          }
-          // This is not typically executed. An actor is typically created from the ActorEvent or ActorsEvent.
+      updateOrCreateActor: assign((context, event: TEvent) => {
+        if (event.type !== 'INSPECTOR_EVENT' || !isXStateInspectUpdateEvent(event.event)) {
+          return context.actors
+        }
+        const inspectEvent = event.event
+        const actor = context.actors[inspectEvent.sessionId]
+        if (actor) {
+          const updated = updateActorFromUpdateEvent(actor, inspectEvent)
           return {
+            actors: {
+              ...context.actors,
+              [inspectEvent.sessionId]: updated,
+            },
+            activeActor:
+              updated.sessionId === context.activeActor?.sessionId ? updated : context.activeActor,
+          }
+        }
+        // This is not typically executed. An actor is typically created from the ActorEvent or ActorsEvent.
+        return {
+          actors: {
             ...context.actors,
             [inspectEvent.sessionId]: createActorFromUpdateEvent(inspectEvent),
-          }
-        },
+          },
+        }
       }),
 
       setInspectorVersion: assign({

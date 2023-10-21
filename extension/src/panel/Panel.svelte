@@ -41,6 +41,14 @@
   )
 
   rootActorContext.set(rootActor)
+
+  function messageListener(event: XStateInspectAnyEvent) {
+    rootActor.send({
+      type: 'INSPECTOR_EVENT',
+      event,
+    })
+  }
+
   // TODO use the context in the Tracker and lower components
 
   bkgPort.onMessage.addListener(messageListener)
@@ -58,13 +66,6 @@
   })
 
   const actors = useSelector(rootActor, (state) => state.context.actors)
-
-  function messageListener(event: XStateInspectAnyEvent) {
-    rootActor.send({
-      type: 'INSPECTOR_EVENT',
-      event,
-    })
-  }
 
   // -----------------------------
   const activeActor = useSelector(rootActor, (state) => state.context.activeActor)

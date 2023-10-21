@@ -71,13 +71,13 @@
     <button title="Settings" class="config-btn" on:click={openSettings}><CogwheelIcon /></button>
   </div>
 
-  {#if inspectorVersion != null}
+  {#if $inspectorVersion != null}
     <div class="inspector-version" class:invalid-version={!inspectorVersionSatisfied}>
       <span
         title={inspectorVersionSatisfied
           ? 'xstate-ninja detected on the page is compatible with this extension'
           : `xstate-ninja detected on the page is not supported by this extension. Upgrade xstate-ninja to ${config.inspector}`}
-        ><img src={xstateNinjaLogo} alt="xstate-ninja" /> <strong>{inspectorVersion}</strong></span
+        ><img src={xstateNinjaLogo} alt="xstate-ninja" /> <strong>{$inspectorVersion}</strong></span
       >
     </div>
   {/if}
