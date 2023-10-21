@@ -18,6 +18,9 @@ export default defineConfig({
     outDir: resolve(__dirname, outDir),
     emptyOutDir: true,
   },
+  define: {
+    'process.env': `'${process.env.NODE_ENV}'`,
+  },
   plugins: [
     svelte({
       configFile: '../svelte.config.js',
