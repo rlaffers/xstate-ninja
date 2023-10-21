@@ -242,7 +242,12 @@ export const rootMachine = createMachine(
       ACTOR_SELECTED: [
         {
           cond: 'isDifferentSwimlane',
-          actions: ['updateActorInSwimlane'],
+          actions: [
+            'updateActorInSwimlane',
+            'setActiveSwimlane',
+            'setActiveActorFromEvent',
+            'resetActiveFrame',
+          ],
         },
         {
           cond: 'isDifferentActiveActor',
@@ -605,7 +610,11 @@ export const rootMachine = createMachine(
         return isXStateInspectUpdateEvent(event.event)
       },
       isDifferentSwimlane: (context, event: TEvent) => {
-        if (event.type === 'SWIMLANE_SELECTED' || event.type === 'FRAME_SELECTED') {
+        if (
+          event.type === 'SWIMLANE_SELECTED' ||
+          event.type === 'FRAME_SELECTED' ||
+          event.type === 'ACTOR_SELECTED'
+        ) {
           return context.activeSwimlane !== event.swimlaneIndex
         }
         return true
