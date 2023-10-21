@@ -18,6 +18,7 @@ import {
 } from '../../utils'
 import type { EventFrame } from '../EventFrame.svelte'
 import type { StateNodeFrame } from '../StateNodeFrame.svelte'
+import { and } from '../../utils/machine-utils'
 
 const { assign, choose } = actions
 
@@ -123,9 +124,13 @@ export const rootMachine = createMachine(
         },
         {
           cond: 'isActorsEvent',
-          // TODO if going from 0 actors to 1 actor => generate swimlanes, set active swimlane, active actor, active frame
-          // TODO if going to 0 actors => reset swimlanes, active swimlane, active actor, active frame
-          actions: 'setActors',
+          actions: [
+            'setActors',
+            'setSwimlanes',
+            'setFirstActiveSwimlane',
+            'setFirstActiveActor',
+            'resetActiveFrame',
+          ],
         },
         {
           cond: 'isActorEvent',
@@ -163,8 +168,17 @@ export const rootMachine = createMachine(
           ],
         },
         {
+          cond: and(['isUpdateEvent', 'hasNoActors']),
+          actions: [
+            'updateOrCreateActor',
+            'createFirstSwimlane',
+            'setFirstActiveSwimlane',
+            'setFirstActiveActor',
+            'resetActiveFrame',
+          ],
+        },
+        {
           cond: 'isUpdateEvent',
-          // TODO if going from 0 actors to 1 actor => generate swimlanes, set active swimlane, active actor, active frame
           actions: 'updateOrCreateActor',
         },
       ],
@@ -316,6 +330,27 @@ export const rootMachine = createMachine(
             return 0
           }
           return null
+        },
+      }),
+
+      setSwimlanes: assign({
+        swimlanes: (context, event: TEvent) => {
+          if (event.type !== 'INSPECTOR_EVENT' || !isXStateInspectActorsEvent(event.event)) {
+            return context.swimlanes
+          }
+          return Object.values(map(deserializeInspectedActor, event.event.inspectedActors))
+        },
+      }),
+
+      createFirstSwimlane: assign({
+        swimlanes: (context) => {
+          if (context.swimlanes.length > 0) {
+            return context.swimlanes
+          }
+          if (!isEmpty(context.actors)) {
+            return [Object.values(context.actors)[0]]
+          }
+          return context.swimlanes
         },
       }),
 
