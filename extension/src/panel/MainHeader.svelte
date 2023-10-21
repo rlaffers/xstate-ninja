@@ -1,5 +1,6 @@
 <script lang="ts">
   import { satisfies } from 'semver'
+  import { useSelector } from '@xstate/svelte'
   import CogwheelIcon from './icons/CogwheelIcon.svelte'
   import TrashBinIcon from './icons/TrashBinIcon.svelte'
   import ukraineHeart from '../assets/ukraine_heart_64.png'
@@ -8,14 +9,27 @@
   import Settings from './Settings.svelte'
   import xstateNinjaLogo from '../assets/icon_32x32.png'
   import config from '../config.json'
+  import { rootActorContext } from './Panel.svelte'
 
-  export let clearDeadActors: () => void
-  export let addSwimlane: () => void
-  export let inspectorVersion: string | null
+  const rootActor = rootActorContext.get()
+
+  const inspectorVersion = useSelector(rootActor, (state) => state.context.inspectorVersion)
+
+  function clearDeadActors() {
+    rootActor.send({
+      type: 'CLEAR_DEAD_ACTORS_CLICKED',
+    })
+  }
+
+  function addSwimlane() {
+    rootActor.send({
+      type: 'ADD_SWIMLANE_CLICKED',
+    })
+  }
 
   let inspectorVersionSatisfied = true
   $: inspectorVersionSatisfied =
-    inspectorVersion == null || satisfies(inspectorVersion, config.inspector)
+    $inspectorVersion == null ? true : satisfies($inspectorVersion, config.inspector)
 
   function openHelpUkraine(event: MouseEvent) {
     event.preventDefault()
@@ -57,13 +71,13 @@
     <button title="Settings" class="config-btn" on:click={openSettings}><CogwheelIcon /></button>
   </div>
 
-  {#if inspectorVersion != null}
+  {#if $inspectorVersion != null}
     <div class="inspector-version" class:invalid-version={!inspectorVersionSatisfied}>
       <span
         title={inspectorVersionSatisfied
           ? 'xstate-ninja detected on the page is compatible with this extension'
           : `xstate-ninja detected on the page is not supported by this extension. Upgrade xstate-ninja to ${config.inspector}`}
-        ><img src={xstateNinjaLogo} alt="xstate-ninja" /> <strong>{inspectorVersion}</strong></span
+        ><img src={xstateNinjaLogo} alt="xstate-ninja" /> <strong>{$inspectorVersion}</strong></span
       >
     </div>
   {/if}

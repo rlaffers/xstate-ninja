@@ -1,5 +1,7 @@
 <script lang="ts">
   /* eslint-disable svelte/no-unused-svelte-ignore */
+  import { isEmpty } from 'rambda'
+  import { useSelector } from '@xstate/svelte'
   import type { DeserializedExtendedInspectedActorObject } from 'xstate-ninja'
   import type { EventFrame } from './EventFrame.svelte'
   import type { StateNodeFrame } from './StateNodeFrame.svelte'
@@ -9,29 +11,64 @@
   import Resizer from './Resizer.svelte'
   import { hiddenStates, unhide } from '../utils/hidden-states'
   import UnhideIcon from './icons/UnhideIcon.svelte'
+  import { rootActorContext } from './Panel.svelte'
 
+  export let index: number
   export let selectedActor: DeserializedExtendedInspectedActorObject
-  export let actors: Map<string, DeserializedExtendedInspectedActorObject> | null = null
-  export let active = false
-  export let onSelectSwimlane: () => void
-  export let onActorChanged: (actor: DeserializedExtendedInspectedActorObject) => void
-  export let onSelectFrame: (frame: EventFrame | StateNodeFrame | null) => void
   export let closeSwimlane: () => void
   export let previousSwimlane: HTMLElement | null
   export let onMount: (node: HTMLElement) => void
 
-  function onActorSelected(actor: DeserializedExtendedInspectedActorObject) {
-    selectedActor = actor
-    onActorChanged(selectedActor)
+  const rootActor = rootActorContext.get()
+  const actors = useSelector(rootActor, (state) => state.context.actors)
+  const activeSwimlane = useSelector(rootActor, (state) => state.context.activeSwimlane)
+
+  let active = index === $activeSwimlane
+  $: active = index === $activeSwimlane
+
+  function onActorChanged(actor: DeserializedExtendedInspectedActorObject, swimlaneIndex: number) {
+    rootActor.send({
+      type: 'ACTOR_SELECTED',
+      swimlaneIndex,
+      actor,
+    })
   }
 
+  function onActorSelected(actor: DeserializedExtendedInspectedActorObject) {
+    selectedActor = actor
+    onActorChanged(actor, index)
+  }
+
+  function onSelectSwimlane() {
+    rootActor.send({
+      type: 'SWIMLANE_SELECTED',
+      swimlaneIndex: index,
+    })
+  }
+
+  function onSelectFrame(frame: EventFrame | StateNodeFrame) {
+    rootActor.send({
+      type: 'FRAME_SELECTED',
+      frame,
+      swimlaneIndex: index,
+    })
+  }
+
+  function onDeselectFrame() {
+    rootActor.send({
+      type: 'FRAME_DESELECTED',
+      swimlaneIndex: index,
+    })
+  }
+
+  // make sure the selected actor exists in $actors (which are occasionally purged)
   $: {
-    if (selectedActor && actors) {
-      const retrievedActor = actors.get(selectedActor.sessionId)
+    if (selectedActor && !isEmpty($actors)) {
+      const retrievedActor = $actors[selectedActor.sessionId]
       if (retrievedActor == null) {
         // the currently selected actor is no longer available, select something else
-        selectedActor = actors.values().next()?.value
-        onActorChanged(selectedActor)
+        selectedActor = Object.values($actors)[0]
+        onActorChanged(selectedActor, index)
       } else if (retrievedActor !== selectedActor) {
         selectedActor = retrievedActor
       }
@@ -40,12 +77,14 @@
 
   let container: HTMLElement
 
-  let hiddenParallelActorStates = selectedActor ? $hiddenStates[selectedActor.sessionId] : new Set()
+  let hiddenParallelActorStates = selectedActor
+    ? $hiddenStates[selectedActor.sessionId]
+    : new Set<string>()
   $: {
     if (selectedActor) {
-      hiddenParallelActorStates = $hiddenStates[selectedActor.sessionId] ?? new Set()
+      hiddenParallelActorStates = $hiddenStates[selectedActor.sessionId] ?? new Set<string>()
     } else {
-      hiddenParallelActorStates = new Set()
+      hiddenParallelActorStates = new Set<string>()
     }
   }
 </script>
@@ -61,7 +100,12 @@
   <div class="swim-lane-content">
     <header class="swim-lane-header">
       <div class="first-row">
-        <ActorsDropdown class="actors-dropdown" {actors} {selectedActor} {onActorSelected} />
+        <ActorsDropdown
+          class="actors-dropdown"
+          actors={$actors}
+          {selectedActor}
+          {onActorSelected}
+        />
         {#if hiddenParallelActorStates.size > 0}
           <button
             type="button"
@@ -76,7 +120,7 @@
       <ActorDetail actor={selectedActor} />
       <button type="button" class="close-btn" on:click={closeSwimlane}>⨯</button>
     </header>
-    <Tracker actor={selectedActor} {onSelectFrame} {active} />
+    <Tracker actor={selectedActor} {onSelectFrame} {onDeselectFrame} {active} />
   </div>
   <Resizer nextTarget={container} previousTarget={previousSwimlane} direction="horizontal" />
 </section>

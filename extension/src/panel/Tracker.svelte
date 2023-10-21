@@ -12,7 +12,8 @@
   import { last, debounce, isMachineSnapshot } from '../utils'
 
   export let actor: DeserializedExtendedInspectedActorObject
-  export let onSelectFrame: (frame: EventFrame | StateNodeFrame | null) => void
+  export let onSelectFrame: (frame: EventFrame | StateNodeFrame) => void
+  export let onDeselectFrame: () => void
   export let active = false
 
   let activeFrame: EventFrame | StateNodeFrame | null
@@ -115,7 +116,7 @@
 
   function clearSelectedFrame() {
     activeFrame = null
-    onSelectFrame(null)
+    onDeselectFrame()
   }
 
   $: if (actor) {
